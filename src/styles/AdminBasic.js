@@ -213,7 +213,7 @@ export const BigButton = styled.button`
   border-radius: 10px;
   cursor: pointer;
   border-radius: 10px;
-  width: 100px;
+  min-width: 100px;
   height: 50px;
   &:hover {
     background: ${Common.color.p700};
@@ -230,7 +230,7 @@ export const MiddleButton = styled.button`
   border-radius: 10px;
   cursor: pointer;
   border-radius: 9px;
-  width: 70px;
+  min-width: 70px;
   height: 40px;
   &:hover {
     background: ${Common.color.p700};
@@ -247,7 +247,7 @@ export const SmallButton = styled.button`
   border-radius: 10px;
   cursor: pointer;
   border-radius: 7px;
-  width: 50px;
+  min-width: 50px;
   height: 30px;
   &:hover {
     background: ${Common.color.p700};
@@ -265,7 +265,7 @@ export const DeleteButton = styled.button`
   border-radius: 10px;
   cursor: pointer;
   border-radius: 7px;
-  width: 70px;
+  min-width: 70px;
   height: 40px;
 `;
 // 검색버튼
@@ -277,8 +277,9 @@ export const SearchButton = styled.button`
   border-radius: 10px;
   cursor: pointer;
   border-radius: 9px;
-  width: 50px;
+  min-width: 50px;
   height: 30px;
+  padding: 10px;
 `;
 // 큰 인풋태그
 export const BigInput = styled.input`

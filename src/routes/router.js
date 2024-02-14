@@ -1,5 +1,5 @@
 import React from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { Navigate, createBrowserRouter } from "react-router-dom";
 
 import AdminBasic from "../layouts/adminlayout/AdminBasic";
 import A from "../pages/admin/comm/A";
@@ -10,6 +10,7 @@ import MainAdmin from "../pages/admin/main/MainAdmin";
 import Member from "../pages/members/Member";
 
 export const routerAdmin = createBrowserRouter([
+  { path: "", element: <Navigate to="/Admin" /> },
   {
     path: "/Admin",
     element: <AdminBasic />,

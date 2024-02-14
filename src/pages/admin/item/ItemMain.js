@@ -1,14 +1,14 @@
 import React from "react";
-import { LayoutMain, LayoutStyle } from "../../../styles/AdminBasic";
-import Sidebar from "../../../layouts/adminlayout/Sidebar";
 import { Outlet } from "react-router";
-import { CommonData } from "../../../datas/data";
+import { ItemData } from "../../../datas/data";
+import Sidebar from "../../../layouts/adminlayout/Sidebar";
+import { LayoutMain, LayoutStyle } from "../../../styles/AdminBasic";
 
 
 export const ItemMain = () => {
   return (
     <LayoutStyle>
-      <Sidebar data={CommonData}/>
+      <Sidebar data={ItemData}/>
       <LayoutMain>
         <Outlet />
       </LayoutMain>

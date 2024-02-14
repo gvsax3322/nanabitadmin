@@ -1,34 +1,47 @@
 import React from "react";
+import MainTable from "../../../components/main/MainTable";
 import {
   BigCard,
   LayoutMain,
+  SearchButton,
   SmallCard,
   SubTitle,
 } from "../../../styles/AdminBasic";
-import styled from "@emotion/styled";
-
-const OrderList = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-const MainWrap = styled.div`
-  margin: 0 auto;
-`;
+import { MainBt, MainWrap, OrderList } from "../../../styles/main/main";
 
 const MainAdmin = () => {
   return (
     <MainWrap>
       <LayoutMain>
         <SubTitle>전체 주문통계</SubTitle>
+        <MainBt>
+          <SearchButton>주문내역 바로가기</SearchButton>
+        </MainBt>
         <OrderList>
-          <SmallCard></SmallCard>
-          <SmallCard></SmallCard>
-          <SmallCard></SmallCard>
+          <SmallCard>
+            <MainTable title={"전체 주문현황"}/>
+          </SmallCard>  
+          <SmallCard>
+            <MainTable title={"주문상태 현황"}/>
+          </SmallCard>
+          <SmallCard>
+            <MainTable title={"구매확정/클래임 현황"}/>
+          </SmallCard>
         </OrderList>
         <SubTitle>최근 주문내역</SubTitle>
-        <BigCard></BigCard>
+        <MainBt>
+          <SearchButton>주문내역 바로가기</SearchButton>
+        </MainBt>
+        <BigCard>
+          <MainTable />
+        </BigCard>
         <SubTitle>최근 회원가입</SubTitle>
-        <BigCard></BigCard>
+        <MainBt>
+          <SearchButton>회원관리 바로가기</SearchButton>
+        </MainBt>
+        <BigCard>
+          <MainTable />
+        </BigCard>
       </LayoutMain>
     </MainWrap>
   );
