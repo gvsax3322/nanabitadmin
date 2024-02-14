@@ -8,6 +8,7 @@ import C from "../pages/admin/comm/C";
 import { ItemMain } from "../pages/admin/item/ItemMain";
 import MainAdmin from "../pages/admin/main/MainAdmin";
 import Member from "../pages/members/Member";
+import ItemAll from "../pages/admin/item/ItemAll";
 
 export const routerAdmin = createBrowserRouter([
   { path: "", element: <Navigate to="/Admin" /> },
@@ -23,9 +24,10 @@ export const routerAdmin = createBrowserRouter([
       {
         path: "item",
         element: <ItemMain />,
+        children: [{ path: "all", element: <ItemAll /> }],
       },
       {
-        path: "member",
+        path: "member", 
         element: <Member />,
         children: [
           { path: "a", element: <A /> },

@@ -31,7 +31,7 @@ export const CommonData = [
 // 상품관리 사이드바
 export const ItemData = [
   getItem("상품관리", "sub1", <MailOutlined />, [
-    getItem(<Link to="/admin/member/a">전체 상품관리</Link>, "1"),
+    getItem(<Link to="/admin/item/all">전체 상품관리</Link>, "1"),
     getItem(<Link to="/admin/member/b">입금대기</Link>, "2"),
     getItem(<Link to="/admin/member/c">입금완료</Link>, "3"),
     getItem("배송준비", "4"),

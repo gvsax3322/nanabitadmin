@@ -30,6 +30,8 @@ export const Common = {
     p500: "#7f7f7f",
     p600: "#999999",
     p700: "#b2b2b2",
+    p800: "#cccccc",
+    p900: "#eaeaea",
     //흰색
     p000: "#ffffff",
   },
@@ -87,6 +89,10 @@ export const LayoutMain = styled.div`
 `;
 // 해더 스타일
 export const HeaderStyle = styled.header`
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: ${Common.color.p000};
   color: black;
   .header-top {
     padding: 20px;
@@ -273,6 +279,9 @@ export const SearchButton = styled.button`
   background: ${Common.color.primary};
   color: ${Common.color.p000};
   border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -284,26 +293,26 @@ export const SearchButton = styled.button`
 // 큰 인풋태그
 export const BigInput = styled.input`
   width: 700px;
-  height: 30px;
+  height: 25px;
   border-radius: 5px;
   padding: 0 10px;
-  border: 2px solid ${Common.color.primary};
+  border: 2px solid ${Common.color.p500};
 `;
 // 중간 인풋태그
 export const MiddleInput = styled.input`
   width: 300px;
-  height: 30px;
+  height: 25px;
   border-radius: 5px;
   padding: 0 10px;
-  border: 2px solid ${Common.color.primary};
+  border: 2px solid ${Common.color.p500};
 `;
 // 작은 인풋태크
 export const SmallInput = styled.input`
   width: 100px;
-  height: 30px;
+  height: 25px;
   border-radius: 5px;
   padding: 0 10px;
-  border: 2px solid ${Common.color.primary};
+  border: 2px solid ${Common.color.p500};
 `;
 export const BigCard = styled.div`
   width: 100%;
@@ -338,13 +347,21 @@ export const SmallCard = styled.div`
   box-shadow: 5px 5px 10px ${Common.color.primary};
   margin-bottom: 20px;
 `;
-
+// 메인제목
+export const MainTitle = styled.div`
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid black;
+`;
 // 서브제목
 export const SubTitle = styled.h3`
-  font-size: 2rem;
+  font-size: 1.8rem;
   margin-bottom: 20px; /* 예시 간격 */
   position: relative;
   margin-left: 10px;
+  font-weight: 500;
   &::before {
     position: absolute;
     content: "";
@@ -354,5 +371,63 @@ export const SubTitle = styled.h3`
     width: 5px;
     height: 30px;
     background: ${Common.color.p100};
+  }
+`;
+
+// 큰 키워드
+export const BigKeyword = styled.div`
+  display: flex;
+  height: 35px;
+  .left {
+    width: 10%;
+    border-bottom: 1px solid ${Common.color.primary};
+
+    background: ${Common.color.p800};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+  .right {
+    width: 90%;
+    border-bottom: 1px solid ${Common.color.primary};
+
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+  }
+`;
+
+// 작은 키워드
+{
+  /* <SmallKeyword>
+        <div className="left">왼쪽</div>
+        <div className="right">오른쪽</div>
+      </SmallKeyword> */
+}
+
+export const SmallKeyword = styled.div`
+  display: flex;
+  width: 50%;
+  height: 35px;
+  .left {
+    width: 20%;
+    border-bottom: 1px solid ${Common.color.primary};
+
+    background: ${Common.color.p700};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.7rem;
+    font-weight: 600;
+  }
+  .right {
+    width: 80%;
+    border-bottom: 1px solid ${Common.color.primary};
+
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
   }
 `;
