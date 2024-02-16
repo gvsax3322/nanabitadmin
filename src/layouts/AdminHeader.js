@@ -1,13 +1,8 @@
+import { HomeOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import React from "react";
-import {
-  HeaderStyle,
-  IconButton,
-  LogoutButton,
-  SmallButton,
-} from "../../styles/AdminBasic";
-import { HomeOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router";
+import { HeaderStyle, IconButton, LogoutButton } from "../styles/AdminBasic";
 
 const AdminHeader = () => {
   const navigate = useNavigate();

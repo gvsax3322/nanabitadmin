@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Common, SidebarButton, SidebarStyle } from "../../styles/AdminBasic";
+import { SidebarButton, SidebarStyle } from "../styles/AdminBasic";
+
 
 const Sidebar = ({ data }) => {
   const [collapsed, setCollapsed] = useState(false);

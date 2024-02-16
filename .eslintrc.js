@@ -2,42 +2,30 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    node: true,
   },
-  extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react/recommended",
-    "prettier",
-  ],
+  extends: ["eslint:recommended", "plugin:react/recommended", "prettier"],
   overrides: [
     {
-      files: ["*.ts", "*.tsx"],
-      parser: "@typescript-eslint/parser",
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-        },
-        ecmaVersion: 12,
-        sourceType: "module",
-        project: "./tsconfig.json",
+      env: {
+        node: true,
       },
-      plugins: ["@typescript-eslint"],
-      rules: {
-        // Additional rules specific to TypeScript files
+      files: [".eslintrc.{js,cjs}"],
+      parserOptions: {
+        sourceType: "script",
       },
     },
   ],
   parserOptions: {
-    ecmaVersion: 12,
+    ecmaVersion: "latest",
     sourceType: "module",
+    project: "**/tsconfig.json",
   },
-  plugins: ["react", "@typescript-eslint"],
+  plugins: ["react"],
   rules: {
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": ["error"],
+    "react/jsx-no-target-blank": "off",
+    // "no-undef": "off",
   },
 };
