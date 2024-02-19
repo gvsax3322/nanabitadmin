@@ -1,4 +1,3 @@
-import React from "react";
 import Select from "../../../components/select/Select";
 import {
   BigKeyword,
@@ -10,12 +9,12 @@ import {
   SubTitle,
 } from "../../../styles/AdminBasic";
 import styled from "@emotion/styled";
-import SubTable from "../../../components/table/SubTable";
 
 const Wrap = styled.div`
   margin-bottom: 30px;
   border-bottom: 2px solid ${Common.color.primary};
 `;
+
 const ItemAll = () => {
   return (
     <>
@@ -64,9 +63,15 @@ const ItemAll = () => {
           <SearchButton style={{ background: " #f44336" }}>초기화</SearchButton>
         </div>
       </Wrap>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom:"10px"}}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: "10px",
+        }}
+      >
         <div>
-          <SmallButton style={{marginRight:"5px"}}>선택 삭제</SmallButton>
+          <SmallButton style={{ marginRight: "5px" }}>선택 삭제</SmallButton>
           <SmallButton>엑셀 저장</SmallButton>
         </div>
         <div>
@@ -75,9 +80,7 @@ const ItemAll = () => {
           </SearchButton>
         </div>
       </div>
-      <div>
-        <SubTable />
-      </div>
+      <div></div>
     </>
   );
 };

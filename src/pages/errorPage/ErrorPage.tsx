@@ -18,10 +18,16 @@ const ErrorPage = () => {
   return (
     <ErrorWrap>
       <ErrorImg>
-        <img src={process.env.PUBLIC_URL + "/assets/images/ErrorImg.svg"} />
+        <img
+          src={process.env.PUBLIC_URL + "/assets/images/ErrorImg.svg"}
+          alt="error-image"
+        />
       </ErrorImg>
       <ErrorLogo>
-        <img src={process.env.PUBLIC_URL + "/assets/images/logo.svg"} />
+        <img
+          src={process.env.PUBLIC_URL + "/assets/images/logo.svg"}
+          alt="logo-image"
+        />
       </ErrorLogo>
       <ErrorMainTxt>원하시는 페이지를 찾을 수 없습니다.</ErrorMainTxt>
       <ErrorSubTxt>

@@ -1,5 +1,10 @@
-import { Divider, Table } from "antd";
 import React from "react";
+import { Divider, Table } from "antd";
+
+interface MainTableProps {
+  title: string;
+}
+
 const columns = [
   {
     title: "Name",
@@ -18,7 +23,7 @@ const data = [
     address: "New York No. 1 Lake Park",
   },
 ];
-const MainTable = ({title}) => {
+const MainTable: React.FC<MainTableProps> = ({ title }) => {
   return (
     <div>
       <Divider>{title}</Divider>

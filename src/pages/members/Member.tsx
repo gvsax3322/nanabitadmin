@@ -1,8 +1,8 @@
-import React from "react";
 import { Outlet } from "react-router";
-import { CommonData } from "../../components/datas/data";
+
 import Sidebar from "../../layouts/Sidebar";
 import { LayoutMain, LayoutStyle } from "../../styles/AdminBasic";
+import { CommonData } from "../../components/datas/data";
 
 const Member = () => {
   return (

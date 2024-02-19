@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { SidebarButton, SidebarStyle } from "../styles/AdminBasic";
 
+interface SidebarProps {
+  data: any[]; // 적절한 타입으로 변경해야 합니다.
+}
 
-const Sidebar = ({ data }) => {
-  const [collapsed, setCollapsed] = useState(false);
+const Sidebar: React.FC<SidebarProps> = ({ data }) => {
+  const [collapsed, setCollapsed] = useState<boolean>(false); // collapsed의 타입을 boolean으로 명시합니다.
+
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };

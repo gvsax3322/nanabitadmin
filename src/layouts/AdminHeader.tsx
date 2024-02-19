@@ -4,7 +4,7 @@ import React from "react";
 import { useNavigate } from "react-router";
 import { HeaderStyle, IconButton, LogoutButton } from "../styles/AdminBasic";
 
-const AdminHeader = () => {
+const AdminHeader: React.FC = () => {
   const navigate = useNavigate();
 
   const handleClickMove = () => {
@@ -16,7 +16,7 @@ const AdminHeader = () => {
         <div className="header-top-left">
           <h2>나나빛Admin</h2>
         </div>
-        <div className="header-top-rigth">
+        <div className="header-top-right">
           <IconButton>
             <HomeOutlined style={{ fontSize: "2rem" }} />
           </IconButton>
