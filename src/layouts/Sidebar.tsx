@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { SidebarButton, SidebarStyle } from "../styles/AdminBasic";
 
 interface SidebarProps {
-  data: any[]; // 적절한 타입으로 변경해야 합니다.
+  data: any[];
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ data }) => {

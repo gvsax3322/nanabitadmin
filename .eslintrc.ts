@@ -6,9 +6,6 @@ module.exports = {
   extends: ["eslint:recommended", "plugin:react/recommended", "prettier"],
   overrides: [
     {
-      env: {
-        node: true,
-      },
       files: [".eslintrc.{js,cjs}"],
       parserOptions: {
         sourceType: "script",
@@ -16,7 +13,7 @@ module.exports = {
     },
   ],
   parserOptions: {
-    ecmaVersion: "latest",
+    ecmaVersion: 12,
     sourceType: "module",
     project: "**/tsconfig.json",
   },

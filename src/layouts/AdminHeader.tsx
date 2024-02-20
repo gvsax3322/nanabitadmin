@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import React from "react";
 import { useNavigate } from "react-router";
 import { HeaderStyle, IconButton, LogoutButton } from "../styles/AdminBasic";
+import { Link } from "react-router-dom";
 
 const AdminHeader: React.FC = () => {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ const AdminHeader: React.FC = () => {
   const handleClickMove = () => {
     navigate("/admin/item");
   };
+
   return (
     <HeaderStyle>
       <div className="header-top">
@@ -37,7 +39,7 @@ const AdminHeader: React.FC = () => {
               damping: 20,
             }}
           >
-            회원관리
+            <Link to={"/admin/member/modify"}>회원관리</Link>
           </motion.li>
           <motion.li
             whileHover={{ scale: 1.2 }}
