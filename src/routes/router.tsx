@@ -1,14 +1,13 @@
-
 import { Navigate, createBrowserRouter } from "react-router-dom";
 import AdminBasic from "../layouts/AdminBasic";
 import A from "../pages/admin/comm/A";
 import B from "../pages/admin/comm/B";
 import C from "../pages/admin/comm/C";
 import MainAdmin from "../pages/admin/main/MainAdmin";
-import ItemAll from "../pages/admin/item/ItemAll";
 import ErrorPage from "../pages/errorPage/ErrorPage";
 import Member from "../pages/members/Member";
 import { ItemMain } from "../pages/admin/item/ItemMain";
+import productAdmin from "./product";
 
 export const routerAdmin = createBrowserRouter([
   { path: "", element: <Navigate to="/Admin" />, errorElement: <ErrorPage /> },
@@ -23,7 +22,7 @@ export const routerAdmin = createBrowserRouter([
       {
         path: "item",
         element: <ItemMain />,
-        children: [{ path: "all", element: <ItemAll /> }],
+        children: productAdmin.children,
       },
       {
         path: "member",

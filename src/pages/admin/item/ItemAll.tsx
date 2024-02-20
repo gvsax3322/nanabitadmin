@@ -1,4 +1,7 @@
 import Select from "../../../components/select/Select";
+import ItemTable from "../../../components/table/ItemTable";
+
+
 import {
   BigKeyword,
   Common,
@@ -27,27 +30,27 @@ const ItemAll = () => {
           >
             <div className="left">검색어</div>
             <div className="right">
-              <Select />
+              <Select optionone={"ㅎㅇ"}/>
               <MiddleInput />
             </div>
           </BigKeyword>
           <BigKeyword>
             <div className="left">카테고리</div>
             <div className="right">
-              <Select />
-              <Select />
+              <Select optionone={"ㅎㅇ1"}/>
+              <Select optionone={"ㅎㅇ 2"}/>
             </div>
           </BigKeyword>
           <BigKeyword>
             <div className="left">기간검색</div>
             <div className="right">
-              <Select />
+              <Select optionone={"ㅎㅇ 3"} />
             </div>
           </BigKeyword>
           <BigKeyword>
             <div className="left">상품가격</div>
             <div className="right">
-              <Select />
+              <Select optionone={"ㅎㅇ 5"}/>
             </div>
           </BigKeyword>
         </div>
@@ -80,7 +83,9 @@ const ItemAll = () => {
           </SearchButton>
         </div>
       </div>
-      <div></div>
+      <div> 
+        <ItemTable />
+      </div>
     </>
   );
 };
