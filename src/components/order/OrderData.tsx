@@ -1,10 +1,4 @@
-import {
-  AppstoreOutlined,
-  ContainerOutlined,
-  DesktopOutlined,
-  MailOutlined,
-  PieChartOutlined,
-} from "@ant-design/icons";
+import { AppstoreOutlined, MailOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
 import type { MenuProps } from "antd";

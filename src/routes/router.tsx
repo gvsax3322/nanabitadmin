@@ -14,7 +14,7 @@ import NewProduct from "../components/usermainmanage/NewProduct";
 import PopProduct from "../components/usermainmanage/PopProduct";
 import { Ordermain } from "../pages/order/item/OrderMain";
 import AdminNote from "../pages/order/sub/AdminNote";
-import All from "../pages/order/sub/All";
+
 import DCom from "../pages/order/sub/DCom";
 import Dpst from "../pages/order/sub/Dpst";
 import OrderCancel from "../pages/order/sub/OrderCancel";
@@ -28,6 +28,7 @@ import MemberModify from "./member/MemberModify";
 import MemberMain from "./member/MemberRouter";
 import MonthlyReg from "./member/MonthlyReg";
 import productAdmin from "./product";
+import OrderAllPage from "../pages/order/sub/OrderAllPage";
 
 export const routerAdmin = createBrowserRouter([
   { path: "", element: <Navigate to="/admin" />, errorElement: <ErrorPage /> },
@@ -73,7 +74,7 @@ export const routerAdmin = createBrowserRouter([
         children: [
           { path: "a", element: <A /> },
           // 주문관리
-          { path: "all", element: <All /> },
+          { path: "all", element: <OrderAllPage /> },
           { path: "deposit", element: <Dpst /> },
           { path: "preparing", element: <Preparing /> },
           { path: "shipping", element: <Shipping /> },
@@ -83,7 +84,7 @@ export const routerAdmin = createBrowserRouter([
           { path: "return", element: <OrderReturn /> },
           // 관리자메모
           { path: "memo", element: <AdminNote /> },
-        ]
+        ],
       },
       {
         path: "usermain",

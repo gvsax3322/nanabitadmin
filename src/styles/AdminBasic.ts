@@ -440,4 +440,3 @@ export const SelectStyle = styled.select`
   border-radius: 5px;
   margin-right: 7px;
 `;
-
