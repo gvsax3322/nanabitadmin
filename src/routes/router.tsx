@@ -7,6 +7,11 @@ import MainAdmin from "../pages/admin/main/MainAdmin";
 import ErrorPage from "../pages/errorPage/ErrorPage";
 import Member from "../pages/members/Member";
 import { ItemMain } from "../pages/admin/item/ItemMain";
+import UsermainManage from "../pages/usermainmanage/UsermainManage";
+import MainBanner from "../components/usermainmanage/MainBanner";
+import MdRecommend from "../components/usermainmanage/MdRecommend";
+import PopProduct from "../components/usermainmanage/PopProduct";
+import NewProduct from "../components/usermainmanage/NewProduct";
 import productAdmin from "./product";
 
 export const routerAdmin = createBrowserRouter([
@@ -31,6 +36,16 @@ export const routerAdmin = createBrowserRouter([
           { path: "a", element: <A /> },
           { path: "b", element: <B /> },
           { path: "c", element: <C /> },
+        ],
+      },
+      {
+        path: "usermain",
+        element: <UsermainManage />,
+        children: [
+          { path: "banner", element: <MainBanner /> },
+          { path: "md", element: <MdRecommend /> },
+          { path: "popular", element: <PopProduct /> },
+          { path: "new", element: <NewProduct /> },
         ],
       },
     ],
