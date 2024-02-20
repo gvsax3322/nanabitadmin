@@ -11,7 +11,7 @@ import ErrorPage from "../pages/errorPage/ErrorPage";
 import Member from "../pages/members/Member";
 import { Ordermain } from "../pages/order/item/OrderMain";
 import AdminNote from "../pages/order/sub/AdminNote";
-import All from "../pages/order/sub/All";
+
 import DCom from "../pages/order/sub/DCom";
 import Dpst from "../pages/order/sub/Dpst";
 import OrderCancel from "../pages/order/sub/OrderCancel";
@@ -22,6 +22,7 @@ import UsermainManage from "../pages/usermainmanage/UsermainManage";
 
 import MemberRouter from "./member/MemberRouter";
 import productAdmin from "./product";
+import OrderAllPage from "../pages/order/sub/OrderAllPage";
 import MemberMain from "../pages/admin/member/MemberMain";
 
 export const routerAdmin = createBrowserRouter([
@@ -53,7 +54,7 @@ export const routerAdmin = createBrowserRouter([
         element: <Ordermain />,
         children: [
           // 주문관리
-          { path: "all", element: <All /> },
+          { path: "all", element: <OrderAllPage /> },
           { path: "deposit", element: <Dpst /> },
           { path: "preparing", element: <Preparing /> },
           { path: "shipping", element: <Shipping /> },

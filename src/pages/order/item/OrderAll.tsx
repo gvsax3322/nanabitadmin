@@ -19,7 +19,7 @@ const OrderAll = () => {
   return (
     <>
       <Wrap>
-        <MainTitle>전체 상품관리</MainTitle>
+        <MainTitle>전체리스트</MainTitle>
         <SubTitle>기본검색</SubTitle>
         <div style={{ marginBottom: "20px" }}>
           <BigKeyword
@@ -35,6 +35,9 @@ const OrderAll = () => {
             <div className="left">카테고리</div>
             <div className="right">
               <Select optionone={"gd"} />
+              <Select optionone={"gd"} />
+              <Select optionone={"gdㅇㅇ"} />
+              <Select optionone={"gdㅇㅇ"} />
               <Select optionone={"gd"} />
             </div>
           </BigKeyword>

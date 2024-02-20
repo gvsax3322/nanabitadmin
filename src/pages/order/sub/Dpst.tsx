@@ -1,11 +1,10 @@
-import React from "react";
-import OrderAll from "../item/OrderAll";
+import DpstHeader from "../item/DpstHeader";
 
 const Dpst = () => {
   return (
     <div>
       Dpst
-      <OrderAll />
+      <DpstHeader />
     </div>
   );
 };
