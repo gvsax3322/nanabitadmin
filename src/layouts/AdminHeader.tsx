@@ -7,12 +7,13 @@ import { HeaderStyle, IconButton, LogoutButton } from "../styles/AdminBasic";
 const AdminHeader: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleClickMove = () => {
-    navigate("/admin/item");
+  const handleClickMove = (path: string) => {
+    navigate(path);
   };
   const handleClickOrder = () => {
     navigate("/admin/order");
   };
+
   return (
     <HeaderStyle>
       <div className="header-top">
@@ -83,7 +84,7 @@ const AdminHeader: React.FC = () => {
               stiffness: 600,
               damping: 20,
             }}
-            onClick={handleClickMove}
+            onClick={() => handleClickMove("/admin/item")}
           >
             상품관리
           </motion.li>
@@ -107,8 +108,9 @@ const AdminHeader: React.FC = () => {
               stiffness: 600,
               damping: 20,
             }}
+            onClick={() => handleClickMove("/admin/usermain/banner")}
           >
-            통계분석
+            매출 및 통계
           </motion.li>
           <motion.li
             whileHover={{ scale: 1.2 }}
@@ -120,6 +122,29 @@ const AdminHeader: React.FC = () => {
             }}
           >
             고객지원
+          </motion.li>
+          <motion.li
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 0.9 }}
+            transition={{
+              type: "spring",
+              stiffness: 600,
+              damping: 20,
+            }}
+            onClick={() => handleClickMove("/admin/usermain/banner")}
+          >
+            사용자 메인화면
+          </motion.li>
+          <motion.li
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 0.9 }}
+            transition={{
+              type: "spring",
+              stiffness: 600,
+              damping: 20,
+            }}
+          >
+            리뷰관리
           </motion.li>
           <motion.li
             whileHover={{ scale: 1.2 }}
