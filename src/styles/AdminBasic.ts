@@ -431,3 +431,13 @@ export const SmallKeyword = styled.div`
     padding-left: 20px;
   }
 `;
+
+// select 스타일
+export const SelectStyle = styled.select`
+  height: 25px;
+  width: 70px;
+  border: 2px solid ${Common.color.p500};
+  border-radius: 5px;
+  margin-right: 7px;
+`;
+

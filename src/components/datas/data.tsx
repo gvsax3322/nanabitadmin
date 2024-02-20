@@ -62,3 +62,23 @@ export const CommonData: MenuItem[] = [
     ]),
   ]),
 ];
+
+export const Item: MenuItem[] = [
+  getItem("전체상품관리", "sub1", <MailOutlined />, [
+    getItem(
+      <Link to={"/admin/item/all"}>전체상품목록</Link>,
+      "1",
+      <PieChartOutlined />,
+    ),
+    getItem(
+      <Link to={"/admin/item/inventory"}>재고관리</Link>,
+      "2",
+      <DesktopOutlined />,
+    ),
+    getItem(
+      <Link to={"/admin/item/qa"}>문의/</Link>,
+      "3",
+      <ContainerOutlined />,
+    ),
+  ]),
+];
