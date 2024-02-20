@@ -8,7 +8,6 @@ import { ItemMain } from "../pages/admin/item/ItemMain";
 import LoginPage from "../pages/admin/login/LoginPage";
 import MainAdmin from "../pages/admin/main/MainAdmin";
 import ErrorPage from "../pages/errorPage/ErrorPage";
-import Member from "../pages/members/Member";
 import { Ordermain } from "../pages/order/item/OrderMain";
 import AdminNote from "../pages/order/sub/AdminNote";
 
@@ -20,10 +19,10 @@ import Preparing from "../pages/order/sub/Preparing";
 import Shipping from "../pages/order/sub/Shipping";
 import UsermainManage from "../pages/usermainmanage/UsermainManage";
 
+import MemberMain from "../pages/admin/member/MemberMain";
+import OrderAllPage from "../pages/order/sub/OrderAllPage";
 import MemberRouter from "./member/MemberRouter";
 import productAdmin from "./product";
-import OrderAllPage from "../pages/order/sub/OrderAllPage";
-import MemberMain from "../pages/admin/member/MemberMain";
 
 export const routerAdmin = createBrowserRouter([
   { path: "", element: <Navigate to="/admin" />, errorElement: <ErrorPage /> },
