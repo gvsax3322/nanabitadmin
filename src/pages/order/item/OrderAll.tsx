@@ -27,27 +27,27 @@ const OrderAll = () => {
           >
             <div className="left">검색어</div>
             <div className="right">
-              <Select />
+              <Select optionone={"gd"} />
               <MiddleInput />
             </div>
           </BigKeyword>
           <BigKeyword>
             <div className="left">카테고리</div>
             <div className="right">
-              <Select />
-              <Select />
+              <Select optionone={"gd"} />
+              <Select optionone={"gd"} />
             </div>
           </BigKeyword>
           <BigKeyword>
             <div className="left">기간검색</div>
             <div className="right">
-              <Select />
+              <Select optionone={"gd"} />
             </div>
           </BigKeyword>
           <BigKeyword>
             <div className="left">상품가격</div>
             <div className="right">
-              <Select />
+              <Select optionone={"gd"} />
             </div>
           </BigKeyword>
         </div>

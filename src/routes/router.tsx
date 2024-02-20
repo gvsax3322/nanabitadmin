@@ -3,36 +3,30 @@ import AdminBasic from "../layouts/AdminBasic";
 import A from "../pages/admin/comm/A";
 import B from "../pages/admin/comm/B";
 import C from "../pages/admin/comm/C";
-import ItemAll from "../pages/admin/item/ItemAll";
 import { ItemMain } from "../pages/admin/item/ItemMain";
 import LoginPage from "../pages/admin/login/LoginPage";
 import MainAdmin from "../pages/admin/main/MainAdmin";
 import ErrorPage from "../pages/errorPage/ErrorPage";
 import Member from "../pages/members/Member";
-
-import MemberDelete from "./member/MemberDelete ";
-import MemberMain from "./member/MemberRouter";
-import MemberModify from "./member/MemberModify";
-import DailyReg from "./member/DailyReg";
-import MonthlyReg from "./member/MonthlyReg";
-import MainAdmin from "../pages/admin/main/MainAdmin";
-import ErrorPage from "../pages/errorPage/ErrorPage";
-import Member from "../pages/members/Member";
-import { ItemMain } from "../pages/admin/item/ItemMain";
-import { Ordermain } from "../pages/order/item/OrderMain";
-import Dpst from "../pages/order/sub/Dpst";
-import All from "../pages/order/sub/All";
-import Preparing from "../pages/order/sub/Preparing";
-import Shipping from "../pages/order/sub/Shipping";
-import DCom from "../pages/order/sub/DCom";
-import OrderCancel from "../pages/order/sub/OrderCancel";
-import OrderReturn from "../pages/order/sub/OrderReturn";
-import AdminNote from "../pages/order/sub/AdminNote";
-import UsermainManage from "../pages/usermainmanage/UsermainManage";
 import MainBanner from "../components/usermainmanage/MainBanner";
 import MdRecommend from "../components/usermainmanage/MdRecommend";
-import PopProduct from "../components/usermainmanage/PopProduct";
 import NewProduct from "../components/usermainmanage/NewProduct";
+import PopProduct from "../components/usermainmanage/PopProduct";
+import { Ordermain } from "../pages/order/item/OrderMain";
+import AdminNote from "../pages/order/sub/AdminNote";
+import All from "../pages/order/sub/All";
+import DCom from "../pages/order/sub/DCom";
+import Dpst from "../pages/order/sub/Dpst";
+import OrderCancel from "../pages/order/sub/OrderCancel";
+import OrderReturn from "../pages/order/sub/OrderReturn";
+import Preparing from "../pages/order/sub/Preparing";
+import Shipping from "../pages/order/sub/Shipping";
+import UsermainManage from "../pages/usermainmanage/UsermainManage";
+import DailyReg from "./member/DailyReg";
+import MemberDelete from "./member/MemberDelete ";
+import MemberModify from "./member/MemberModify";
+import MemberMain from "./member/MemberRouter";
+import MonthlyReg from "./member/MonthlyReg";
 import productAdmin from "./product";
 
 export const routerAdmin = createBrowserRouter([
@@ -89,6 +83,9 @@ export const routerAdmin = createBrowserRouter([
           { path: "return", element: <OrderReturn /> },
           // 관리자메모
           { path: "memo", element: <AdminNote /> },
+        ]
+      },
+      {
         path: "usermain",
         element: <UsermainManage />,
         children: [
@@ -98,6 +95,6 @@ export const routerAdmin = createBrowserRouter([
           { path: "new", element: <NewProduct /> },
         ],
       },
-    ],
-  },
+    ], // 여기에 닫는 중괄호 추가
+  }, // 여기에도 닫는 중괄호 추가
 ]);
