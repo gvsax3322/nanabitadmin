@@ -24,12 +24,12 @@ function getItem(
     type,
   };
 }
-  
+
 // 데이터 만들기 예시
 export const MemberData: MenuItem[] = [
   getItem("회원정보", "sub1", <MailOutlined />, [
     getItem(<Link to={"/admin/member/modify"}>회원정보관리</Link>, "1"),
-    getItem(<Link to={"/admin/member/delete"}>회원정보</Link>, "2"),
+    getItem(<Link to={"/admin/member/delete"}>회원탈퇴내역</Link>, "2"),
   ]),
 
   getItem("가입통계", "sub2", <AppstoreOutlined />, [
