@@ -143,17 +143,16 @@ export const HeaderStyle = styled.header`
 
 // 사이드바
 export const SidebarStyle = styled(Menu)`
-  :where(.css-dev-only-do-not-override-17sses9).ant-menu-light
-    .ant-menu-submenu-selected
-    > .ant-menu-submenu-title,
-  :where(.css-dev-only-do-not-override-17sses9).ant-menu-light
-    > .ant-menu
+  :where(.css-dev-only-do-not-override-1xg9z9n).ant-menu-light
     .ant-menu-submenu-selected
     > .ant-menu-submenu-title {
     color: ${Common.color.p100};
     font-size: 1.5rem;
     font-weight: 700;
   }
+  :where(.css-dev-only-do-not-override-17sses9).ant-menu-light
+    .ant-menu-submenu-selected
+    > .ant-menu-submenu-title,
   .ant-menu-item-selected {
     background-color: ${Common.color.p700};
     color: white;
@@ -349,12 +348,14 @@ export const SmallCard = styled.div`
 `;
 // 메인제목
 export const MainTitle = styled.div`
-  font-size: 20px;
+  height: 45px;
+  font-size: 25px;
   font-weight: 800;
   margin-bottom: 20px;
   padding-bottom: 10px;
   border-bottom: 2px solid black;
 `;
+
 // 서브제목
 export const SubTitle = styled.h3`
   font-size: 1.8rem;
@@ -400,12 +401,11 @@ export const BigKeyword = styled.div`
 `;
 
 // 작은 키워드
-{
-  /* <SmallKeyword>
+
+/* <SmallKeyword>
         <div className="left">왼쪽</div>
         <div className="right">오른쪽</div>
       </SmallKeyword> */
-}
 
 export const SmallKeyword = styled.div`
   display: flex;

@@ -1,7 +1,6 @@
 import Select from "../../../components/select/Select";
 import ItemTable from "../../../components/table/ItemTable";
 
-
 import {
   BigKeyword,
   Common,
@@ -9,6 +8,7 @@ import {
   MiddleInput,
   SearchButton,
   SmallButton,
+  SmallInput,
   SubTitle,
 } from "../../../styles/AdminBasic";
 import styled from "@emotion/styled";
@@ -30,27 +30,30 @@ const ItemAll = () => {
           >
             <div className="left">검색어</div>
             <div className="right">
-              <Select optionone={"ㅎㅇ"}/>
+              <Select optionone={"상품명"} />
               <MiddleInput />
             </div>
           </BigKeyword>
           <BigKeyword>
             <div className="left">카테고리</div>
             <div className="right">
-              <Select optionone={"ㅎㅇ1"}/>
-              <Select optionone={"ㅎㅇ 2"}/>
+              <Select optionone={"ㅎㅇ1"} />
+              <Select optionone={"ㅎㅇ 2"} />
             </div>
           </BigKeyword>
           <BigKeyword>
             <div className="left">기간검색</div>
             <div className="right">
-              <Select optionone={"ㅎㅇ 3"} />
+              <Select optionone={"ㅎㅇ 3"} />{" "}
+              <SmallInput style={{ marginRight: "2px" }} />~
+              <SmallInput style={{ marginLeft: "2px" }} />
             </div>
           </BigKeyword>
           <BigKeyword>
             <div className="left">상품가격</div>
             <div className="right">
-              <Select optionone={"ㅎㅇ 5"}/>
+              <Select optionone={"ㅎㅇ 5"} /> <SmallInput />원 이상~
+              <SmallInput />원 이하
             </div>
           </BigKeyword>
         </div>
@@ -83,7 +86,7 @@ const ItemAll = () => {
           </SearchButton>
         </div>
       </div>
-      <div> 
+      <div>
         <ItemTable />
       </div>
     </>

@@ -1,17 +1,14 @@
 import { Navigate, createBrowserRouter } from "react-router-dom";
+import MainBanner from "../components/usermainmanage/MainBanner";
+import MdRecommend from "../components/usermainmanage/MdRecommend";
+import NewProduct from "../components/usermainmanage/NewProduct";
+import PopProduct from "../components/usermainmanage/PopProduct";
 import AdminBasic from "../layouts/AdminBasic";
-import A from "../pages/admin/comm/A";
-import B from "../pages/admin/comm/B";
-import C from "../pages/admin/comm/C";
 import { ItemMain } from "../pages/admin/item/ItemMain";
 import LoginPage from "../pages/admin/login/LoginPage";
 import MainAdmin from "../pages/admin/main/MainAdmin";
 import ErrorPage from "../pages/errorPage/ErrorPage";
 import Member from "../pages/members/Member";
-import MainBanner from "../components/usermainmanage/MainBanner";
-import MdRecommend from "../components/usermainmanage/MdRecommend";
-import NewProduct from "../components/usermainmanage/NewProduct";
-import PopProduct from "../components/usermainmanage/PopProduct";
 import { Ordermain } from "../pages/order/item/OrderMain";
 import AdminNote from "../pages/order/sub/AdminNote";
 
@@ -22,13 +19,11 @@ import OrderReturn from "../pages/order/sub/OrderReturn";
 import Preparing from "../pages/order/sub/Preparing";
 import Shipping from "../pages/order/sub/Shipping";
 import UsermainManage from "../pages/usermainmanage/UsermainManage";
-import DailyReg from "./member/DailyReg";
-import MemberDelete from "./member/MemberDelete ";
-import MemberModify from "./member/MemberModify";
-import MemberMain from "./member/MemberRouter";
-import MonthlyReg from "./member/MonthlyReg";
+
+import MemberRouter from "./member/MemberRouter";
 import productAdmin from "./product";
 import OrderAllPage from "../pages/order/sub/OrderAllPage";
+import MemberMain from "../pages/admin/member/MemberMain";
 
 export const routerAdmin = createBrowserRouter([
   { path: "", element: <Navigate to="/admin" />, errorElement: <ErrorPage /> },
@@ -52,27 +47,12 @@ export const routerAdmin = createBrowserRouter([
       {
         path: "member/",
         element: <MemberMain />,
-        children: [
-          { path: "modify", element: <MemberModify /> },
-          { path: "delete", element: <MemberDelete /> },
-          { path: "daily", element: <DailyReg /> },
-          { path: "monthly", element: <MonthlyReg /> },
-        ],
-      },
-      {
-        path: "members",
-        element: <Member />,
-        children: [
-          { path: "a", element: <A /> },
-          { path: "b", element: <B /> },
-          { path: "c", element: <C /> },
-        ],
+        children: MemberRouter.children,
       },
       {
         path: "order",
         element: <Ordermain />,
         children: [
-          { path: "a", element: <A /> },
           // 주문관리
           { path: "all", element: <OrderAllPage /> },
           { path: "deposit", element: <Dpst /> },
