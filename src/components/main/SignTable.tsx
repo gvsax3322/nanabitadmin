@@ -1,13 +1,24 @@
-import React from "react";
 import { Divider, Table } from "antd";
 
 export const columns = [
   {
-    title: "총 주문건수",
+    title: "이름",
     dataIndex: "name",
   },
   {
-    title: "총 주문액",
+    title: "아이디",
+    dataIndex: "address",
+  },
+  {
+    title: "이메일",
+    dataIndex: "address",
+  },
+  {
+    title: "접속횟수",
+    dataIndex: "address",
+  },
+  {
+    title: "가입일시",
     dataIndex: "address",
   },
 ];
@@ -21,10 +32,10 @@ const data = [
   },
 ];
 
-const MainTable = () => {
+const SignTable = () => {
   return (
     <div>
-      <Divider>전체 주문현황</Divider>
+      <Divider>최근 회원가입</Divider>
 
       <Table
         columns={columns}
@@ -36,4 +47,4 @@ const MainTable = () => {
   );
 };
 
-export default MainTable;
+export default SignTable;

@@ -4,9 +4,6 @@ import MdRecommend from "../components/usermainmanage/MdRecommend";
 import NewProduct from "../components/usermainmanage/NewProduct";
 import PopProduct from "../components/usermainmanage/PopProduct";
 import AdminBasic from "../layouts/AdminBasic";
-import A from "../pages/admin/comm/A";
-import B from "../pages/admin/comm/B";
-import C from "../pages/admin/comm/C";
 import { ItemMain } from "../pages/admin/item/ItemMain";
 import LoginPage from "../pages/admin/login/LoginPage";
 import MainAdmin from "../pages/admin/main/MainAdmin";
@@ -52,19 +49,9 @@ export const routerAdmin = createBrowserRouter([
         children: MemberRouter.children,
       },
       {
-        path: "members",
-        element: <Member />,
-        children: [
-          { path: "a", element: <A /> },
-          { path: "b", element: <B /> },
-          { path: "c", element: <C /> },
-        ],
-      },
-      {
         path: "order",
         element: <Ordermain />,
         children: [
-          { path: "a", element: <A /> },
           // 주문관리
           { path: "all", element: <All /> },
           { path: "deposit", element: <Dpst /> },

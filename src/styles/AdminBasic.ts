@@ -143,17 +143,16 @@ export const HeaderStyle = styled.header`
 
 // 사이드바
 export const SidebarStyle = styled(Menu)`
-  :where(.css-dev-only-do-not-override-17sses9).ant-menu-light
-    .ant-menu-submenu-selected
-    > .ant-menu-submenu-title,
-  :where(.css-dev-only-do-not-override-17sses9).ant-menu-light
-    > .ant-menu
+  :where(.css-dev-only-do-not-override-1xg9z9n).ant-menu-light
     .ant-menu-submenu-selected
     > .ant-menu-submenu-title {
     color: ${Common.color.p100};
     font-size: 1.5rem;
     font-weight: 700;
   }
+  :where(.css-dev-only-do-not-override-17sses9).ant-menu-light
+    .ant-menu-submenu-selected
+    > .ant-menu-submenu-title,
   .ant-menu-item-selected {
     background-color: ${Common.color.p700};
     color: white;
@@ -356,6 +355,7 @@ export const MainTitle = styled.div`
   padding-bottom: 10px;
   border-bottom: 2px solid black;
 `;
+
 // 서브제목
 export const SubTitle = styled.h3`
   font-size: 1.8rem;
