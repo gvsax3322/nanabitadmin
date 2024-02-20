@@ -13,7 +13,7 @@ const ErrorPage = () => {
   const navigate = useNavigate();
 
   const handleClickMain = () => {
-    navigate("/");
+    navigate("/admin");
   };
   return (
     <ErrorWrap>
