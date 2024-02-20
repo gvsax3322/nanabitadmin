@@ -348,7 +348,8 @@ export const SmallCard = styled.div`
 `;
 // 메인제목
 export const MainTitle = styled.div`
-  font-size: 20px;
+  height: 45px;
+  font-size: 25px;
   font-weight: 800;
   margin-bottom: 20px;
   padding-bottom: 10px;
@@ -400,12 +401,11 @@ export const BigKeyword = styled.div`
 `;
 
 // 작은 키워드
-{
-  /* <SmallKeyword>
+
+/* <SmallKeyword>
         <div className="left">왼쪽</div>
         <div className="right">오른쪽</div>
       </SmallKeyword> */
-}
 
 export const SmallKeyword = styled.div`
   display: flex;

@@ -1,20 +1,27 @@
-import { Outlet } from "react-router";
-import { LayoutMain, LayoutStyle } from "../../styles/AdminBasic";
-import { MemberData } from "../../components/member/MemberData";
-import Sidebar from "../../layouts/Sidebar";
+import React, { ReactElement } from "react";
+import MemberModify from "../../pages/admin/member/MemberModify";
+import MemberDelete from "../../pages/admin/member/MemberDelete ";
+import DailyReg from "../../pages/admin/member/DailyReg";
+import MonthlyReg from "../../pages/admin/member/MonthlyReg";
+import MemberMain from "../../pages/admin/member/MemberMain";
 
-const MemberMain = () => {
-  return (
-    <div>
-      {" "}
-      <LayoutStyle>
-        <Sidebar data={MemberData} />
-        <LayoutMain>
-          <Outlet />
-        </LayoutMain>
-      </LayoutStyle>
-    </div>
-  );
+export interface MemberAdmin {
+  path: string;
+  element: ReactElement;
+  children: {
+    path: string;
+    element: ReactElement;
+  }[];
+}
+const MemberRouter: MemberAdmin = {
+  path: "member/",
+  element: <MemberMain />,
+  children: [
+    { path: "modify", element: <MemberModify /> },
+    { path: "delete", element: <MemberDelete /> },
+    { path: "daily", element: <DailyReg /> },
+    { path: "monthly", element: <MonthlyReg /> },
+  ],
 };
 
-export default MemberMain;
+export default MemberRouter;
