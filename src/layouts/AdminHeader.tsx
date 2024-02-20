@@ -10,6 +10,9 @@ const AdminHeader: React.FC = () => {
   const handleClickMove = () => {
     navigate("/admin/item");
   };
+  const handleClickOrder = () => {
+    navigate("/admin/order");
+  };
   return (
     <HeaderStyle>
       <div className="header-top">
@@ -92,6 +95,7 @@ const AdminHeader: React.FC = () => {
               stiffness: 600,
               damping: 20,
             }}
+            onClick={handleClickOrder}
           >
             주문관리
           </motion.li>
