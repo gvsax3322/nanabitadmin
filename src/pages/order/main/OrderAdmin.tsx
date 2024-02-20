@@ -18,13 +18,13 @@ const MainAdmin = () => {
         </MainBt>
         <OrderList>
           <SmallCard>
-            <MainTable title={"전체 주문현황"} />
+            <MainTable />
           </SmallCard>
           <SmallCard>
-            <MainTable title={"주문상태 현황"} />
+            <MainTable />
           </SmallCard>
           <SmallCard>
-            <MainTable title={"구매확정/클래임 현황"} />
+            <MainTable />
           </SmallCard>
         </OrderList>
         <SubTitle>최근 주문내역</SubTitle>
@@ -32,14 +32,14 @@ const MainAdmin = () => {
           <SearchButton>주문내역 바로가기</SearchButton>
         </MainBt>
         <BigCard>
-          <MainTable title={"최근 주문내역"} />
+          <MainTable />
         </BigCard>
         <SubTitle>최근 회원가입</SubTitle>
         <MainBt>
           <SearchButton>회원관리 바로가기</SearchButton>
         </MainBt>
         <BigCard>
-          <MainTable title={"최근 회원가입"} />
+          <MainTable />
         </BigCard>
       </LayoutMain>
     </MainWrap>
