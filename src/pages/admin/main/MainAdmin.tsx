@@ -1,4 +1,8 @@
+import BuyTable from "../../../components/main/BuyTable";
 import MainTable from "../../../components/main/MainTable";
+import RecentlyTable from "../../../components/main/RecentlyTable";
+import SecondTable from "../../../components/main/SecondTable";
+import SignTable from "../../../components/main/SignTable";
 import {
   BigCard,
   LayoutMain,
@@ -18,13 +22,13 @@ const MainAdmin = () => {
         </MainBt>
         <OrderList>
           <SmallCard>
-            <MainTable title={"전체 주문현황"} />
-          </SmallCard>  
-          <SmallCard>
-            <MainTable title={"주문상태 현황"} />
+            <MainTable />
           </SmallCard>
           <SmallCard>
-            <MainTable title={"구매확정/클래임 현황"} />
+            <SecondTable />
+          </SmallCard>
+          <SmallCard>
+            <BuyTable />
           </SmallCard>
         </OrderList>
         <SubTitle>최근 주문내역</SubTitle>
@@ -32,14 +36,14 @@ const MainAdmin = () => {
           <SearchButton>주문내역 바로가기</SearchButton>
         </MainBt>
         <BigCard>
-          <MainTable title={"최근 주문내역"} />
+          <RecentlyTable />
         </BigCard>
         <SubTitle>최근 회원가입</SubTitle>
         <MainBt>
           <SearchButton>회원관리 바로가기</SearchButton>
         </MainBt>
         <BigCard>
-          <MainTable title={"최근 회원가입"} />
+          <SignTable />
         </BigCard>
       </LayoutMain>
     </MainWrap>

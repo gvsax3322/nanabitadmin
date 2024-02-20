@@ -1,13 +1,24 @@
-import React from "react";
 import { Divider, Table } from "antd";
 
 export const columns = [
   {
-    title: "총 주문건수",
+    title: "입금대기",
     dataIndex: "name",
   },
   {
-    title: "총 주문액",
+    title: "입금완료",
+    dataIndex: "address",
+  },
+  {
+    title: "배송준비",
+    dataIndex: "address",
+  },
+  {
+    title: "배송중",
+    dataIndex: "address",
+  },
+  {
+    title: "배송완료",
     dataIndex: "address",
   },
 ];
@@ -21,10 +32,10 @@ const data = [
   },
 ];
 
-const MainTable = () => {
+const SecondTable = () => {
   return (
     <div>
-      <Divider>전체 주문현황</Divider>
+      <Divider>주문상태 현황</Divider>
 
       <Table
         columns={columns}
@@ -36,4 +47,4 @@ const MainTable = () => {
   );
 };
 
-export default MainTable;
+export default SecondTable;
