@@ -253,7 +253,7 @@ export const SmallButton = styled.button`
   cursor: pointer;
   border-radius: 7px;
   min-width: 50px;
-  height: 30px;
+  height: 25px;
   &:hover {
     background: ${Common.color.p700};
   }
