@@ -53,6 +53,7 @@ export const routerAdmin = createBrowserRouter([
         element: <Ordermain />,
         children: [
           // 주문관리
+          { path: "", element: <Navigate to="all" /> },
           { path: "all", element: <OrderAllPage /> },
           { path: "deposit", element: <Dpst /> },
           { path: "preparing", element: <Preparing /> },
