@@ -22,7 +22,7 @@ const OrderAllSelect: React.FC<SelectProps> = ({
 }) => {
   return (
     <div>
-      <SelectStyle>
+      <SelectStyle style={{ fontSize: "12px" }}>
         {/* Use the optionone prop for the label of the first option */}
         {option1 && <option value="option1">{option1}</option>}
         {option2 && <option value="option2">{option2}</option>}

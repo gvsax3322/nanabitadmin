@@ -4,7 +4,6 @@ import { LayoutMain, LayoutStyle } from "../../styles/AdminBasic";
 import { UsermainIndex } from "./UsermainIndex";
 
 const UsermainManage = () => {
-  console.log(window.location.pathname);
   return (
     <LayoutStyle>
       {/* data={???} 넘기세요 */}

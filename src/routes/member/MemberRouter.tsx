@@ -1,9 +1,9 @@
-import React, { ReactElement } from "react";
-import MemberModify from "../../pages/admin/member/MemberModify";
-import MemberDelete from "../../pages/admin/member/MemberDelete ";
+import { ReactElement } from "react";
 import DailyReg from "../../pages/admin/member/DailyReg";
-import MonthlyReg from "../../pages/admin/member/MonthlyReg";
+import MemberDelete from "../../pages/admin/member/MemberDelete ";
 import MemberMain from "../../pages/admin/member/MemberMain";
+import MemberModify from "../../pages/admin/member/MemberModify";
+import MonthlyReg from "../../pages/admin/member/MonthlyReg";
 
 export interface MemberAdmin {
   path: string;
