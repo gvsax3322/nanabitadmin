@@ -9,6 +9,7 @@ import {
   SmallButton,
   SubTitle,
 } from "../../../styles/AdminBasic";
+import { Table } from "antd";
 
 const Wrap = styled.div`
   margin-bottom: 30px;
@@ -16,6 +17,29 @@ const Wrap = styled.div`
 `;
 
 const Qa = () => {
+  const columns = [
+    {
+      key: "1",
+      title: "ID",
+      dataIndex: "id",
+    },
+    {
+      key: "2",
+      title: "ID",
+      dataIndex: "id",
+    },
+    {
+      key: "3",
+      title: "ID",
+      dataIndex: "id",
+    },
+    {
+      key: "4",
+      title: "ID",
+      dataIndex: "id",
+    },
+  ];
+
   return (
     <>
       <Wrap>
@@ -49,6 +73,7 @@ const Qa = () => {
       <div>
         <SmallButton style={{ marginRight: "5px" }}>선택 삭제</SmallButton>
       </div>
+      <Table></Table>
     </>
   );
 };

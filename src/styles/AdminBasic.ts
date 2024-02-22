@@ -292,7 +292,7 @@ export const SearchButton = styled.button`
 // 큰 인풋태그
 export const BigInput = styled.input`
   width: 700px;
-  height: 25px;
+  min-height: 25px;
   border-radius: 5px;
   padding: 0 10px;
   border: 2px solid ${Common.color.p500};
@@ -378,7 +378,7 @@ export const SubTitle = styled.h3`
 // 큰 키워드
 export const BigKeyword = styled.div`
   display: flex;
-  height: 35px;
+  min-height: 35px;
   .left {
     width: 10%;
     border-bottom: 1px solid ${Common.color.primary};
@@ -439,4 +439,18 @@ export const SelectStyle = styled.select`
   border: 2px solid ${Common.color.p500};
   border-radius: 5px;
   margin-right: 7px;
+`;
+
+// 관리자 메모 스타일
+export const TextareaStyle = styled.textarea`
+  position: relative;
+  width: 100%;
+  height: 75px;
+  margin: 10px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: ${Common.color.p800};
+  resize: none;
 `;

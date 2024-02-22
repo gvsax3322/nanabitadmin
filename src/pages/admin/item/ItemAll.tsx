@@ -24,6 +24,7 @@ const Wrap = styled.div`
 const ItemAll = () => {
   // ResultModal을 표시할지 여부를 결정하는 상태
   const [showModal, setShowModal] = useState(false);
+  const [dataFromChild, setDataFromChild] = useState("");
 
   // ResultModal을 보여주는 함수
   const handleShowModal = () => {
@@ -33,6 +34,13 @@ const ItemAll = () => {
   // ResultModal을 닫는 함수
   const handleCloseModal = () => {
     setShowModal(false);
+  };
+
+  const handleClickTableuum = (data: any) => {
+    setDataFromChild(data);
+  };
+  const handleClcikRemove = () => {
+    console.log(dataFromChild);
   };
   return (
     <>
@@ -147,7 +155,12 @@ const ItemAll = () => {
         }}
       >
         <div>
-          <SmallButton style={{ marginRight: "5px" }}>선택 삭제</SmallButton>
+          <SmallButton
+            style={{ marginRight: "5px" }}
+            onClick={() => handleClcikRemove()}
+          >
+            선택 삭제
+          </SmallButton>
           <ExcelDownloadButton />
         </div>
         <div>
@@ -160,7 +173,7 @@ const ItemAll = () => {
         </div>
       </div>
       <div>
-        <ItemTable />
+        <ItemTable tableNum={handleClickTableuum} />
       </div>
       {showModal && <ResultModal onClose={handleCloseModal} />}
     </>

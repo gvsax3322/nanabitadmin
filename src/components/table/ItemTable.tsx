@@ -11,8 +11,12 @@ export interface IDataItem {
   bt?: JSX.Element;
   img?: JSX.Element;
 }
+interface ISubTableProps {
+  tableNum: (selectedRowKeys: React.Key[]) => void;
+}
 
-const ItemTable: React.FC = () => {
+
+const ItemTable: React.FC<ISubTableProps> = ({tableNum}) => {
   const [showModal, setShowModal] = useState(false);
 
   // ResultModal을 보여주는 함수
@@ -27,7 +31,9 @@ const ItemTable: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+   
     setSelectedRowKeys(newSelectedRowKeys);
+    tableNum(newSelectedRowKeys);
   };
 
   const rowSelection = {

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"; // react-router-dom에서 가져옴
+import { useNavigate } from "react-router-dom";
 import BuyTable from "../../../components/main/BuyTable";
 import MainTable from "../../../components/main/MainTable";
 import RecentlyTable from "../../../components/main/RecentlyTable";
@@ -12,15 +12,61 @@ import {
   SubTitle,
 } from "../../../styles/AdminBasic";
 import { MainBt, MainWrap, OrderList } from "../../../styles/main/main";
-
-// 여기서 const navigate = useNavigate();는 사용할 수 없음
+import { useEffect, useState } from "react";
+import { getList, getOrderStatus, getRecentList } from "../../../api/mainApi";
+import {
+  OrderData,
+  OrderStatistics,
+  UserData,
+} from "../../../api/model/resturant";
 
 const MainAdmin = () => {
-  const navigate = useNavigate(); // 이 위치에서 useNavigate를 사용하거나 handleClickMove 함수 안에서 사용
-  const handleClickMove = (a: string) => {
-    // 클릭 핸들러 내에서 navigate 사용
-    navigate(`${a}`); // 이동하길 원하는 경로로 수정
+  const [recentUsers, setRecentUsers] = useState<UserData[] | string>("");
+  const [recentOrders, setRecentOrders] = useState<OrderData[] | string>("");
+  const [orderStatus, setOrderStatus] = useState<OrderStatistics[] | string>(
+    "",
+  );
+  const navigate = useNavigate();
+
+  const handleClickMove = (path: string) => {
+    navigate(path);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getList();
+        setRecentUsers(result);
+      } catch (error) {
+        alert("데이터 호출에 실패하였습니다.");
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getRecentList();
+        setRecentOrders(result);
+      } catch (error) {
+        alert("데이터 호출에 실패하였습니다.");
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getOrderStatus();
+        setOrderStatus(result);
+      } catch (error) {
+        alert("데이터 호출에 실패하였습니다.");
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <MainWrap>
