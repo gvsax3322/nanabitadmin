@@ -23,6 +23,7 @@ const Wrap = styled.div`
 const Inventory = () => {
   // ResultModal을 표시할지 여부를 결정하는 상태
   const [showModal, setShowModal] = useState(false);
+  const [dataFromChild, setDataFromChild] = useState("");
 
   // ResultModal을 보여주는 함수
   const handleShowModal = () => {
@@ -32,6 +33,12 @@ const Inventory = () => {
   // ResultModal을 닫는 함수
   const handleCloseModal = () => {
     setShowModal(false);
+  };
+  const handleClickTableuum = (data: any) => {
+    setDataFromChild(data);
+  };
+  const handleClcikRemove = () => {
+    console.log(dataFromChild);
   };
   return (
     <>
@@ -173,7 +180,7 @@ const Inventory = () => {
         </div>
       </div>
       <div>
-        <ItemTable />
+      <ItemTable tableNum={handleClickTableuum} />
         {showModal && <ResultModal onClose={handleCloseModal} />}
       </div>
     </>
