@@ -6,7 +6,7 @@ import PopProduct from "../../components/usermainmanage/PopProduct";
 import MdRecommend from "../../components/usermainmanage/MdRecommend";
 import MainBanner from "../../components/usermainmanage/MainBanner";
 
-interface UsermainRouter {
+interface UsermainAdmin {
   path: string;
   element: ReactElement;
   children: {
@@ -15,8 +15,8 @@ interface UsermainRouter {
   }[];
 }
 
-const usermainRouter: UsermainRouter = {
-  path: "usermain",
+const UsermainRouter: UsermainAdmin = {
+  path: "usermain/",
   element: <UsermainManage />,
   children: [
     { path: "", element: <Navigate to="all" /> },
@@ -26,4 +26,4 @@ const usermainRouter: UsermainRouter = {
     { path: "new", element: <NewProduct /> },
   ],
 };
-export default usermainRouter;
+export default UsermainRouter;
