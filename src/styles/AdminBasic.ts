@@ -440,3 +440,11 @@ export const SelectStyle = styled.select`
   border-radius: 5px;
   margin-right: 7px;
 `;
+
+export const SoltSelectStyle = styled.select`
+  height: 25px;
+  width: 100px;
+  border: 2px solid ${Common.color.p500};
+  border-radius: 5px;
+  margin-right: 7px;
+`;

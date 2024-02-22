@@ -108,6 +108,7 @@ const OrAllHeader = () => {
           <SearchButton style={{ background: " #f44336" }}>초기화</SearchButton>
         </div>
       </Wrap>
+
       <div
         style={{
           display: "flex",
@@ -121,7 +122,16 @@ const OrAllHeader = () => {
           </SmallButton>
           <SmallButton>엑셀 저장</SmallButton>
         </div>
+        <div style={{ textAlign: "right" }}>
+          <OrderAllSelect
+            option1="주문일 역순"
+            option2="처리일 역순"
+            option3="처리일 순"
+            option4="주문자명"
+          />
+        </div>
       </div>
+
       <div></div>
     </>
   );
