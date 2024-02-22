@@ -441,6 +441,14 @@ export const SelectStyle = styled.select`
   margin-right: 7px;
 `;
 
+
+export const SoltSelectStyle = styled.select`
+  height: 25px;
+  width: 100px;
+  border: 2px solid ${Common.color.p500};
+  border-radius: 5px;
+  margin-right: 7px;
+
 // 관리자 메모 스타일
 export const TextareaStyle = styled.textarea`
   position: relative;
@@ -453,4 +461,5 @@ export const TextareaStyle = styled.textarea`
   border-radius: 5px;
   background-color: ${Common.color.p800};
   resize: none;
+
 `;
