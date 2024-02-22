@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { RootState, loginPostAsync, logout } from "../../redux/loginSlice";
+import { RootState, logout } from "../../redux/loginSlice";
 import { LoginParams } from "../admin/login/LoginPage";
 
 export interface LoginFunctions {

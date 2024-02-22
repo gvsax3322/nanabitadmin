@@ -1,4 +1,8 @@
+import { DownOutlined } from "@ant-design/icons";
+import { Dropdown, Menu, Table } from "antd";
+import { useState } from "react";
 import styled from "styled-components";
+import MemberModifyMD from "../../../components/member/MemberModifyMD";
 import MemberSelect from "../../../components/select/MemberSelect";
 import {
   BigKeyword,
@@ -7,10 +11,8 @@ import {
   MiddleInput,
   SearchButton,
   SmallButton,
-  SmallInput,
   SubTitle,
 } from "../../../styles/AdminBasic";
-import { Table } from "antd";
 
 export const ModifyWrap = styled.div`
   width: 100%;
@@ -81,37 +83,84 @@ const dataSource = [
   },
 ];
 
-const columns = [
-  {
-    title: "번호",
-    dataIndex: "key",
-    key: "key",
-    width: "5%",
-  },
-  {
-    title: "회원명",
-    dataIndex: "name",
-    key: "name",
-    width: "15%",
-  },
-  {
-    title: "이메일",
-    dataIndex: "address",
-    key: "address",
-    width: "30%",
-  },
-  {
-    title: "전화번호",
-    dataIndex: "address",
-    key: "address",
-  },
-  {
-    title: "가입일",
-    dataIndex: "age",
-    key: "age",
-  },
-];
+interface DataSourceType {
+  key: string;
+  name: string;
+  age: number;
+  address: string;
+}
 const MemberModify = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<DataSourceType | null>(
+    null,
+  );
+
+  const handleModalClose = () => {
+    setModalVisible(false);
+  };
+
+  const handleMenuClick1 = (record: DataSourceType) => {
+    console.log(`Action 1 clicked for ${record.name}`);
+    setSelectedMember(record);
+    setModalVisible(true);
+  };
+
+  const handleMenuClick2 = (record: DataSourceType) => {
+    console.log(`Action 2 clicked for ${record.name}`);
+    setSelectedMember(record);
+    setModalVisible(true);
+  };
+
+  const columns = [
+    {
+      title: "번호",
+      dataIndex: "key",
+      key: "key",
+      width: "5%",
+    },
+    {
+      title: "회원명",
+      dataIndex: "name",
+      key: "name",
+      width: "15%",
+      render: (text: string, record: DataSourceType) => (
+        <Dropdown
+          overlay={
+            <Menu>
+              <Menu.Item key="1" onClick={() => handleMenuClick1(record)}>
+                회원정보수정
+              </Menu.Item>
+              <Menu.Item key="2" onClick={() => handleMenuClick2(record)}>
+                메일 보내기
+              </Menu.Item>
+            </Menu>
+          }
+          trigger={["click"]}
+        >
+          <div className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+            {text} <DownOutlined />
+          </div>
+        </Dropdown>
+      ),
+    },
+    {
+      title: "이메일",
+      dataIndex: "address",
+      key: "address",
+      width: "30%",
+    },
+    {
+      title: "전화번호",
+      dataIndex: "address",
+      key: "address",
+    },
+    {
+      title: "가입일",
+      dataIndex: "age",
+      key: "age",
+    },
+  ];
+
   return (
     <ModifyWrap>
       <MainTitle>회원 정보관리</MainTitle>
@@ -127,15 +176,15 @@ const MemberModify = () => {
         <BigKeyword>
           <div className="left">기간검색</div>
           <div className="right" style={{ gap: "10px" }}>
-            <SmallInput />
+            <MiddleInput />
             <h1>~</h1>
-            <SmallInput />
+            <MiddleInput />
           </div>
         </BigKeyword>
         <BigKeyword>
           <div className="left">전화번호</div>
           <div className="right">
-            <MiddleInput></MiddleInput>
+            <MiddleInput />
           </div>
         </BigKeyword>
       </ModifyInfo>
@@ -154,6 +203,9 @@ const MemberModify = () => {
       <ListWrap>
         <Table dataSource={dataSource} columns={columns} />
       </ListWrap>
+      {modalVisible && (
+        <MemberModifyMD onClose={handleModalClose}></MemberModifyMD>
+      )}
     </ModifyWrap>
   );
 };

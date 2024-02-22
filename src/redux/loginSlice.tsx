@@ -6,8 +6,9 @@ import {
   ThunkAction,
 } from "@reduxjs/toolkit";
 import { loginPost } from "../api/loginApi";
-import { LoginFunctions } from "../pages/hooks/useCustomLogin";
+import { ApiResponse, LoginFunctions } from "../pages/hooks/useCustomLogin";
 import { getCookie, removeCookie, setCookie } from "../util/cookieUtil";
+import { AsyncThunkConfig } from "@reduxjs/toolkit/dist/createAsyncThunk";
 
 interface MemberInfo {
   nm: string;
@@ -18,14 +19,13 @@ export interface RootState {
 }
 export type AppThunk = ThunkAction<void, RootState, unknown, Action<string>>;
 
-export const loginPostAsync = createAsyncThunk(
+export const loginPostAsync = createAsyncThunk<
+  ApiResponse,
+  LoginFunctions,
+  AsyncThunkConfig
+>(
   "loginPostAsync",
-  async ({
-    loginParam,
-    successFn,
-    failFn,
-    errorFn,
-  }: LoginFunctions) => {
+  async ({ loginParam, successFn, failFn, errorFn }: LoginFunctions) => {
     try {
       const res = await loginPost({ loginParam, successFn, failFn, errorFn });
       return res;
@@ -34,7 +34,6 @@ export const loginPostAsync = createAsyncThunk(
     }
   },
 );
-
 const initState: MemberInfo = {
   nm: "",
 };
@@ -61,9 +60,9 @@ const loginSlice = createSlice({
     builder
       .addCase(loginPostAsync.fulfilled, (state, action) => {
         const payload = action.payload || {};
-        if (!payload.error) {
-          setCookie("nm", JSON.stringify(payload));
-          return { nm: payload.nm || "" };
+        if (payload && !("error" in payload)) {
+          setCookie("nm", JSON.stringify(payload.data));
+          return { nm: payload.data.nm || "" };
         } else {
           return state;
         }
