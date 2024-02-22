@@ -1,8 +1,7 @@
-import { Button, Form, GetRef, Input, Table } from "antd";
-import React, { useEffect, useState } from "react";
+import { Checkbox, ConfigProvider, Form, GetRef, Input, Table } from "antd";
+import React, { useState } from "react";
 import styled from "styled-components";
 import {
-  Common,
   MainTitle,
   MiddleButton,
   MiddleInput,
@@ -12,54 +11,40 @@ import {
   SubTitle,
 } from "../../styles/AdminBasic";
 
-type InputRef = GetRef<typeof Input>;
-type FormInstance<T> = GetRef<typeof Form<T>>;
-
-const EditableContext = React.createContext<FormInstance<any> | null>(null);
-
-// 이게뭘까
-interface EditableRowProps {
-  index: number;
-}
-
-const Aaa = styled(Table)`
-  :where(.css-dev-only-do-not-override-17sses9).ant-table-wrapper
-    .ant-table-tbody
-    .ant-table-row.ant-table-row-selected
-    > .ant-table-cell {
-    background-color: ${Common.color.p800};
-  }
-  .ant-checkbox-input {
-    background-color: ${Common.color.p800};
+// 테이블 스타일 관리
+const CenteredHeaderTable = styled(Table)`
+  &&& {
+    .ant-table-thead > tr > th {
+      text-align: center;
+    }
+    .ant-table-tbody > tr > td {
+      text-align: center;
+    }
   }
 `;
-const MainBanner: React.FC = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  };
 
+const MainBanner: React.FC = () => {
   interface IDataItem {
-    key: number;
-    img: JSX.Element;
+    exposing: JSX.Element;
+    ibanner: number;
+    bannerPic: JSX.Element;
     picupbt: JSX.Element;
-    urllink: JSX.Element;
+    bannerUrl: JSX.Element;
     target: JSX.Element;
     edbt: JSX.Element;
   }
   const columns = [
     {
+      title: "노출",
+      dataIndex: "exposing",
+    },
+    {
       title: "순서",
-      dataIndex: "key",
+      dataIndex: "ibanner",
     },
     {
       title: "미리보기",
-      dataIndex: "img",
+      dataIndex: "bannerPic",
     },
     {
       title: "사진업로드",
@@ -67,7 +52,7 @@ const MainBanner: React.FC = () => {
     },
     {
       title: "링크주소",
-      dataIndex: "urllink",
+      dataIndex: "bannerUrl",
     },
     {
       title: "TARGET",
@@ -101,15 +86,18 @@ const MainBanner: React.FC = () => {
     }
   };
 
-  // 이미지 설정 설정
-  // const defaultImgUrl = `${process.env.PUBLIC_URL}/assets/images/defaultitemimg.svg`;
-
+  // map 돌릴 리스트
   const [data, setData] = useState<IDataItem[]>(() => {
     const initialData: IDataItem[] = [];
     for (let i = 0; i < 2; i++) {
       initialData.push({
-        key: i + 1,
-        img: (
+        exposing: (
+          <div>
+            <Checkbox />
+          </div>
+        ),
+        ibanner: i + 1,
+        bannerPic: (
           <img
             style={{ width: "190px", height: "66px", objectFit: "cover" }}
             src={uploadImgBefore}
@@ -145,7 +133,7 @@ const MainBanner: React.FC = () => {
             />
           </>
         ),
-        urllink: (
+        bannerUrl: (
           <>
             <MiddleInput></MiddleInput>
           </>
@@ -159,7 +147,14 @@ const MainBanner: React.FC = () => {
           </>
         ),
         edbt: (
-          <>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              gap: "10px",
+              justifyContent: "center",
+            }}
+          >
             <SearchButton>수정</SearchButton>
             <SearchButton
               style={{
@@ -168,7 +163,7 @@ const MainBanner: React.FC = () => {
             >
               삭제
             </SearchButton>
-          </>
+          </div>
         ),
       });
     }
@@ -178,8 +173,13 @@ const MainBanner: React.FC = () => {
   // 추가버튼 함수
   const handleAdd = () => {
     const newData: IDataItem = {
-      key: data.length + 1,
-      img: (
+      exposing: (
+        <div>
+          <Checkbox />
+        </div>
+      ),
+      ibanner: data.length + 1,
+      bannerPic: (
         <img
           style={{ width: "190px", height: "66px" }}
           src="https://img1.daumcdn.net/thumb/R800x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbDvLtp%2FbtrzdOekBQ1%2F97wPAt3knfNKwTMiZvqkpk%2Fimg.png"
@@ -214,7 +214,7 @@ const MainBanner: React.FC = () => {
           />
         </>
       ),
-      urllink: (
+      bannerUrl: (
         <>
           <MiddleInput></MiddleInput>
         </>
@@ -228,9 +228,15 @@ const MainBanner: React.FC = () => {
         </>
       ),
       edbt: (
-        <>
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
           <SearchButton style={{ background: "#4F95FF" }}>업로드</SearchButton>
-        </>
+        </div>
       ),
     };
     setData(prevData => [...prevData, newData]); // 이전 상태를 가져와서 새로운 데이터 추가
@@ -257,12 +263,26 @@ const MainBanner: React.FC = () => {
           배너 추가
         </MiddleButton>
       </div>
-      <Aaa
-        rowSelection={rowSelection}
-        columns={columns}
-        dataSource={data}
-        pagination={false}
-      />
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: "#a5a5a5",
+          },
+          components: {
+            Table: {
+              headerBg: "#535353",
+              headerColor: "#fff",
+            },
+          },
+        }}
+      >
+        <CenteredHeaderTable
+          columns={columns}
+          dataSource={data}
+          pagination={false}
+          bordered
+        />
+      </ConfigProvider>
     </>
   );
 };

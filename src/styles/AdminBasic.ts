@@ -214,7 +214,7 @@ export const IconButton = styled.button`
 // 큰 버튼
 export const BigButton = styled.button`
   background: ${Common.color.p000};
-  border: 2px solid ${Common.color.primary};
+  border: 1px solid ${Common.color.primary};
   border-radius: 10px;
   cursor: pointer;
   border-radius: 10px;
@@ -231,7 +231,7 @@ export const BigButton = styled.button`
 // 중간 버튼
 export const MiddleButton = styled.button`
   background: ${Common.color.p000};
-  border: 2px solid ${Common.color.primary};
+  border: 1px solid ${Common.color.primary};
   border-radius: 10px;
   cursor: pointer;
   border-radius: 9px;
@@ -248,7 +248,7 @@ export const MiddleButton = styled.button`
 //작은버튼
 export const SmallButton = styled.button`
   background: ${Common.color.p000};
-  border: 2px solid ${Common.color.primary};
+  border: 1px solid ${Common.color.primary};
   border-radius: 10px;
   cursor: pointer;
   border-radius: 7px;
@@ -266,7 +266,7 @@ export const SmallButton = styled.button`
 export const DeleteButton = styled.button`
   background: #f44336;
   color: ${Common.color.p000};
-  border: 2px solid #f44336;
+  border: 1px solid #f44336;
   border-radius: 10px;
   cursor: pointer;
   border-radius: 7px;
@@ -277,7 +277,7 @@ export const DeleteButton = styled.button`
 export const SearchButton = styled.button`
   background: ${Common.color.primary};
   color: ${Common.color.p000};
-  border: 2px solid;
+  border: 1px solid;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -295,7 +295,7 @@ export const BigInput = styled.input`
   min-height: 25px;
   border-radius: 5px;
   padding: 0 10px;
-  border: 2px solid ${Common.color.p500};
+  border: 1px solid ${Common.color.p500};
 `;
 // 중간 인풋태그
 export const MiddleInput = styled.input`
@@ -303,7 +303,7 @@ export const MiddleInput = styled.input`
   height: 25px;
   border-radius: 5px;
   padding: 0 10px;
-  border: 2px solid ${Common.color.p500};
+  border: 1px solid ${Common.color.p500};
 `;
 // 작은 인풋태크
 export const SmallInput = styled.input`
@@ -311,13 +311,13 @@ export const SmallInput = styled.input`
   height: 25px;
   border-radius: 5px;
   padding: 0 10px;
-  border: 2px solid ${Common.color.p500};
+  border: 1px solid ${Common.color.p500};
 `;
 export const BigCard = styled.div`
   width: 100%;
   min-height: 450px;
   border-radius: 15px;
-  border: 2px solid ${Common.color.primary};
+  border: 1px solid ${Common.color.primary};
   background: ${Common.color.p000};
   padding: 20px;
   box-shadow: 5px 5px 10px ${Common.color.primary};
@@ -436,7 +436,7 @@ export const SmallKeyword = styled.div`
 export const SelectStyle = styled.select`
   height: 25px;
   width: 70px;
-  border: 2px solid ${Common.color.p500};
+  border: 1px solid ${Common.color.p500};
   border-radius: 5px;
   margin-right: 7px;
 `;

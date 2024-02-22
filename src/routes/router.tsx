@@ -1,8 +1,4 @@
 import { Navigate, createBrowserRouter } from "react-router-dom";
-import MainBanner from "../components/usermainmanage/MainBanner";
-import MdRecommend from "../components/usermainmanage/MdRecommend";
-import NewProduct from "../components/usermainmanage/NewProduct";
-import PopProduct from "../components/usermainmanage/PopProduct";
 import AdminBasic from "../layouts/AdminBasic";
 import { ItemMain } from "../pages/admin/item/ItemMain";
 import LoginPage from "../pages/admin/login/LoginPage";
@@ -23,6 +19,8 @@ import MemberMain from "../pages/admin/member/MemberMain";
 import OrderAllPage from "../pages/order/sub/OrderAllPage";
 import MemberRouter from "./member/MemberRouter";
 import productAdmin from "./product";
+import UsermainRouter from "./usermainmanage/UsermainRouter";
+import ChartsRouter from "./charts/ChartsRouter";
 
 export const routerAdmin = createBrowserRouter([
   { path: "", element: <Navigate to="/admin" />, errorElement: <ErrorPage /> },
@@ -67,14 +65,14 @@ export const routerAdmin = createBrowserRouter([
         ],
       },
       {
-        path: "usermain",
+        path: "usermain/",
         element: <UsermainManage />,
-        children: [
-          { path: "banner", element: <MainBanner /> },
-          { path: "md", element: <MdRecommend /> },
-          { path: "popular", element: <PopProduct /> },
-          { path: "new", element: <NewProduct /> },
-        ],
+        children: UsermainRouter.children,
+      },
+      {
+        path: "charts/",
+        element: <UsermainManage />,
+        children: ChartsRouter.children,
       },
     ], // 여기에 닫는 중괄호 추가
   }, // 여기에도 닫는 중괄호 추가
