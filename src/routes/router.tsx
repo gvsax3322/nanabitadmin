@@ -19,8 +19,8 @@ import MemberMain from "../pages/admin/member/MemberMain";
 import OrderAllPage from "../pages/order/sub/OrderAllPage";
 import MemberRouter from "./member/MemberRouter";
 import productAdmin from "./product";
-import UsermainRouter from "./usermainmanage/UsermainRouter";
 import ChartsRouter from "./charts/ChartsRouter";
+import UsermainRouter from "./usermainmanage/usermainrouter";
 
 export const routerAdmin = createBrowserRouter([
   { path: "", element: <Navigate to="/admin" />, errorElement: <ErrorPage /> },
