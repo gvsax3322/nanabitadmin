@@ -17,9 +17,9 @@ const Sidebar: React.FC<SidebarProps> = ({ data }) => {
     <div
       style={{
         width: "20%",
-        display: "flex",
       }}
     >
+
       <ConfigProvider
         theme={{
           components: {
@@ -29,6 +29,12 @@ const Sidebar: React.FC<SidebarProps> = ({ data }) => {
               itemActiveBg: "#A5A5A5",
             },
           },
+      <div
+        style={{
+          position: "fixed",
+          display: "flex",
+          width: "15%",
+          height: "100%",
         }}
       >
         <SidebarStyle
@@ -39,7 +45,11 @@ const Sidebar: React.FC<SidebarProps> = ({ data }) => {
           items={data}
         />
         <SidebarButton onClick={toggleCollapsed}></SidebarButton>
+
       </ConfigProvider>
+
+      </div>
+
     </div>
   );
 };

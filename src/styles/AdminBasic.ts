@@ -393,8 +393,56 @@ export const BigKeyword = styled.div`
   .right {
     width: 90%;
     border-bottom: 1px solid ${Common.color.primary};
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+  }
+`;
+
+// 상세페이지 키워드
+export const DetailBigKeyword = styled.div`
+  display: flex;
+  min-height: 35px;
+  .left {
+    width: 23%;
+    border-bottom: 1px solid ${Common.color.primary};
+
+    background: ${Common.color.p800};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+  .right {
+    width: 90%;
+    border-bottom: 1px solid ${Common.color.primary};
 
     display: flex;
+    align-items: center;
+    padding-left: 20px;
+  }
+`;
+
+// 큰 키워드 TextareaStyle felx-x
+export const TextBigKeyword = styled.div`
+  display: flex;
+  min-height: 35px;
+  .left {
+    width: 10%;
+    border-bottom: 1px solid ${Common.color.primary};
+
+    background: ${Common.color.p800};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+  .right {
+    width: 90%;
+    border-bottom: 1px solid ${Common.color.primary};
+    /* display: flex; */
     align-items: center;
     padding-left: 20px;
   }

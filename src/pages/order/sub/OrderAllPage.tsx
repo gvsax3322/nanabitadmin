@@ -1,16 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 
 import OrderAllTable from "../../../components/table/OrderAllTable";
 import OrAllHeader from "../item/OrAllHeader";
 import OrAllFooter from "../item/footer/OrAllFooter";
 
 const OrderAllPage = () => {
+  const [dataFromChild, setDataFromChild] = useState("");
+  const handleClickTableuum = (data: any) => {
+    setDataFromChild(data);
+  };
   return (
     <div>
       All
       <OrAllHeader />
       {/* <OrderAll /> */}
-      <OrderAllTable />
+      <OrderAllTable tableNum={handleClickTableuum} />
       <OrAllFooter />
     </div>
   );
