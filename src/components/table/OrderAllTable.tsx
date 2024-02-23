@@ -198,24 +198,24 @@ const OrderAllTable: React.FC = () => {
   };
 
   const Aaa = styled(Table)`
-    :where(.css-dev-only-do-not-override-17sses9).ant-table-wrapper
-      .ant-table-tbody
-      .ant-table-row.ant-table-row-selected
-      > .ant-table-cell {
-      background-color: ${Common.color.p800};
+  :where(.css-dev-only-do-not-override-17sses9).ant-table-wrapper
+    .ant-table-tbody
+    .ant-table-row.ant-table-row-selected
+    > .ant-table-cell {
+    background-color: ${Common.color.p800};
+  }
+  .ant-checkbox-input {
+    background-color: ${Common.color.p800};
+  }
+  &&& {
+    .ant-table-thead > tr > th {
+      text-align: center;
     }
-    .ant-checkbox-input {
-      background-color: ${Common.color.p800};
+    .ant-table-tbody > tr > td {
+      text-align: center;
+      line-height: 30px;
     }
-    &&& {
-      .ant-table-thead > tr > th {
-        text-align: center;
-      }
-      .ant-table-tbody > tr > td {
-        text-align: center;
-        line-height: 30px;
-      }
-    }
+  }
   `;
 
   return (

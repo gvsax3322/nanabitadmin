@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Table } from "antd";
+import { ConfigProvider, Table } from "antd";
 import React, { useState } from "react";
 import { Common, SearchButton } from "../../styles/AdminBasic";
 import ResultModal from "../common/Modal";
@@ -15,8 +15,7 @@ interface ISubTableProps {
   tableNum: (selectedRowKeys: React.Key[]) => void;
 }
 
-
-const ItemTable: React.FC<ISubTableProps> = ({tableNum}) => {
+const ItemTable: React.FC<ISubTableProps> = ({ tableNum }) => {
   const [showModal, setShowModal] = useState(false);
 
   // ResultModal을 보여주는 함수
@@ -29,16 +28,32 @@ const ItemTable: React.FC<ISubTableProps> = ({tableNum}) => {
     setShowModal(false);
   };
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
-   
-    setSelectedRowKeys(newSelectedRowKeys);
-    tableNum(newSelectedRowKeys);
-  };
 
+  const onSelectChange = (selectedRowKeys: React.Key[], record: any[]) => {
+    console.log("selectedRowKeys changed: ", selectedRowKeys);
+
+    setSelectedRowKeys(selectedRowKeys);
+    console.log(record);
+    tableNum(record);
+  };
+  // const onSelect = (record: any, selected: any) => {
+  //   setSelectedRowKeys(record)
+  //   console.log("Selected Row:", selectedRowKeys, "Selected:", selected);
+  //   // 선택된 행에 대한 추가적인 처리
+  // };
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
+    // onSelect,
+    onSelectAll: (selected: any, selectedRows: any) => {
+      console.log(
+        "All rows selected:",
+        selected,
+        "Selected Rows:",
+        selectedRows,
+      );
+      // 모든 행에 대한 추가적인 처리
+    },
   };
 
   const columns = [
@@ -78,7 +93,17 @@ const ItemTable: React.FC<ISubTableProps> = ({tableNum}) => {
       key: i + 1,
       name: `Edward King ${i}`,
       item: `London, Park Lane no. ${i}`,
-      bt: <SearchButton onClick={handleShowModal}>수정</SearchButton>,
+      bt: (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <SearchButton onClick={handleShowModal}>수정</SearchButton>
+        </div>
+      ),
       img: (
         <img
           style={{ width: "100px", height: "50px" }}
@@ -113,18 +138,39 @@ const ItemTable: React.FC<ISubTableProps> = ({tableNum}) => {
       .ant-checkbox-inner:after {
       background-color: ${Common.color.p800};
     }
+    &&& {
+      .ant-table-thead > tr > th {
+        text-align: center;
+      }
+      .ant-table-tbody > tr > td {
+        text-align: center;
+      }
+    }
   `;
 
   return (
-    <>
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: "#a5a5a5",
+        },
+        components: {
+          Table: {
+            headerBg: "#535353",
+            headerColor: "#fff",
+          },
+        },
+      }}
+    >
       <Aaa
         rowSelection={rowSelection}
         columns={columns}
         dataSource={data}
         pagination={false}
+        bordered
       />
       {showModal && <ResultModal onClose={handleCloseModal} />}
-    </>
+    </ConfigProvider>
   );
 };
 

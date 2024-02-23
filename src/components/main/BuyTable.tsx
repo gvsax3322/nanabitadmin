@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
-import { Divider, Table } from "antd";
+import { ConfigProvider, Divider, Table } from "antd";
+import { Common } from "../../styles/AdminBasic";
 
 export const columns = [
   {
@@ -33,18 +34,25 @@ const data = [
   },
 ];
 
-const Asa = styled(Table)`
-  :where(.css-dev-only-do-not-override-1xg9z9n).ant-table-wrapper
-    .ant-table.ant-table-middle
-    .ant-table-cell,
-  :where(.css-dev-only-do-not-override-1xg9z9n).ant-table-wrapper
-    .ant-table.ant-table-middle
-    .ant-table-thead
-    > tr
-    > th {
+const Aaa = styled(Table)`
+:where(.css-dev-only-do-not-override-17sses9).ant-table-wrapper
+  .ant-table-tbody
+  .ant-table-row.ant-table-row-selected
+  > .ant-table-cell {
+  background-color: ${Common.color.p800};
+}
+.ant-checkbox-input {
+  background-color: ${Common.color.p800};
+}
+&&& {
+  .ant-table-thead > tr > th {
     text-align: center;
   }
-  
+  .ant-table-tbody > tr > td {
+    text-align: center;
+    line-height: 30px;
+  }
+}
 `;
 
 const BuyTable = () => {
@@ -52,12 +60,26 @@ const BuyTable = () => {
     <div>
       <Divider>구매확정/클래임 현황</Divider>
 
-      <Asa
-        columns={columns}
-        dataSource={data}
-        size="middle"
-        pagination={false}
-      />
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: "#a5a5a5",
+          },
+          components: {
+            Table: {
+              headerBg: "#535353",
+              headerColor: "#fff",
+            },
+          },
+        }}
+      >
+        <Aaa
+          columns={columns}
+          dataSource={data}
+          size="middle"
+          pagination={false}
+        />
+      </ConfigProvider>
     </div>
   );
 };
