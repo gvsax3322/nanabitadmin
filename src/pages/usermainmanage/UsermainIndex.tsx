@@ -54,9 +54,3 @@ export const UsermainIndex: MenuItem[] = [
     ), // 경로 추가
   ]),
 ];
-
-function isActive(path: string): boolean {
-  return window.location.pathname === path;
-}
-
-export default isActive;

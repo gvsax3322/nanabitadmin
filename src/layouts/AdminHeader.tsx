@@ -109,7 +109,7 @@ const AdminHeader: React.FC = () => {
               stiffness: 600,
               damping: 20,
             }}
-            onClick={() => handleClickMove("/admin/usermain/banner")}
+            onClick={() => handleClickMove("/admin/charts/sales")}
           >
             매출 및 통계
           </motion.li>
