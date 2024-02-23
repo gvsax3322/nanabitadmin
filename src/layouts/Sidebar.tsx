@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { SidebarButton, SidebarStyle } from "../styles/AdminBasic";
+import { ConfigProvider } from "antd";
 
 interface SidebarProps {
   data: any[];
@@ -19,14 +20,26 @@ const Sidebar: React.FC<SidebarProps> = ({ data }) => {
         display: "flex",
       }}
     >
-      <SidebarStyle
-        defaultSelectedKeys={["1"]}
-        defaultOpenKeys={["sub1"]}
-        mode="inline"
-        inlineCollapsed={collapsed}
-        items={data}
-      />
-      <SidebarButton onClick={toggleCollapsed}></SidebarButton>
+      <ConfigProvider
+        theme={{
+          components: {
+            Menu: {
+              colorPrimary: "#A5A5A5",
+              itemSelectedColor: "#000",
+              itemActiveBg: "#A5A5A5",
+            },
+          },
+        }}
+      >
+        <SidebarStyle
+          defaultSelectedKeys={["1"]}
+          defaultOpenKeys={["sub1"]}
+          mode="inline"
+          inlineCollapsed={collapsed}
+          items={data}
+        />
+        <SidebarButton onClick={toggleCollapsed}></SidebarButton>
+      </ConfigProvider>
     </div>
   );
 };

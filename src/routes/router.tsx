@@ -21,6 +21,7 @@ import MemberRouter from "./member/MemberRouter";
 import productAdmin from "./product";
 import ChartsRouter from "./charts/ChartsRouter";
 import UsermainRouter from "./usermainmanage/usermainrouter";
+import ChartsPage from "../pages/charts/ChartsPage";
 
 export const routerAdmin = createBrowserRouter([
   { path: "", element: <Navigate to="/admin" />, errorElement: <ErrorPage /> },
@@ -71,7 +72,7 @@ export const routerAdmin = createBrowserRouter([
       },
       {
         path: "charts/",
-        element: <UsermainManage />,
+        element: <ChartsPage />,
         children: ChartsRouter.children,
       },
     ], // 여기에 닫는 중괄호 추가
