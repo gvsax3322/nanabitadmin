@@ -48,7 +48,7 @@ const OrderPicker = (): JSX.Element => {
       <RangePicker
         onChange={handleDateChange}
         style={{
-          border: `2px solid ${Common.color.p500}`,
+          border: `1px solid ${Common.color.p500}`,
           width: "300px",
           height: "26px",
           marginRight: "5px",

@@ -34,8 +34,6 @@ const ModalContent = styled(motion.div)`
   padding: 20px;
 `;
 
-
-
 const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
   return (
     <ModalOverlay onClick={onClose}>
