@@ -16,17 +16,25 @@ const Sidebar: React.FC<SidebarProps> = ({ data }) => {
     <div
       style={{
         width: "20%",
-        display: "flex",
       }}
     >
-      <SidebarStyle
-        defaultSelectedKeys={["1"]}
-        defaultOpenKeys={["sub1"]}
-        mode="inline"
-        inlineCollapsed={collapsed}
-        items={data}
-      />
-      <SidebarButton onClick={toggleCollapsed}></SidebarButton>
+      <div
+        style={{
+          position: "fixed",
+          display: "flex",
+          width: "15%",
+          height: "100%",
+        }}
+      >
+        <SidebarStyle
+          defaultSelectedKeys={["1"]}
+          defaultOpenKeys={["sub1"]}
+          mode="inline"
+          inlineCollapsed={collapsed}
+          items={data}
+        />
+        <SidebarButton onClick={toggleCollapsed}></SidebarButton>
+      </div>
     </div>
   );
 };
