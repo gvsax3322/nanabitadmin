@@ -1,25 +1,40 @@
 import axios from "axios";
+import { API_SERVER_HOST } from "../util/util";
 import { getCookie, setCookie } from "./cookieUtil";
-import { API_SERVER_HOST } from "./util";
-
+// intercepter 전용 axios 생성
+// 로그인 제외 및 일반적 api 요청등을 제외
+// 인증이 필요한 경우에 활용하는 용도
 const jwtAxios = axios.create();
-const beforeReq = (config: any) => {
+// 요청(request) intercepter
+// request 가 문제가 있든, 없든 실행될 내용 작성
+const beforeReq = config => {
+  // console.log("1. 요청전 전달 .... ", config);
+  // console.log("2. 쿠키로 토큰가져오기");
   const memberInfo = getCookie("nm");
   if (!memberInfo) {
+    // console.log("쿠키 정보 없네요.");
+    // axios 요청을 중단합니다.
     return Promise.reject({ response: { data: { error: "Login 하세요." } } });
   }
+  // console.log("3. 쿠키에서 토큰 정보를 뜯는다");
   const { accessToken } = memberInfo;
+  // console.log("4. 액세스토큰 정보", accessToken);
+  // 요청한 Request 에 headers 에 형식이 있어요.
+  // jwt 액세스토큰을 붙일때 형식이 있어요.
+  // config 는 요청한 axios 이고
+  // 이곳에서는  요청한 axios 의 전처리를 합니다.
+  // 이때 추가내용을 headers에 추가합니다.
   config.headers.Authorization = `Bearer ${accessToken}`;
   return config;
 };
 // fail Request 요청보내서 실패했을 때
-const requestFail = (err: Error) => {
+const requestFail = err => {
   // console.log("요청후 실패시 .... ", err);
   return Promise.reject(err);
 };
 // Refresh Token
 // 액세스 요청 실패시 무조건 시도해 봄
-const refreshJWT = async (accessToken: string, refreshToken: string) => {
+const refreshJWT = async (accessToken, refreshToken) => {
   // console.log("!!!!! 리프레쉬 토큰 호출 시작", refreshToken);
   const host = API_SERVER_HOST;
   const header = { headers: { Authorization: `Bearer ${accessToken}` } };
@@ -35,7 +50,7 @@ const refreshJWT = async (accessToken: string, refreshToken: string) => {
 };
 // 응답(Response) 처리 코드
 // Response 전처리
-const beforeRes = async (res: any) => {
+const beforeRes = async res => {
   // console.log("Response 전처리 ....", res);
   const data = res.data;
   // console.log("1. Response 오기전 서버 전달해준 데이터", data);
@@ -63,7 +78,7 @@ const beforeRes = async (res: any) => {
   return res;
 };
 // Response Fail 처리
-const responseFail = (err: Error) => {
+const responseFail = err => {
   console.log("Response Fail Err", err);
   return Promise.reject(err);
 };
