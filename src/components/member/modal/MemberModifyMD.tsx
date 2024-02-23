@@ -2,14 +2,19 @@ import styled from "@emotion/styled";
 import { Radio } from "antd";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
+import { ModifyButton } from "../../../pages/admin/member/MemberModify";
 import {
   BigInput,
   BigKeyword,
   Common,
+  DeleteButton,
   MainTitle,
+  MiddleButton,
   MiddleInput,
   SubTitle,
-} from "../../styles/AdminBasic";
+  TextareaStyle
+} from "../../../styles/AdminBasic";
+import MyBaby from "./MyBaby";
 
 interface ResultModalProps {
   onClose: () => void;
@@ -98,31 +103,43 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({ onClose }) => {
         </MenuList>
         <SubTitle>기본정보</SubTitle>
         <BigKeyword style={{ borderTop: `1px solid ${Common.color.primary}` }}>
-          <div className="left">이름</div>
+          <div className="left" style={{ width: "130px" }}>
+            이름
+          </div>
           <div className="right">
             <MiddleInput readOnly />
           </div>
-          <div className="left">가입일</div>
+          <div className="left" style={{ width: "130px" }}>
+            가입일
+          </div>
           <div className="right">
             <h2>2024.02.22</h2>
           </div>
         </BigKeyword>
         <BigKeyword style={{ borderTop: `1px solid ${Common.color.primary}` }}>
-          <div className="left">아이디</div>
+          <div className="left" style={{ width: "130px" }}>
+            아이디
+          </div>
           <div className="right">
             <MiddleInput readOnly style={{ marginRight: "10px" }} />
           </div>
-          <div className="left">비밀번호</div>
+          <div className="left" style={{ width: "130px" }}>
+            비밀번호
+          </div>
           <div className="right">
-            <MiddleInput readOnly />
+            <MiddleInput />
           </div>
         </BigKeyword>
         <BigKeyword style={{ borderTop: `1px solid ${Common.color.primary}` }}>
-          <div className="left">전화번호</div>
+          <div className="left" style={{ width: "130px" }}>
+            전화번호
+          </div>
           <div className="right">
             <MiddleInput readOnly />
           </div>
-          <div className="left">이메일</div>
+          <div className="left" style={{ width: "130px" }}>
+            이메일
+          </div>
           <div className="right">
             <MiddleInput readOnly />
           </div>
@@ -132,7 +149,7 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({ onClose }) => {
             borderTop: `1px solid ${Common.color.primary}`,
           }}
         >
-          <div className="left" style={{ width: "75px" }}>
+          <div className="left" style={{ width: "70px" }}>
             주소
           </div>
           <div
@@ -149,30 +166,38 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({ onClose }) => {
             <BigInput readOnly />
           </div>
         </BigKeyword>
+        <MyBaby />
         <BigKeyword
           style={{
             borderTop: `1px solid ${Common.color.primary}`,
-            height: "60px",
+            marginBottom: "",
           }}
         >
-          <div className="left">아이정보</div>
-          <div className="right" style={{ gap: "10px" }}>
-            <Radio.Group value={2} disabled style={{ marginRight: "10px" }}>
-              <Radio.Button value={1}>임신/출산</Radio.Button>
-              <Radio.Button value={2}>신생아</Radio.Button>
-              <Radio.Button value={3}>베이비</Radio.Button>
-              <Radio.Button value={4}>완료기</Radio.Button>
-            </Radio.Group>
+          <div className="left" style={{ width: "65px" }}>
+            관리자메모
           </div>
-
-          <div className="left">아이성별</div>
-          <div className="right">
-            <Radio.Group value={"W"} disabled style={{ marginRight: "10px" }}>
-              <Radio.Button value={"M"}>남자</Radio.Button>
-              <Radio.Button value={"W"}>여자</Radio.Button>
-            </Radio.Group>
+          <div
+            className="right"
+            style={{
+              width: "1450px",
+            }}
+          >
+            <TextareaStyle />
           </div>
         </BigKeyword>
+        <DeleteButton>회원 삭제</DeleteButton>
+        <ModifyButton>
+          <MiddleButton style={{ background: " #575757" }}>저장</MiddleButton>
+          <MiddleButton
+            style={{
+              background: " #fff",
+              border: "1px solid #000",
+              color: "black",
+            }}
+          >
+            닫기
+          </MiddleButton>
+        </ModifyButton>
       </ModalContent>
     </ModalOverlay>
   );

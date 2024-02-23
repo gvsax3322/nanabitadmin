@@ -2,7 +2,7 @@ import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Menu, Table } from "antd";
 import { useState } from "react";
 import styled from "styled-components";
-import MemberModifyMD from "../../../components/member/MemberModifyMD";
+import MemberModifyMD from "../../../components/member/modal/MemberModifyMD";
 import MemberSelect from "../../../components/select/MemberSelect";
 import {
   BigKeyword,
@@ -13,6 +13,7 @@ import {
   SmallButton,
   SubTitle,
 } from "../../../styles/AdminBasic";
+import OrderPicker from "../../../components/order/orderSlect/OrderPicker";
 
 export const ModifyWrap = styled.div`
   width: 100%;
@@ -175,10 +176,15 @@ const MemberModify = () => {
         </BigKeyword>
         <BigKeyword>
           <div className="left">기간검색</div>
-          <div className="right" style={{ gap: "10px" }}>
-            <MiddleInput />
-            <h1>~</h1>
-            <MiddleInput />
+          <div className="right" style={{ gap: "5x" }}>
+            <OrderPicker />
+            <SmallButton style={{ minWidth: "40px" }}>오늘</SmallButton>
+            <SmallButton style={{ minWidth: "40px" }}>어제</SmallButton>
+            <SmallButton style={{ minWidth: "40px" }}>일주일</SmallButton>
+            <SmallButton style={{ minWidth: "40px" }}>지난달</SmallButton>
+            <SmallButton style={{ minWidth: "40px" }}>1개월</SmallButton>
+            <SmallButton style={{ minWidth: "40px" }}>3개월</SmallButton>
+            <SmallButton style={{ minWidth: "40px" }}>전체</SmallButton>
           </div>
         </BigKeyword>
         <BigKeyword>
