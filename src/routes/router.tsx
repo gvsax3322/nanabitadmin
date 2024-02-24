@@ -22,6 +22,7 @@ import productAdmin from "./product";
 import ChartsRouter from "./charts/ChartsRouter";
 import UsermainRouter from "./usermainmanage/usermainrouter";
 import ChartsPage from "../pages/charts/ChartsPage";
+import CommunPage from "../pages/ community/ CommunPage";
 
 export const routerAdmin = createBrowserRouter([
   { path: "", element: <Navigate to="/admin" />, errorElement: <ErrorPage /> },
@@ -74,6 +75,10 @@ export const routerAdmin = createBrowserRouter([
         path: "charts/",
         element: <ChartsPage />,
         children: ChartsRouter.children,
+      },
+      {
+        path: "community",
+        element: <CommunPage />,
       },
     ], // 여기에 닫는 중괄호 추가
   }, // 여기에도 닫는 중괄호 추가

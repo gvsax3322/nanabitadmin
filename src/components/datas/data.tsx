@@ -1,4 +1,5 @@
 import {
+  CommentOutlined,
   ContainerOutlined,
   DesktopOutlined,
   MailOutlined,
@@ -46,4 +47,12 @@ export const Item: MenuItem[] = [
       <ContainerOutlined />,
     ),
   ]),
+];
+
+export const Commun: MenuItem[] = [
+  getItem(
+    <Link to={"/admin/community"}>게시판 관리</Link>,
+    "1",
+    <CommentOutlined />,
+  ),
 ];

@@ -121,6 +121,7 @@ const AdminHeader: React.FC = () => {
               stiffness: 600,
               damping: 20,
             }}
+            onClick={() => handleClickMove("/admin/community")}
           >
             고객지원
           </motion.li>
