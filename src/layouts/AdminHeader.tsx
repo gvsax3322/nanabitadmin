@@ -1,7 +1,7 @@
 import { HomeOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import React from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { HeaderStyle, IconButton, LogoutButton } from "../styles/AdminBasic";
 import { Link } from "react-router-dom";
 
@@ -14,12 +14,17 @@ const AdminHeader: React.FC = () => {
   const handleClickOrder = () => {
     navigate("/admin/order");
   };
+  const handClickMani = () => {
+    navigate("/admin");
+  };
 
   return (
     <HeaderStyle>
       <div className="header-top">
         <div className="header-top-left">
-          <h2>나나빛Admin</h2>
+          <h2 onClick={handClickMani} style={{ cursor: "pointer" }}>
+            나나빛Admin
+          </h2>
         </div>
         <div className="header-top-right">
           <IconButton>
@@ -121,7 +126,6 @@ const AdminHeader: React.FC = () => {
               stiffness: 600,
               damping: 20,
             }}
-            onClick={() => handleClickMove("/admin/community")}
           >
             고객지원
           </motion.li>
