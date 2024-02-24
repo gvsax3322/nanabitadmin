@@ -200,6 +200,8 @@ const MemberModify = () => {
       </ModifyButton>
       <BtList>
         <div>
+
+          
           <SmallButton style={{ marginRight: "20px" }}>
             전체메일 발송
           </SmallButton>
