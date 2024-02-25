@@ -17,8 +17,6 @@ const useCustomLogin = () => {
 
   // 로그인 기능
   const doLogin = ({ loginParam, successFn, failFn, errorFn }) => {
-    // 로그인 어느화면에서 실행이 될 소지가 높아요.
-    // 로그인 상태 업데이트
     const action = dispatch(
       loginPostAsync({ loginParam, successFn, failFn, errorFn }),
     );

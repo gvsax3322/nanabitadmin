@@ -257,7 +257,7 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({ onClose }) => {
             </BigKeyword>
             <BtList>
               <div>
-                <SmallButton style={{ marginRight: "20px" }}>
+                <SmallButton style={{ marginRight: "10px" }}>
                   전체메일 발송
                 </SmallButton>
                 <SmallButton>엑셀 저장</SmallButton>

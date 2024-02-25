@@ -12,7 +12,7 @@ const MemberSelect: React.FC<SelectProps> = ({ optionone, optiontwo }) => {
       <SelectStyle>
         {/* Use the optionone prop for the label of the first option */}
         <option value="option1">{optionone}</option>
-        <option value="option2">{optiontwo}</option>
+        {optiontwo && <option value="option2">{optiontwo}</option>}
       </SelectStyle>
     </div>
   );
