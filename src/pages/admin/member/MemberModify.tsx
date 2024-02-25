@@ -14,6 +14,7 @@ import {
   SubTitle,
 } from "../../../styles/AdminBasic";
 import OrderPicker from "../../../components/order/orderSlect/OrderPicker";
+import PostModal from "../../../components/member/modal/PostModal copy";
 
 export const ModifyWrap = styled.div`
   width: 100%;
@@ -91,25 +92,27 @@ interface DataSourceType {
   address: string;
 }
 const MemberModify = () => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [postModalVisible, setPostModalVisible] = useState(false);
   const [selectedMember, setSelectedMember] = useState<DataSourceType | null>(
     null,
   );
 
   const handleModalClose = () => {
-    setModalVisible(false);
+    setEditModalVisible(false);
   };
 
   const handleMenuClick1 = (record: DataSourceType) => {
     console.log(`Action 1 clicked for ${record.name}`);
     setSelectedMember(record);
-    setModalVisible(true);
+    setEditModalVisible(true);
   };
 
   const handleMenuClick2 = (record: DataSourceType) => {
-    console.log(`Action 2 clicked for ${record.name}`);
+    console.log("너 포스트눌렀자나");
     setSelectedMember(record);
-    setModalVisible(true);
+
+    setPostModalVisible(true);
   };
 
   const columns = [
@@ -139,7 +142,7 @@ const MemberModify = () => {
           trigger={["click"]}
         >
           <div className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-            {text} <DownOutlined />
+            <DownOutlined />
           </div>
         </Dropdown>
       ),
@@ -200,9 +203,7 @@ const MemberModify = () => {
       </ModifyButton>
       <BtList>
         <div>
-
-          
-          <SmallButton style={{ marginRight: "20px" }}>
+          <SmallButton style={{ marginRight: "10px" }}>
             전체메일 발송
           </SmallButton>
           <SmallButton>엑셀 저장</SmallButton>
@@ -211,9 +212,10 @@ const MemberModify = () => {
       <ListWrap>
         <Table dataSource={dataSource} columns={columns} />
       </ListWrap>
-      {modalVisible && (
+      {editModalVisible && (
         <MemberModifyMD onClose={handleModalClose}></MemberModifyMD>
       )}
+      {postModalVisible && <PostModal onClose={handleModalClose}></PostModal>}
     </ModifyWrap>
   );
 };

@@ -4,7 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 // reducer (store 상태 변경) 를 호출할때 지금은 API 호출
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getCookie, removeCookie, setCookie } from "../util/cookieUtil";
-import { loginPost } from "../api/loginApi";
+import { loginPost } from "../api/login/loginApi";
 
 // export const 외부함수 = createAsyncThunk("이름", 리듀서함수);
 export const loginPostAsync = createAsyncThunk(
