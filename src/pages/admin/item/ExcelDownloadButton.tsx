@@ -3,24 +3,24 @@ import * as XLSX from "xlsx";
 import { IDataItem } from "../../../components/table/ItemTable";
 import { SmallButton } from "../../../styles/AdminBasic";
 
-const generateDummyData = (): IDataItem[] => {
-  const dummyData: IDataItem[] = [];
-  for (let i = 1; i <= 10; i++) {
-    dummyData.push({
-      key: 0,
-      name: "st",
-      item: "sa",
-    });
-  }
-  return dummyData;
-};
+interface ExcelDownloadButtonProps {
+  exceldata: IDataItem[]; // IDataItem 타입으로 된 배열을 exceldata로 전달받음
+}
 
-const ExcelDownloadButton = () => {
+const ExcelDownloadButton: React.FC<ExcelDownloadButtonProps> = ({
+  exceldata,
+}) => {
+  console.log(exceldata);
+
   const handleDownload = () => {
-    const data = generateDummyData();
-
     // 엑셀 시트에 넣을 데이터를 배열로 만들기
-    const excelData = data.map(item => [item.key, item.name, item.item]);
+    const excelData = exceldata.map(item => [
+      item.key,
+      item.item,
+      item.category,
+      item.inventory,
+      item.sale,
+    ]);
 
     // 엑셀 워크북 생성
     const workbook = XLSX.utils.book_new();
