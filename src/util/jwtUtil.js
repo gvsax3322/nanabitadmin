@@ -1,6 +1,6 @@
 import axios from "axios";
-import { API_SERVER_HOST } from "../util/util";
 import { getCookie, setCookie } from "./cookieUtil";
+import { API_SERVER_HOST } from "./util";
 // intercepter 전용 axios 생성
 // 로그인 제외 및 일반적 api 요청등을 제외
 // 인증이 필요한 경우에 활용하는 용도

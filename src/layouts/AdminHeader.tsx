@@ -4,6 +4,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { HeaderStyle, IconButton, LogoutButton } from "../styles/AdminBasic";
 import { Link } from "react-router-dom";
+import useCustomLogin from "../hooks/useCustomLogin";
 
 const AdminHeader: React.FC = () => {
   const navigate = useNavigate();
@@ -14,15 +15,22 @@ const AdminHeader: React.FC = () => {
   const handleClickOrder = () => {
     navigate("/admin/order");
   };
-  const handClickMani = () => {
+  const handClickMain = () => {
     navigate("/admin");
   };
+
+  const handleClickLogout = () => {
+    doLogout();
+    navigate("/");
+  };
+
+  const { doLogout } = useCustomLogin();
 
   return (
     <HeaderStyle>
       <div className="header-top">
         <div className="header-top-left">
-          <h2 onClick={handClickMani} style={{ cursor: "pointer" }}>
+          <h2 onClick={handClickMain} style={{ cursor: "pointer" }}>
             나나빛Admin
           </h2>
         </div>
@@ -33,7 +41,9 @@ const AdminHeader: React.FC = () => {
           <IconButton>
             <ShoppingCartOutlined style={{ fontSize: "2rem" }} />
           </IconButton>
-          <LogoutButton>로그아웃</LogoutButton>
+          <LogoutButton onClick={() => handleClickLogout()}>
+            로그아웃
+          </LogoutButton>
         </div>
       </div>
       <div className="header-bottom">
