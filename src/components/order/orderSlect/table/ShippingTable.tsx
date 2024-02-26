@@ -8,7 +8,6 @@ interface OrderAllDataItem {
   key: number;
   orderdate: string;
   bt?: JSX.Element;
-  cancelbt?: JSX.Element;
   items: OrderItem[];
   statebt?: number;
   orderer: string;
@@ -85,9 +84,6 @@ const ShippingTable: React.FC<ISubTableProps> = ({ tableNum }) => {
             >
               주문목록
             </SearchButton>
-            <SearchButton style={{ background: " rgb(244, 67, 54)" }}>
-              주문취소
-            </SearchButton>
           </div>
         </div>
       ),
@@ -123,7 +119,9 @@ const ShippingTable: React.FC<ISubTableProps> = ({ tableNum }) => {
       render: (items: OrderItem[]) => (
         <ul>
           {items.map((item, index) => (
-            <li key={index}>{item.item}</li>
+            <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
+              {item.item}
+            </li>
           ))}
         </ul>
       ),
@@ -134,7 +132,9 @@ const ShippingTable: React.FC<ISubTableProps> = ({ tableNum }) => {
       render: (items: OrderItem[]) => (
         <ul>
           {items.map((item, index) => (
-            <li key={index}>{item.itemcount}</li>
+            <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
+              {item.itemcount}
+            </li>
           ))}
         </ul>
       ),
@@ -145,7 +145,9 @@ const ShippingTable: React.FC<ISubTableProps> = ({ tableNum }) => {
       render: (items: OrderItem[]) => (
         <ul>
           {items.map((item, index) => (
-            <li key={index}>{item.price}</li>
+            <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
+              {item.price}
+            </li>
           ))}
         </ul>
       ),
@@ -156,7 +158,9 @@ const ShippingTable: React.FC<ISubTableProps> = ({ tableNum }) => {
       render: (items: OrderItem[]) => (
         <ul>
           {items.map((item, index) => (
-            <li key={index}>{item.process}</li>
+            <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
+              {item.process}
+            </li>
           ))}
         </ul>
       ),
@@ -260,23 +264,6 @@ const ShippingTable: React.FC<ISubTableProps> = ({ tableNum }) => {
             }}
           >
             <SearchButton onClick={handleShowModal}>주문목록</SearchButton>
-          </div>
-        ),
-        cancelbt: (
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <SearchButton
-              style={{ backgroundColor: "red" }}
-              //   onClick={handleShowModal}
-            >
-              주문취소
-            </SearchButton>
           </div>
         ),
       });
