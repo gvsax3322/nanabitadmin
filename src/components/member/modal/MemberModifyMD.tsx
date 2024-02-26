@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import { Radio } from "antd";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
-import { BtList, ModifyButton } from "../../../pages/admin/member/MemberModify";
 import {
   BigInput,
   BigKeyword,
@@ -15,8 +14,9 @@ import {
   SubTitle,
   TextareaStyle,
 } from "../../../styles/AdminBasic";
-import MyBaby from "./MyBaby";
 import OrderPicker from "../../order/orderSlect/OrderPicker";
+import MyBaby from "./MyBaby";
+import { BtList, ModifyButton } from "../../../styles/member/memberstyle";
 
 interface ResultModalProps {
   onClose: () => void;

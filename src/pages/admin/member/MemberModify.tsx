@@ -1,7 +1,6 @@
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Menu, Table } from "antd";
-import { useState } from "react";
-import styled from "styled-components";
+import { useEffect, useState } from "react";
 import MemberModifyMD from "../../../components/member/modal/MemberModifyMD";
 import MemberSelect from "../../../components/select/MemberSelect";
 import {
@@ -15,102 +14,71 @@ import {
 } from "../../../styles/AdminBasic";
 import OrderPicker from "../../../components/order/orderSlect/OrderPicker";
 import PostModal from "../../../components/member/modal/PostModal";
+import {
+  BtList,
+  ListWrap,
+  ModifyButton,
+  ModifyInfo,
+  ModifyWrap,
+} from "../../../styles/member/memberstyle";
+import { getMemberList } from "../../../api/member/memberApi";
 
-export const ModifyWrap = styled.div`
-  width: 100%;
-  height: auto;
-`;
+export interface ApiResponse {
+  code: string;
+  message: string;
+  data: MemberList[];
+}
 
-export const ModifyInfo = styled.div`
-  margin-bottom: 20px;
-`;
-
-export const ModifyButton = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 25px;
-  margin-bottom: 20px;
-`;
-
-export const BtList = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-`;
-
-export const ListWrap = styled.div`
-  /* thead 부분 */
-  .ant-table-thead .ant-table-cell {
-    color: #000;
-    border: 1px solid #000;
-    text-align: center;
-    padding: 10px;
-    height: 30px;
-    background: #cccccc;
-  }
-  /* tbody border 부분 */
-  .ant-table-tbody > tr > td {
-    transition: background 0.2s, border-color 0.2s;
-    border-bottom: 1px solid #000;
-    border-left: 1px solid #000;
-    border-right: 1px solid #000;
-  }
-  /* tbody 내용부분 */
-  .ant-table-wrapper .ant-table-tbody > tr > td {
-    padding: 0px;
-    text-align: center;
-    font-size: 18px;
-    height: 40px;
-  }
-`;
-
-const dataSource = [
-  {
-    key: "1",
-    name: "John Doe",
-    age: 30,
-    address: "New York",
-  },
-  {
-    key: "2",
-    name: "Jane Smith",
-    age: 25,
-    address: "Los Angeles",
-  },
-  {
-    key: "3",
-    name: "Mike Johnson",
-    age: 35,
-    address: "Chicago",
-  },
-];
-
-interface DataSourceType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
+export interface MemberList {
+  iuser: number;
+  nm: string;
+  email: string;
+  phoneNumber: string;
+  registeredAt: string;
 }
 const MemberModify = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [postModalVisible, setPostModalVisible] = useState(false);
-  const [selectedMember, setSelectedMember] = useState<DataSourceType | null>(
-    null,
-  );
+  const [selectedMember, setSelectedMember] = useState<MemberList | null>(null);
+  const [memberList, setMemberList] = useState<MemberList[]>([]);
+
+  const fetchData = async () => {
+    try {
+      const successFn = (data: MemberList[]) => {
+        // 데이터를 성공적으로 받았을 때 수행할 작업을 여기에 추가합니다.
+        console.log("데이터:", data);
+        setMemberList(data);
+      };
+
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+
+      await getMemberList(successFn, failFn, errorFn);
+    } catch (error) {
+      console.error("에러:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleModalClose = () => {
     setEditModalVisible(false);
     setPostModalVisible(false);
   };
 
-  const handleMenuClick1 = (record: DataSourceType) => {
-    console.log(`Action 1 clicked for ${record.name}`);
+  const handleMenuClick1 = (record: MemberList) => {
     setSelectedMember(record);
     setEditModalVisible(true);
   };
 
-  const handleMenuClick2 = (record: DataSourceType) => {
-    console.log("너 포스트눌렀자나");
+  const handleMenuClick2 = (record: MemberList) => {
     setSelectedMember(record);
     setPostModalVisible(true);
   };
@@ -127,7 +95,7 @@ const MemberModify = () => {
       dataIndex: "name",
       key: "name",
       width: "15%",
-      render: (text: string, record: DataSourceType) => (
+      render: (text: string, record: MemberList) => (
         <Dropdown
           overlay={
             <Menu>
@@ -210,7 +178,7 @@ const MemberModify = () => {
         </div>
       </BtList>
       <ListWrap>
-        <Table dataSource={dataSource} columns={columns} />
+        <Table dataSource={memberList} columns={columns} />
       </ListWrap>
       {editModalVisible && (
         <MemberModifyMD onClose={handleModalClose}></MemberModifyMD>

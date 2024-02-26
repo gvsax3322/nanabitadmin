@@ -1,13 +1,13 @@
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
 import { FC } from "react";
-import { ModifyButton } from "../../../pages/admin/member/MemberModify";
 import {
   BigInput,
   BigKeyword,
   MainTitle,
-  MiddleButton
+  MiddleButton,
 } from "../../../styles/AdminBasic";
+import { ModifyButton } from "../../../styles/member/memberstyle";
 
 interface ResultModalProps {
   onClose: () => void;

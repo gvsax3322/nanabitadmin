@@ -1,9 +1,8 @@
 import { DatePicker, Space } from "antd";
 
-import React, { useState } from "react";
-import { Common } from "../../../styles/AdminBasic";
-import { RangePickerProps } from "antd/es/date-picker";
 import { Dayjs } from "dayjs";
+import { useState } from "react";
+import { Common } from "../../../styles/AdminBasic";
 
 const { RangePicker } = DatePicker;
 

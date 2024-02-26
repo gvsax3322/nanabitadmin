@@ -1,15 +1,14 @@
 import { Bar } from "@nivo/bar";
 import { Table } from "antd";
-import React from "react";
-import MemberSelect from "../../../components/select/MemberSelect";
+import React, { useEffect, useState } from "react";
 import {
   BigKeyword,
   Common,
   MainTitle,
   SearchButton,
+  SelectStyle,
   SubTitle,
 } from "../../../styles/AdminBasic";
-import MonthlySelect from "../../../components/select/MonthlySelect";
 
 interface DataItem {
   name: string;
@@ -69,25 +68,58 @@ const columns = [
   },
 ];
 
-const DailyReg: React.FC = () => (
-  <>
-    <MainTitle>일별 가입통계분석</MainTitle>
-    <SubTitle>통계분석</SubTitle>
-    <BigKeyword
-      style={{
-        borderTop: `1px solid ${Common.color.primary}`,
-        marginBottom: "40px",
-      }}
-    >
-      <div className="left">검색어</div>
-      <div className="right">
-        <MemberSelect optionone={"2024"} />
-        <MonthlySelect />
-        <SearchButton>검색</SearchButton>
-      </div>
-    </BigKeyword>
-    <Table<DataItem> dataSource={DemoData} columns={columns} />
-  </>
-);
+const DailyReg: React.FC = () => {
+  const currentYear = new Date().getFullYear();
+  const [year, setYear] = useState<number>(currentYear);
+  const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
+
+  // 년도 변경 핸들러
+  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setYear(Number(e.target.value));
+  };
+
+  // 월 변경 핸들러
+  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setMonth(Number(e.target.value));
+  };
+
+  useEffect(() => {
+    console.log(year, month);
+  }, [year, month]);
+
+  return (
+    <>
+      <MainTitle>일별 가입통계분석</MainTitle>
+      <SubTitle>통계분석</SubTitle>
+      <BigKeyword
+        style={{
+          borderTop: `1px solid ${Common.color.primary}`,
+          marginBottom: "40px",
+        }}
+      >
+        <div className="left">기간검색</div>
+        <div className="right">
+          <SelectStyle value={year} onChange={handleYearChange}>
+            {Array.from({ length: 3 }, (_, i) => (
+              <option key={currentYear - i} value={currentYear - i}>
+                {currentYear - i}년
+              </option>
+            ))}
+          </SelectStyle>
+          {/* 월 선택 */}
+          <SelectStyle value={month} onChange={handleMonthChange}>
+            {Array.from({ length: 12 }, (_, i) => (
+              <option key={i + 1} value={i + 1}>
+                {i + 1}월
+              </option>
+            ))}
+          </SelectStyle>
+          <SearchButton>검색</SearchButton>
+        </div>
+      </BigKeyword>
+      <Table<DataItem> dataSource={DemoData} columns={columns} />
+    </>
+  );
+};
 
 export default DailyReg;
