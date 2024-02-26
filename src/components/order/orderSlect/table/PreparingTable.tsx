@@ -123,7 +123,9 @@ const PreparingTable: React.FC<ISubTableProps> = ({ tableNum }) => {
       render: (items: OrderItem[]) => (
         <ul>
           {items.map((item, index) => (
-            <li key={index}>{item.item}</li>
+            <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
+              {item.item}
+            </li>
           ))}
         </ul>
       ),
@@ -134,7 +136,9 @@ const PreparingTable: React.FC<ISubTableProps> = ({ tableNum }) => {
       render: (items: OrderItem[]) => (
         <ul>
           {items.map((item, index) => (
-            <li key={index}>{item.itemcount}</li>
+            <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
+              {item.itemcount}
+            </li>
           ))}
         </ul>
       ),
@@ -145,7 +149,9 @@ const PreparingTable: React.FC<ISubTableProps> = ({ tableNum }) => {
       render: (items: OrderItem[]) => (
         <ul>
           {items.map((item, index) => (
-            <li key={index}>{item.price}</li>
+            <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
+              {item.price}
+            </li>
           ))}
         </ul>
       ),
@@ -156,7 +162,9 @@ const PreparingTable: React.FC<ISubTableProps> = ({ tableNum }) => {
       render: (items: OrderItem[]) => (
         <ul>
           {items.map((item, index) => (
-            <li key={index}>{item.process}</li>
+            <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
+              {item.process}
+            </li>
           ))}
         </ul>
       ),
@@ -198,7 +206,6 @@ const PreparingTable: React.FC<ISubTableProps> = ({ tableNum }) => {
       title: "결제수단",
       dataIndex: "payment",
     },
-   
   ];
 
   const nestedData = [

@@ -4,37 +4,30 @@ import React, { useState } from "react";
 import { Common, SearchButton } from "../../../../styles/AdminBasic";
 import TestMd from "../../TestMd";
 
+interface OrderAllDataItem {
+  key: number;
+  orderdate: string;
+  bt?: JSX.Element;
+  items: OrderItem[];
+  canceldate: string;
+  orderer: string;
+  totalAmount: number;
+  payment: string;
+}
+
 interface OrderItem {
   item: string;
   itemcount: number;
   price: number;
-  process: string;
-  returnbt: JSX.Element;
+  status: string;
   img: JSX.Element;
 }
-interface OrderAllDataItem {
-  key: number;
-  orderdate: string;
-  items: OrderItem[];
-  orderer: string;
-  recipient: string;
-  totalAmount: number;
-  payment: string;
-  bt: JSX.Element;
-}
 
-export interface IDataItem {
-  key: number;
-  name: string;
-  item: string;
-  bt?: JSX.Element;
-  img?: JSX.Element;
-}
 interface ISubTableProps {
   tableNum: (selectedRowKeys: React.Key[]) => void;
 }
 
-const OrderAllTable: React.FC<ISubTableProps> = ({ tableNum }) => {
+const CancelTable: React.FC<ISubTableProps> = ({ tableNum }) => {
   const [showModal, setShowModal] = useState(false);
 
   // ResultModal을 보여주는 함수
@@ -87,9 +80,6 @@ const OrderAllTable: React.FC<ISubTableProps> = ({ tableNum }) => {
               onClick={handleShowModal}
             >
               주문목록
-            </SearchButton>
-            <SearchButton style={{ background: " rgb(244, 67, 54)" }}>
-              주문취소
             </SearchButton>
           </div>
         </div>
@@ -166,44 +156,20 @@ const OrderAllTable: React.FC<ISubTableProps> = ({ tableNum }) => {
         <ul>
           {items.map((item, index) => (
             <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
-              {item.process}
+              {item.status}
             </li>
           ))}
         </ul>
       ),
     },
+
     {
-      title: "반품신청",
-      dataIndex: "items",
-      render: (items: OrderItem[]) => (
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ul>
-            {items.map((item, index) => (
-              <li
-                style={{ marginBottom: "10px", marginTop: "10px" }}
-                key={index}
-              >
-                {item.returnbt}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ),
+      title: "취소일시",
+      dataIndex: "canceldate",
     },
     {
       title: "주문자",
       dataIndex: "orderer",
-    },
-    {
-      title: "수령자",
-      dataIndex: "recipient",
     },
     {
       title: "총주문액",
@@ -221,12 +187,12 @@ const OrderAllTable: React.FC<ISubTableProps> = ({ tableNum }) => {
         item: "루솔 프리미엄 이유식 1단계",
         itemcount: 2,
         price: 10000,
-        process: "처리 중",
-        returnbt: <SearchButton>반품신청</SearchButton>,
+        status: "처리 중",
+        // returnbt: <SearchButton>반품신청</SearchButton>,
         img: (
           <img
             style={{ width: "50px", height: "50px" }}
-            src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgTv/ADKOymcIHlVQxcKME+J2GRj6702OV6KZI0kyNssjlYDPOB91e2MANvJg4cHf4gj8qsnF2lafo+oLbaWQoVCZFExkKtnvJ/AeXxMHaqVlYKuOcAY+YqliDs8oksuVjnAYD4Z2qFKjmdx3e0PlR9zmN3U7knINAluVsDp+dP8AQK2SkcEbRqy9CK8oaFsxKaVLQxoK8L3MaOEuISZAFbKnOMg9fkKQ4YvOTsvW07LPN2e5Xm8aVKvZjhh6Mh2eF7105Gu0ZF3VfaIXPxriThi6ZVLXaHlyBzBjjuz5bAUqVU+CHoZDc3D13I/NLeK7YxlsmuF4YnP+8x/wmlSorDCuhg6w4Mvbp2EMyEgdyGrTqXC95HolpDLcwp6vCS4IJJIHX8frSpV5Pm6lSKwKzFwpO2mSX5vIuaQgiIL7THcDH5+dCcPcJ3N/e3M0d3EY7dQiMASC7HYL+sbUqVY5DTWmEXnBl3LrIht5IrhInBbKnDeTbjbY5/zFXng7go6TdNd3TRO2D2aqpAUnv38OleUq5KyDeyzz6Z2l7DL2g9huYKe/Ax/OpJVx4fKvKVLGKTGlJtKzvFeMuRivKVPxQAG+0/1hMAgHocjurGeI+Dbizv7dXuYm54iMhD9liKVKuilyKxm3GiAXhyQ3DRLMnssASFOKKl4Wmt5IsXEZDAY9k7DalSpn2PGKoh9Z0GaB3JlQmNiuQDUQNOZnAMi82fOlSqsegyiqPZ9PeGZozMu3x6d1KlSpQcUf/9k="
+            src={process.env.PUBLIC_URL + "/assets/images/testimg.jpg"}
           />
         ),
       },
@@ -234,12 +200,12 @@ const OrderAllTable: React.FC<ISubTableProps> = ({ tableNum }) => {
         item: "루솔 프리미엄 이유식 2단계",
         itemcount: 1,
         price: 5000,
-        process: "완료",
-        returnbt: <SearchButton>반품신청</SearchButton>,
+        status: "완료",
+        // returnbt: <SearchButton>반품신청</SearchButton>,
         img: (
           <img
             style={{ width: "50px", height: "50px" }}
-            src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgTv/ADKOymcIHlVQxcKME+J2GRj6702OV6KZI0kyNssjlYDPOB91e2MANvJg4cHf4gj8qsnF2lafo+oLbaWQoVCZFExkKtnvJ/AeXxMHaqVlYKuOcAY+YqliDs8oksuVjnAYD4Z2qFKjmdx3e0PlR9zmN3U7knINAluVsDp+dP8AQK2SkcEbRqy9CK8oaFsxKaVLQxoK8L3MaOEuISZAFbKnOMg9fkKQ4YvOTsvW07LPN2e5Xm8aVKvZjhh6Mh2eF7105Gu0ZF3VfaIXPxriThi6ZVLXaHlyBzBjjuz5bAUqVU+CHoZDc3D13I/NLeK7YxlsmuF4YnP+8x/wmlSorDCuhg6w4Mvbp2EMyEgdyGrTqXC95HolpDLcwp6vCS4IJJIHX8frSpV5Pm6lSKwKzFwpO2mSX5vIuaQgiIL7THcDH5+dCcPcJ3N/e3M0d3EY7dQiMASC7HYL+sbUqVY5DTWmEXnBl3LrIht5IrhInBbKnDeTbjbY5/zFXng7go6TdNd3TRO2D2aqpAUnv38OleUq5KyDeyzz6Z2l7DL2g9huYKe/Ax/OpJVx4fKvKVLGKTGlJtKzvFeMuRivKVPxQAG+0/1hMAgHocjurGeI+Dbizv7dXuYm54iMhD9liKVKuilyKxm3GiAXhyQ3DRLMnssASFOKKl4Wmt5IsXEZDAY9k7DalSpn2PGKoh9Z0GaB3JlQmNiuQDUQNOZnAMi82fOlSqsegyiqPZ9PeGZozMu3x6d1KlSpQcUf/9k="
+            src={process.env.PUBLIC_URL + "/assets/images/testimg.jpg"}
           />
         ),
       },
@@ -252,20 +218,20 @@ const OrderAllTable: React.FC<ISubTableProps> = ({ tableNum }) => {
   for (let i = 0; i < 10; i++) {
     nestedData.forEach((nestedItem, index) => {
       const items: OrderItem[] = nestedItem.map((item, itemIndex) => ({
+        img: item.img,
         item: item.item,
         itemcount: item.itemcount,
         price: item.price,
-        process: item.process,
-        returnbt: item.returnbt,
-        img: item.img,
+        status: item.status,
+        // returnbt: item.returnbt,
       }));
 
       data.push({
         key: data.length + 1,
         orderdate: `2024-12-${data.length + 1}`,
         items: items,
-        orderer: "최동환",
-        recipient: "동환님",
+        orderer: "살려요",
+        canceldate: `2024-12-${data.length + 1}`,
         totalAmount: 100,
         payment: "카드",
         bt: (
@@ -344,4 +310,4 @@ const OrderAllTable: React.FC<ISubTableProps> = ({ tableNum }) => {
   );
 };
 
-export default OrderAllTable;
+export default CancelTable;

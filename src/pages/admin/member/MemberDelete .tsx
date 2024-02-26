@@ -8,7 +8,12 @@ import {
   SearchButton,
   SubTitle,
 } from "../../../styles/AdminBasic";
-import { ListWrap, ModifyButton, ModifyInfo, ModifyWrap } from "./MemberModify";
+import {
+  ListWrap,
+  ModifyButton,
+  ModifyInfo,
+  ModifyWrap,
+} from "../../../styles/member/memberstyle";
 
 interface DataSourceType {
   key: string;
