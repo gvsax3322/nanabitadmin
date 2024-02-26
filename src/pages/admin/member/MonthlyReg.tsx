@@ -1,13 +1,14 @@
 import { Bar } from "@nivo/bar";
 import { Table } from "antd";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MemberSelect from "../../../components/select/MemberSelect";
 import {
   BigKeyword,
   Common,
   MainTitle,
   SearchButton,
-  SubTitle
+  SelectStyle,
+  SubTitle,
 } from "../../../styles/AdminBasic";
 
 interface DataItem {
@@ -68,24 +69,43 @@ const columns = [
   },
 ];
 
-const MonthlyReg: React.FC = () => (
-  <>
-    <MainTitle>월별 가입통계분석</MainTitle>
-    <SubTitle>통계분석</SubTitle>
-    <BigKeyword
-      style={{
-        borderTop: `1px solid ${Common.color.primary}`,
-        marginBottom: "40px",
-      }}
-    >
-      <div className="left">검색어</div>
-      <div className="right">
-        <MemberSelect optionone={"2024"} />
-        <SearchButton>검색</SearchButton>
-      </div>
-    </BigKeyword>
-    <Table<DataItem> dataSource={DemoData} columns={columns} />
-  </>
-);
+const MonthlyReg: React.FC = () => {
+  const currentYear = new Date().getFullYear();
+  const [year, setYear] = useState<number>(currentYear);
+
+  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setYear(Number(e.target.value));
+  };
+
+  useEffect(() => {
+    console.log(year);
+  }, [year]);
+
+  return (
+    <>
+      <MainTitle>월별 가입통계분석</MainTitle>
+      <SubTitle>통계분석</SubTitle>
+      <BigKeyword
+        style={{
+          borderTop: `1px solid ${Common.color.primary}`,
+          marginBottom: "40px",
+        }}
+      >
+        <div className="left">검색어</div>
+        <div className="right">
+          <SelectStyle value={year} onChange={handleYearChange}>
+            {Array.from({ length: 3 }, (_, i) => (
+              <option key={currentYear - i} value={currentYear - i}>
+                {currentYear - i}년
+              </option>
+            ))}
+          </SelectStyle>
+          <SearchButton>검색</SearchButton>
+        </div>
+      </BigKeyword>
+      <Table<DataItem> dataSource={DemoData} columns={columns} />
+    </>
+  );
+};
 
 export default MonthlyReg;

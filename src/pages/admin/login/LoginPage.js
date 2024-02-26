@@ -28,8 +28,8 @@ const LoginPage = () => {
 
   // 초기값
   const initState = {
-    uid: "",
-    upw: "",
+    uid: "ADMIN",
+    upw: "xptmxm12!@",
   };
 
   const [loginParam, setLoginParam] = useState(initState);
