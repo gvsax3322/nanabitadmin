@@ -17,6 +17,20 @@ import { Navigate } from "react-router";
 interface ResultModalProps {
   onClose: () => void;
 }
+interface DTO {
+  imain: number;
+  imiddle: number;
+  productNm: string;
+  recommandAge: number;
+  price: number;
+  remainedCnt: number;
+}
+
+interface Product {
+  pics: string[];
+  productDetails: string;
+  dto: DTO;
+}
 
 const initState = [
   {
