@@ -1,5 +1,5 @@
-import { Checkbox, ConfigProvider, Form, GetRef, Input, Table } from "antd";
-import React, { useState } from "react";
+import { Checkbox, ConfigProvider, Table } from "antd";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   MainTitle,
@@ -10,7 +10,6 @@ import {
   SmallButton,
   SubTitle,
 } from "../../styles/AdminBasic";
-
 // 테이블 스타일 관리
 const CenteredHeaderTable = styled(Table)`
   &&& {
@@ -22,12 +21,11 @@ const CenteredHeaderTable = styled(Table)`
     }
   }
 `;
-
 const MainBanner: React.FC = () => {
   interface IDataItem {
     exposing: JSX.Element;
     ibanner: number;
-    bannerPic: JSX.Element;
+    bannerPic?: JSX.Element;
     picupbt: JSX.Element;
     bannerUrl: JSX.Element;
     target: JSX.Element;
@@ -63,29 +61,68 @@ const MainBanner: React.FC = () => {
       dataIndex: "edbt",
     },
   ];
-
   const [uploadImgBefore, setUploadImgBefore] = useState<string | undefined>();
-
-  const handleChangeFileOne = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    // uploadImgBefore 값이 변경될 때마다 data 상태를 업데이트합니다.
+    setData(prevData => {
+      // 기존 데이터를 복사하여 업데이트합니다.
+      const updatedData = [...prevData];
+      // uploadImgBefore 값을 새로운 값으로 업데이트합니다.
+      updatedData.forEach(item => {
+        item.bannerPic = (
+          <>
+            <img
+              style={{
+                width: "190px",
+                height: "66px",
+                objectFit: "cover",
+              }}
+              src={uploadImgBefore}
+              alt=""
+              className="diaryadd-img-before"
+            />
+          </>
+        );
+      });
+      return updatedData;
+    });
+  }, [uploadImgBefore]);
+  const handleChangeFileOne = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+  ) => {
     const file = e.target.files![0]; // 파일이 반드시 존재한다고 가정합니다. 필요에 따라 null 체크를 추가할 수 있습니다.
-
     // 파일을 읽기 위한 FileReader 객체 생성
     const reader = new FileReader();
-
     // 파일 읽기가 완료되었을 때의 이벤트 핸들러
     reader.onloadend = () => {
       // 읽은 파일의 URL을 상태에 설정하여 이미지를 업데이트합니다.
       if (reader.readyState === FileReader.DONE) {
-        setUploadImgBefore(reader.result as string | undefined);
+        const imgStr = reader.result as string | undefined;
+        setData(prevData => {
+          const updatedData = [...prevData];
+          updatedData[index].bannerPic = (
+            <>
+              <img
+                style={{
+                  width: "190px",
+                  height: "66px",
+                  objectFit: "cover",
+                }}
+                src={imgStr}
+                alt=""
+                className="diaryadd-img-before"
+              />
+            </>
+          );
+          return updatedData;
+        });
       }
     };
-
-    // 파일 읽기 실행
-    if (file) {
-      reader.readAsDataURL(file);
-    }
+    // 파일을 읽습니다.
+    reader.readAsDataURL(file);
   };
-
+  const defaultImgUrl = `${process.env.PUBLIC_URL}/assets/images/defaultitemimg.svg`;
   // map 돌릴 리스트
   const [data, setData] = useState<IDataItem[]>(() => {
     const initialData: IDataItem[] = [];
@@ -98,22 +135,25 @@ const MainBanner: React.FC = () => {
         ),
         ibanner: i + 1,
         bannerPic: (
-          <img
-            style={{ width: "190px", height: "66px", objectFit: "cover" }}
-            src={uploadImgBefore}
-            alt=""
-            className="diaryadd-img-before"
-          />
+          <>
+            <img
+              style={{ width: "190px", height: "66px", objectFit: "cover" }}
+              src={defaultImgUrl}
+              alt=""
+              className="diaryadd-img-before"
+            />
+          </>
         ),
         picupbt: (
           <>
-            <label htmlFor="input-file-before">
+            {/* <p>나는 i값 {i}</p> */}
+            <label htmlFor={`input-file-before-${i}`}>
               <SmallButton
                 style={{ width: "100px", height: "30px" }}
                 type="button"
                 onClick={() => {
                   const inputFile = document.getElementById(
-                    "input-file-before",
+                    `input-file-before-${i}`,
                   ) as HTMLInputElement;
                   if (inputFile) {
                     inputFile.click();
@@ -127,8 +167,8 @@ const MainBanner: React.FC = () => {
             <input
               type="file"
               accept="image/png, image/gif, image/jpeg"
-              onChange={handleChangeFileOne}
-              id="input-file-before"
+              onChange={e => handleChangeFileOne(e, i)}
+              id={`input-file-before-${i}`}
               style={{ display: "none" }}
             />
           </>
@@ -169,7 +209,6 @@ const MainBanner: React.FC = () => {
     }
     return initialData;
   });
-
   // 추가버튼 함수
   const handleAdd = () => {
     const newData: IDataItem = {
@@ -180,22 +219,33 @@ const MainBanner: React.FC = () => {
       ),
       ibanner: data.length + 1,
       bannerPic: (
-        <img
-          style={{ width: "190px", height: "66px" }}
-          src="https://img1.daumcdn.net/thumb/R800x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbDvLtp%2FbtrzdOekBQ1%2F97wPAt3knfNKwTMiZvqkpk%2Fimg.png"
-          alt=""
-        />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {/* 나는 i값 {data.length + 1} */}
+          <div
+            style={{
+              width: "190px",
+              height: "66px",
+              background: "#d9d9d9",
+            }}
+          />
+        </div>
       ),
       picupbt: (
         <>
-          <label htmlFor="input-file-before">
+          <label htmlFor={`input-file-before-${data.length + 1}`}>
             <SmallButton
               style={{ width: "100px", height: "30px" }}
               type="button"
               onClick={() => {
                 const inputFile = document.getElementById(
-                  "input-file-before",
-                ) as HTMLInputElement | null;
+                  `input-file-before-${data.length + 1}`,
+                ) as HTMLInputElement;
                 if (inputFile) {
                   inputFile.click();
                 }
@@ -208,8 +258,8 @@ const MainBanner: React.FC = () => {
           <input
             type="file"
             accept="image/png, image/gif, image/jpeg"
-            onChange={handleChangeFileOne}
-            id="input-file-before"
+            onChange={e => handleChangeFileOne(e, data.length)}
+            id={`input-file-before-${data.length + 1}`}
             style={{ display: "none" }}
           />
         </>
@@ -266,7 +316,7 @@ const MainBanner: React.FC = () => {
       <ConfigProvider
         theme={{
           token: {
-            colorPrimary: "#a5a5a5",
+            colorPrimary: "#A5A5A5",
           },
           components: {
             Table: {

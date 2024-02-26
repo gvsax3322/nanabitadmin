@@ -123,7 +123,7 @@ const PopProduct: React.FC = () => {
   return (
     <>
       {isOpen && <MainUsermodal onClose={handleCloseModal} />}
-      <MainTitle>MD 추천상품</MainTitle>
+      <MainTitle>인기상품</MainTitle>
       <div
         style={{
           display: "flex",
