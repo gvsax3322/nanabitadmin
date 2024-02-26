@@ -7,40 +7,25 @@ import ErrorPage from "../pages/errorPage/ErrorPage";
 import { Ordermain } from "../pages/order/item/OrderMain";
 import AdminNote from "../pages/order/sub/AdminNote";
 
-
 import DpstPage from "../pages/order/sub/DpstPage";
 import PreparingPage from "../pages/order/sub/PreparingPage";
 
-
-import DCom from "../pages/order/sub/DCom";
-import Dpst from "../pages/order/sub/Dpst";
 import OrderCancel from "../pages/order/sub/OrderCancel";
 import OrderReturn from "../pages/order/sub/OrderReturn";
 
-import UsermainManage from "../pages/usermainmanage/UsermainManage";
 import MemberMain from "../pages/admin/member/MemberMain";
+import ChartsPage from "../pages/charts/ChartsPage";
 import OrderAllPage from "../pages/order/sub/OrderAllPage";
+import UsermainManage from "../pages/usermainmanage/UsermainManage";
+import ChartsRouter from "./charts/ChartsRouter";
 import MemberRouter from "./member/MemberRouter";
 import productAdmin from "./product";
-import ChartsRouter from "./charts/ChartsRouter";
 import UsermainRouter from "./usermainmanage/usermainrouter";
-import ChartsPage from "../pages/charts/ChartsPage";
 
-import CommunPage from "../pages/community/CommunPage";
-import ShippingPage from "../pages/order/sub/ShippingPage";
-import DComPage from "../pages/order/sub/DComPage";
-
-import CommunPage from "../pages/ community/ CommunPage";
 import useCustomLogin from "../hooks/useCustomLogin";
-import CommunPage from "../pages/community/CommunPage";
-import useCustomLogin from "../pages/hooks/useCustomLogin";
-
-const RouteComponent = () => {
-  const { isLogin } = useCustomLogin();
-
-  return isLogin ? <Navigate to="/admin" /> : <LoginPage />;
-};
-
+import CommunPage from "../pages/ community/ CommunPage";
+import DComPage from "../pages/order/sub/DComPage";
+import ShippingPage from "../pages/order/sub/ShippingPage";
 
 const RouteComponent = () => {
   const { isLogin } = useCustomLogin();
