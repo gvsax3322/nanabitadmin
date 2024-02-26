@@ -6,7 +6,6 @@ import MainAdmin from "../pages/admin/main/MainAdmin";
 import ErrorPage from "../pages/errorPage/ErrorPage";
 import { Ordermain } from "../pages/order/item/OrderMain";
 import AdminNote from "../pages/order/sub/AdminNote";
-
 import DCom from "../pages/order/sub/DCom";
 import Dpst from "../pages/order/sub/Dpst";
 import OrderCancel from "../pages/order/sub/OrderCancel";
@@ -14,7 +13,6 @@ import OrderReturn from "../pages/order/sub/OrderReturn";
 import Preparing from "../pages/order/sub/Preparing";
 import Shipping from "../pages/order/sub/Shipping";
 import UsermainManage from "../pages/usermainmanage/UsermainManage";
-
 import MemberMain from "../pages/admin/member/MemberMain";
 import OrderAllPage from "../pages/order/sub/OrderAllPage";
 import MemberRouter from "./member/MemberRouter";
@@ -24,6 +22,14 @@ import UsermainRouter from "./usermainmanage/usermainrouter";
 import ChartsPage from "../pages/charts/ChartsPage";
 import CommunPage from "../pages/ community/ CommunPage";
 import useCustomLogin from "../hooks/useCustomLogin";
+import CommunPage from "../pages/community/CommunPage";
+import useCustomLogin from "../pages/hooks/useCustomLogin";
+
+const RouteComponent = () => {
+  const { isLogin } = useCustomLogin();
+
+  return isLogin ? <Navigate to="/admin" /> : <LoginPage />;
+};
 
 const RouteComponent = () => {
   const { isLogin } = useCustomLogin();

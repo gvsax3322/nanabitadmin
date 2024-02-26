@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getList, getOrderStatus, getRecentList } from "../../../api/mainApi";
 import {
+  getCancelCount,
+  getList,
+  getOrderStatus,
+  getRecentList,
+  getShoppingCart,
+} from "../../../api/mainApi";
+import {
+  MyData,
   OrderData,
   OrderStatistics,
+  ShoppingCart,
   UserData,
 } from "../../../api/model/resturant";
 import OrderChart from "../../../components/charts/OrderChart";
@@ -23,6 +31,8 @@ const MainAdmin = () => {
   const [orderStatus, setOrderStatus] = useState<OrderStatistics[] | string>(
     "",
   );
+  const [cancelCount, setCancelCount] = useState<MyData[] | string>("");
+  const [shoppingCart, setShoppingCart] = useState<ShoppingCart[] | string>("");
   const navigate = useNavigate();
 
   const handleClickMove = (path: string) => {
@@ -58,6 +68,30 @@ const MainAdmin = () => {
       try {
         const result = await getOrderStatus();
         setOrderStatus(result);
+      } catch (error) {
+        alert("데이터 호출에 실패하였습니다.");
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getCancelCount();
+        setCancelCount(result);
+      } catch (error) {
+        alert("데이터 호출에 실패하였습니다.");
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getShoppingCart();
+        setShoppingCart(result);
       } catch (error) {
         alert("데이터 호출에 실패하였습니다.");
       }
