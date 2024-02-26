@@ -6,12 +6,17 @@ import MainAdmin from "../pages/admin/main/MainAdmin";
 import ErrorPage from "../pages/errorPage/ErrorPage";
 import { Ordermain } from "../pages/order/item/OrderMain";
 import AdminNote from "../pages/order/sub/AdminNote";
+
+
+import DpstPage from "../pages/order/sub/DpstPage";
+import PreparingPage from "../pages/order/sub/PreparingPage";
+
+
 import DCom from "../pages/order/sub/DCom";
 import Dpst from "../pages/order/sub/Dpst";
 import OrderCancel from "../pages/order/sub/OrderCancel";
 import OrderReturn from "../pages/order/sub/OrderReturn";
-import Preparing from "../pages/order/sub/Preparing";
-import Shipping from "../pages/order/sub/Shipping";
+
 import UsermainManage from "../pages/usermainmanage/UsermainManage";
 import MemberMain from "../pages/admin/member/MemberMain";
 import OrderAllPage from "../pages/order/sub/OrderAllPage";
@@ -20,6 +25,11 @@ import productAdmin from "./product";
 import ChartsRouter from "./charts/ChartsRouter";
 import UsermainRouter from "./usermainmanage/usermainrouter";
 import ChartsPage from "../pages/charts/ChartsPage";
+
+import CommunPage from "../pages/community/CommunPage";
+import ShippingPage from "../pages/order/sub/ShippingPage";
+import DComPage from "../pages/order/sub/DComPage";
+
 import CommunPage from "../pages/ community/ CommunPage";
 import useCustomLogin from "../hooks/useCustomLogin";
 import CommunPage from "../pages/community/CommunPage";
@@ -30,6 +40,7 @@ const RouteComponent = () => {
 
   return isLogin ? <Navigate to="/admin" /> : <LoginPage />;
 };
+
 
 const RouteComponent = () => {
   const { isLogin } = useCustomLogin();
@@ -70,10 +81,10 @@ export const routerAdmin = createBrowserRouter([
           // 주문관리
           { path: "", element: <Navigate to="all" /> },
           { path: "all", element: <OrderAllPage /> },
-          { path: "deposit", element: <Dpst /> },
-          { path: "preparing", element: <Preparing /> },
-          { path: "shipping", element: <Shipping /> },
-          { path: "completed", element: <DCom /> },
+          { path: "deposit", element: <DpstPage /> },
+          { path: "preparing", element: <PreparingPage /> },
+          { path: "shipping", element: <ShippingPage /> },
+          { path: "completed", element: <DComPage /> },
           // 취소/반품관리
           { path: "cancel", element: <OrderCancel /> },
           { path: "return", element: <OrderReturn /> },
