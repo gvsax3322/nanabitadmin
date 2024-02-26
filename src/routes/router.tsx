@@ -23,9 +23,22 @@ import ChartsRouter from "./charts/ChartsRouter";
 import UsermainRouter from "./usermainmanage/usermainrouter";
 import ChartsPage from "../pages/charts/ChartsPage";
 import CommunPage from "../pages/ community/ CommunPage";
+import useCustomLogin from "../hooks/useCustomLogin";
 
+const RouteComponent = () => {
+  const { isLogin } = useCustomLogin();
+  if (isLogin) {
+    return <Navigate to="/admin" />;
+  }
+
+  return <LoginPage />;
+};
 export const routerAdmin = createBrowserRouter([
-  { path: "", element: <Navigate to="/admin" />, errorElement: <ErrorPage /> },
+  {
+    path: "",
+    element: <RouteComponent />,
+    errorElement: <ErrorPage />,
+  },
   {
     path: "/admin",
     element: <AdminBasic />,
@@ -33,10 +46,6 @@ export const routerAdmin = createBrowserRouter([
       {
         index: true,
         element: <MainAdmin />,
-      },
-      {
-        path: "login",
-        element: <LoginPage />,
       },
       {
         path: "item",
