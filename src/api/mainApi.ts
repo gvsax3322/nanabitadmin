@@ -83,7 +83,7 @@ export const getCancelCount = async (): Promise<MyData[] | string> => {
   }
 };
 
-// 반품/취소 수
+// 전체 가격/ 수
 export const getShoppingCart = async (): Promise<ShoppingCart[] | string> => {
   try {
     const res = await jwtAxios.get<ShoppingCart[]>(

@@ -68,28 +68,6 @@ const AdminHeader: React.FC = () => {
               damping: 20,
             }}
           >
-            가맹점관리
-          </motion.li>
-          <motion.li
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.9 }}
-            transition={{
-              type: "spring",
-              stiffness: 600,
-              damping: 20,
-            }}
-          >
-            공급사관리
-          </motion.li>
-          <motion.li
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.9 }}
-            transition={{
-              type: "spring",
-              stiffness: 600,
-              damping: 20,
-            }}
-          >
             카테고리 관리
           </motion.li>
           <motion.li
@@ -162,17 +140,6 @@ const AdminHeader: React.FC = () => {
             }}
           >
             리뷰관리
-          </motion.li>
-          <motion.li
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.9 }}
-            transition={{
-              type: "spring",
-              stiffness: 600,
-              damping: 20,
-            }}
-          >
-            환경설정
           </motion.li>
         </ul>
       </div>
