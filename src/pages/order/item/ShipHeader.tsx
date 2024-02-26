@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+
 import {
   BigKeyword,
   Common,
@@ -9,14 +11,155 @@ import {
 } from "../../../styles/AdminBasic";
 import styled from "@emotion/styled";
 import OrderAllSelect from "../../../components/order/orderSlect/OrderAllSelect";
-import OrderPicker from "../../../components/order/orderSlect/OrderPicker";
+import { Dayjs } from "dayjs";
+import OrPicker from "../../../components/order/orderSlect/OrPicker";
 
-const Wrap = styled.div`
-  margin-bottom: 30px;
-  border-bottom: 2px solid ${Common.color.primary};
-`;
+interface OrAllHeaderProps {}
 
-const ShipHeader = () => {
+const OrAllHeader: React.FC<OrAllHeaderProps> = () => {
+  const [periodBt, setPeriodBt] = useState(0); // 선택된 기간 상태 버튼관리
+  const [searchOp, setSearchOp] = useState(0); // 검색어옵션 상태 옵션관리
+  const [prdOp, setPrdOp] = useState(0); //  기간검색 상태 옵션관리
+  const [paymentOp, setPaymentOp] = useState(0); //  결제수단 상태 옵션관리
+  const [stateOp, setStateOp] = useState(0); //  주문상태 옵션관리
+  const [searchText, setSearchText] = useState<string>(""); //  검색어텍스트 관리
+  const [userSearchActive, setUserSearchActive] = useState(false); // 검색버튼 옵션관리
+  const [selectedDate, setSelectedDate] = useState<string[]>([]); // Date picker 관리
+
+  // 검색 버튼 클릭시 처리
+  const handleClickSearch = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    setPeriodBt(0);
+    setSearchOp(0);
+    setPrdOp(0);
+    setPaymentOp(0);
+    setStateOp(0);
+    // 사용자는 검색을 했다.
+    setUserSearchActive(true);
+    // fetchData();
+    console.log(
+      "검색버튼눌렀어융",
+      periodBt,
+      searchOp,
+      prdOp,
+      paymentOp,
+      stateOp,
+      userSearchActive,
+      searchText,
+      selectedDate,
+    );
+  };
+
+  // 검색어 작성
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+  // 기간버튼 핸들러
+  const handlePeriodBt = (BTIndex: number) => {
+    setPeriodBt(BTIndex);
+    // 선택된 기간에 따른 동작 수행
+    console.log("선택된 기간:", BTIndex);
+  };
+
+  // 검색어 셀렉함수
+  const handleSearchOp = (optionIndex: number): void => {
+    switch (optionIndex) {
+      case 0:
+        // 주문상태 전체보기에 대한 동작 수행
+        setSearchOp(0);
+        break;
+      case 1:
+        // 입금대기에 대한 동작 수행
+        setSearchOp(1);
+        break;
+      case 2:
+        // 배송준비중에 대한 동작 수행
+        setSearchOp(2);
+        break;
+      case 3:
+        // 배송중에 대한 동작 수행
+        setSearchOp(3);
+        break;
+      case 4:
+        // 배송완료에 대한 동작 수행
+        setSearchOp(4);
+        break;
+      case 5:
+        // 취소에 대한 동작 수행
+        setSearchOp(5);
+        break;
+      case 6:
+        // 반품에 대한 동작 수행
+        setSearchOp(6);
+        break;
+      default:
+        break;
+    }
+    console.log("검색어", optionIndex);
+  };
+
+  // 결제수단 셀렉함수
+  const handlePaymentOp = (optionIndex: number): void => {
+    switch (optionIndex) {
+      case 0:
+        setPaymentOp(0);
+        break;
+      case 1:
+        setPaymentOp(1);
+        break;
+      case 2:
+        setPaymentOp(2);
+        break;
+      case 3:
+        setPaymentOp(3);
+        break;
+    }
+    console.log("결제수단", optionIndex);
+  };
+
+  // 주문상태 셀렉함수
+  const handleStateOp = (optionIndex: number): void => {
+    switch (optionIndex) {
+      case 0:
+        setStateOp(0);
+        break;
+      case 1:
+        setStateOp(1);
+        break;
+      case 2:
+        setStateOp(2);
+        break;
+      case 3:
+        setStateOp(3);
+        break;
+      case 4:
+        setStateOp(4);
+        break;
+      case 5:
+        setStateOp(5);
+        break;
+      case 6:
+        setStateOp(6);
+        break;
+      default:
+        break;
+    }
+    console.log("주문상태", optionIndex);
+  };
+
+  // 선택한 날짜 범위 업데이트
+  const handleDateChange = (
+    dates: null | (Dayjs | null)[],
+    dateStrings: string[],
+  ) => {
+    setSelectedDate(dateStrings);
+  };
+  const Wrap = styled.div`
+    margin-bottom: 30px;
+    border-bottom: 2px solid ${Common.color.primary};
+  `;
   return (
     <>
       <Wrap>
@@ -29,40 +172,69 @@ const ShipHeader = () => {
             <div className="left">검색어</div>
             <div className="right">
               <OrderAllSelect
-                option1="주문번호"
-                option2="일련번호"
-                option3="회원아이디"
-                option4="주문자명"
-                option5="입금자명"
-                option6="수령자명"
-                option7="수령자 핸드폰"
+                option1="전체보기"
+                option2="주문번호"
+                option3="일련번호"
+                option4="회원아이디"
+                option5="주문자명"
+                option6="입금자명"
+                option7="수령자명"
+                option8="수령자 핸드폰"
+                onClick={handleSearchOp}
               />
-              <MiddleInput />
+              <MiddleInput
+                type="text"
+                placeholder="검색어를 입력하세요"
+                autoFocus
+                value={searchText}
+                onChange={handleInputChange}
+              />
             </div>
           </BigKeyword>
           <BigKeyword>
             <div className="left">기간검색</div>
             <div className="right">
-              <OrderPicker />
-              <SmallButton style={{ marginRight: "5px", minWidth: "40px" }}>
+              <OrPicker onDateChange={handleDateChange} />
+              <SmallButton
+                style={{ marginRight: "5px", minWidth: "40px" }}
+                onClick={() => handlePeriodBt(0)}
+              >
                 오늘
               </SmallButton>
-              <SmallButton style={{ marginRight: "5px", minWidth: "40px" }}>
+              <SmallButton
+                style={{ marginRight: "5px", minWidth: "40px" }}
+                onClick={() => handlePeriodBt(1)}
+              >
                 어제
               </SmallButton>
-              <SmallButton style={{ marginRight: "5px", minWidth: "40px" }}>
+              <SmallButton
+                style={{ marginRight: "5px", minWidth: "40px" }}
+                onClick={() => handlePeriodBt(2)}
+              >
                 일주일
               </SmallButton>
-              <SmallButton style={{ marginRight: "5px", minWidth: "40px" }}>
+              <SmallButton
+                style={{ marginRight: "5px", minWidth: "40px" }}
+                onClick={() => handlePeriodBt(3)}
+              >
                 지난달
               </SmallButton>
-              <SmallButton style={{ marginRight: "5px", minWidth: "40px" }}>
+              <SmallButton
+                style={{ marginRight: "5px", minWidth: "40px" }}
+                onClick={() => handlePeriodBt(4)}
+              >
                 1개월
               </SmallButton>
-              <SmallButton style={{ marginRight: "5px", minWidth: "40px" }}>
+              <SmallButton
+                style={{ marginRight: "5px", minWidth: "40px" }}
+                onClick={() => handlePeriodBt(5)}
+              >
                 3개월
               </SmallButton>
-              <SmallButton style={{ marginRight: "5px", minWidth: "40px" }}>
+              <SmallButton
+                style={{ marginRight: "5px", minWidth: "40px" }}
+                onClick={() => handlePeriodBt(6)}
+              >
                 전체
               </SmallButton>
             </div>
@@ -74,6 +246,7 @@ const ShipHeader = () => {
                 option1="결제수단"
                 option2="무통장"
                 option3="카드"
+                onClick={handlePaymentOp}
               />
             </div>
           </BigKeyword>
@@ -86,10 +259,11 @@ const ShipHeader = () => {
             marginBottom: "20px",
           }}
         >
-          <SearchButton>검색</SearchButton>
+          <SearchButton onClick={handleClickSearch}>검색</SearchButton>
           <SearchButton style={{ background: " #f44336" }}>초기화</SearchButton>
         </div>
       </Wrap>
+
       <div
         style={{
           display: "flex",
@@ -103,10 +277,19 @@ const ShipHeader = () => {
           </SmallButton>
           <SmallButton>엑셀 저장</SmallButton>
         </div>
+        <div style={{ textAlign: "right" }}>
+          <OrderAllSelect
+            option1="주문일 역순"
+            option2="처리일 역순"
+            option3="처리일 순"
+            option4="주문자명"
+          />
+        </div>
       </div>
+
       <div></div>
     </>
   );
 };
 
-export default ShipHeader;
+export default OrAllHeader;

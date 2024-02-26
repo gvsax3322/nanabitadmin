@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import OrderAllTable from "../../../components/table/OrderAllTable";
+import OrderAllTable from "../../../components/order/orderSlect/table/OrderAllTable";
 import OrAllHeader from "../item/OrAllHeader";
 import OrAllFooter from "../item/footer/OrAllFooter";
 
@@ -9,6 +9,7 @@ const OrderAllPage = () => {
   const handleClickTableuum = (data: any) => {
     setDataFromChild(data);
   };
+
   return (
     <div>
       All
