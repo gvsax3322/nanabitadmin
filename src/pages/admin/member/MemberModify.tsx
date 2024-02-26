@@ -14,7 +14,7 @@ import {
   SubTitle,
 } from "../../../styles/AdminBasic";
 import OrderPicker from "../../../components/order/orderSlect/OrderPicker";
-import PostModal from "../../../components/member/modal/PostModal copy";
+import PostModal from "../../../components/member/modal/PostModal";
 
 export const ModifyWrap = styled.div`
   width: 100%;
@@ -100,6 +100,7 @@ const MemberModify = () => {
 
   const handleModalClose = () => {
     setEditModalVisible(false);
+    setPostModalVisible(false);
   };
 
   const handleMenuClick1 = (record: DataSourceType) => {
@@ -111,7 +112,6 @@ const MemberModify = () => {
   const handleMenuClick2 = (record: DataSourceType) => {
     console.log("너 포스트눌렀자나");
     setSelectedMember(record);
-
     setPostModalVisible(true);
   };
 
@@ -142,7 +142,7 @@ const MemberModify = () => {
           trigger={["click"]}
         >
           <div className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-            <DownOutlined />
+            {text} <DownOutlined />
           </div>
         </Dropdown>
       ),

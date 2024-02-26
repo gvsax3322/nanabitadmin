@@ -7,14 +7,17 @@ import ErrorPage from "../pages/errorPage/ErrorPage";
 import { Ordermain } from "../pages/order/item/OrderMain";
 import AdminNote from "../pages/order/sub/AdminNote";
 
+
 import DpstPage from "../pages/order/sub/DpstPage";
 import PreparingPage from "../pages/order/sub/PreparingPage";
 
+
+import DCom from "../pages/order/sub/DCom";
+import Dpst from "../pages/order/sub/Dpst";
 import OrderCancel from "../pages/order/sub/OrderCancel";
 import OrderReturn from "../pages/order/sub/OrderReturn";
 
 import UsermainManage from "../pages/usermainmanage/UsermainManage";
-
 import MemberMain from "../pages/admin/member/MemberMain";
 import OrderAllPage from "../pages/order/sub/OrderAllPage";
 import MemberRouter from "./member/MemberRouter";
@@ -22,12 +25,37 @@ import productAdmin from "./product";
 import ChartsRouter from "./charts/ChartsRouter";
 import UsermainRouter from "./usermainmanage/usermainrouter";
 import ChartsPage from "../pages/charts/ChartsPage";
+
 import CommunPage from "../pages/community/CommunPage";
 import ShippingPage from "../pages/order/sub/ShippingPage";
 import DComPage from "../pages/order/sub/DComPage";
 
+import CommunPage from "../pages/ community/ CommunPage";
+import useCustomLogin from "../hooks/useCustomLogin";
+import CommunPage from "../pages/community/CommunPage";
+import useCustomLogin from "../pages/hooks/useCustomLogin";
+
+const RouteComponent = () => {
+  const { isLogin } = useCustomLogin();
+
+  return isLogin ? <Navigate to="/admin" /> : <LoginPage />;
+};
+
+
+const RouteComponent = () => {
+  const { isLogin } = useCustomLogin();
+  if (isLogin) {
+    return <Navigate to="/admin" />;
+  }
+
+  return <LoginPage />;
+};
 export const routerAdmin = createBrowserRouter([
-  { path: "", element: <Navigate to="/admin" />, errorElement: <ErrorPage /> },
+  {
+    path: "",
+    element: <RouteComponent />,
+    errorElement: <ErrorPage />,
+  },
   {
     path: "/admin",
     element: <AdminBasic />,
@@ -35,10 +63,6 @@ export const routerAdmin = createBrowserRouter([
       {
         index: true,
         element: <MainAdmin />,
-      },
-      {
-        path: "login",
-        element: <LoginPage />,
       },
       {
         path: "item",

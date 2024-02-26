@@ -8,25 +8,37 @@ import {
   ErrorSubTxt,
   ErrorWrap,
 } from "../../styles/errorpage/errorpagestyle";
+import { LoginHeader } from "../../styles/loginpage/loginpagestyle";
+import useCustomLogin from "../hooks/useCustomLogin";
 
 const ErrorPage = () => {
   const navigate = useNavigate();
+  const { isLogin, loginState } = useCustomLogin();
 
   const handleClickMain = () => {
-    navigate("/admin");
+    if (isLogin) {
+      navigate("/admin");
+      console.log("로그인됨");
+      console.log(isLogin);
+    } else {
+      navigate("/");
+      console.log("로그인 안됨");
+      console.log(loginState.nm);
+    }
   };
   return (
     <ErrorWrap>
+      <LoginHeader style={{ height: "150px" }} />
       <ErrorImg>
         <img
           src={process.env.PUBLIC_URL + "/assets/images/ErrorImg.svg"}
-          alt="error-image"
+          alt="error"
         />
       </ErrorImg>
       <ErrorLogo>
         <img
           src={process.env.PUBLIC_URL + "/assets/images/logo.svg"}
-          alt="logo-image"
+          alt="logo"
         />
       </ErrorLogo>
       <ErrorMainTxt>원하시는 페이지를 찾을 수 없습니다.</ErrorMainTxt>

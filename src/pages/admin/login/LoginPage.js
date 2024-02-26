@@ -3,22 +3,21 @@ import { useState } from "react";
 
 import {
   LoginBox,
-  LoginBtArea,
   LoginFooter,
   LoginHeader,
   LoginMain,
-  LoginPageBt,
   LoginPageWrap,
 } from "../../../styles/loginpage/loginpagestyle";
 import useCustomLogin from "../../hooks/useCustomLogin";
-import useCustomMove from "../../hooks/useCustomMove";
+import { useNavigate } from "react-router";
 
 const LoginPage = () => {
-  const { moveToSignUp } = useCustomMove();
   const { doLogin } = useCustomLogin();
+  const navigate = useNavigate();
 
   const successFn = result => {
     console.log(result);
+    navigate("/admin");
   };
   const failFn = result => {
     console.log(result);
@@ -91,7 +90,7 @@ const LoginPage = () => {
             <Form.Item
               name="uid"
               label={
-                <label style={{ color: "#E9B25F", fontSize: "20px" }}>ID</label>
+                <label style={{ color: "#6B6B6B", fontSize: "20px" }}>ID</label>
               }
               rules={[
                 {
@@ -120,7 +119,7 @@ const LoginPage = () => {
             <Form.Item
               name="upw"
               label={
-                <label style={{ color: "#E9B25F", fontSize: "20px" }}>PW</label>
+                <label style={{ color: "#6B6B6B", fontSize: "20px" }}>PW</label>
               }
               rules={[
                 {
@@ -153,7 +152,7 @@ const LoginPage = () => {
                 style={{
                   width: "540px",
                   height: "60px",
-                  background: "#E9B25F",
+                  background: "#6B6B6B",
                   fontSize: "25px",
                 }}
               >
@@ -161,12 +160,6 @@ const LoginPage = () => {
               </Button>
             </Form.Item>
           </Form>
-          <LoginBtArea>
-            <LoginPageBt onClick={() => moveToSignUp()}>
-              <h1>아직 계정이 없으신가요?</h1>
-              <h3>회원가입 바로가기</h3>
-            </LoginPageBt>
-          </LoginBtArea>
         </LoginMain>
         <LoginFooter>
           <h2>COPYRIGHT @ 나나빛 브랜드 공식몰 ALL RIGHTS RESERVED.</h2>
