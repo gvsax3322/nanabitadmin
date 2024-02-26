@@ -34,18 +34,38 @@ function getItem(
 }
 
 export const CartsIndex: MenuItem[] = [
-  getItem("매출 및 통계", "sub1", "/admin/charts", <RadarChartOutlined />, [
+  getItem("매출 및 통계", "sub1", "/admin/charts", <LineChartOutlined />, [
     getItem(
-      <Link to={"/admin/charts/sales"}>매출통계</Link>,
-      "sales",
-      "/admin/charts/sales",
-      <LineChartOutlined />,
+      <Link to={"/admin/charts/dsales"}>일별</Link>,
+      "dsales",
+      "/admin/charts/dsales",
     ),
     getItem(
-      <Link to={"/admin/charts/order"}>주문통계</Link>,
-      "order",
-      "/admin/charts/order",
-      <BarChartOutlined />,
+      <Link to={"/admin/charts/msales"}>월별</Link>,
+      "msales",
+      "/admin/charts/msales",
+    ),
+    getItem(
+      <Link to={"/admin/charts/ysales"}>년별</Link>,
+      "ysales",
+      "/admin/charts/ysales",
+    ),
+  ]),
+  getItem("주문통계", "sub1", "/admin/charts", <BarChartOutlined />, [
+    getItem(
+      <Link to={"/admin/charts/dorder"}>일별</Link>,
+      "dorder",
+      "/admin/charts/dorder",
+    ),
+    getItem(
+      <Link to={"/admin/charts/morder"}>월별</Link>,
+      "morder",
+      "/admin/charts/morder",
+    ),
+    getItem(
+      <Link to={"/admin/charts/yorder"}>년별</Link>,
+      "yorder",
+      "/admin/charts/yorder",
     ),
   ]),
 ];

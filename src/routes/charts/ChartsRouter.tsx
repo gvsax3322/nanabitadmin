@@ -1,7 +1,11 @@
 import { ReactElement } from "react";
 import { Navigate } from "react-router";
-import OrderChartView from "../../components/charts/OrderChartView";
-import SalesChartView from "../../components/charts/SalesChartView";
+import DOrderChartView from "../../components/charts/DOrderChartView";
+import { default as DSalesChartView } from "../../components/charts/DSalesChartView";
+import MOrderChartView from "../../components/charts/MOrderChartView";
+import MSalesChartView from "../../components/charts/MSalesChartView";
+import YOrderChartView from "../../components/charts/YOrderChartView";
+import YSalesChartView from "../../components/charts/YSalesChartView";
 import ChartsPage from "../../pages/charts/ChartsPage";
 
 interface ChartAdmin {
@@ -18,8 +22,12 @@ const ChartsRouter: ChartAdmin = {
   element: <ChartsPage></ChartsPage>,
   children: [
     { path: "", element: <Navigate to="all" /> },
-    { path: "sales", element: <SalesChartView /> },
-    { path: "order", element: <OrderChartView /> },
+    { path: "dsales", element: <DSalesChartView /> },
+    { path: "msales", element: <MSalesChartView /> },
+    { path: "ysales", element: <YSalesChartView /> },
+    { path: "dorder", element: <DOrderChartView /> },
+    { path: "morder", element: <MOrderChartView /> },
+    { path: "yorder", element: <YOrderChartView /> },
   ],
 };
 

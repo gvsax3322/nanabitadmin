@@ -1,6 +1,10 @@
 import { Chart } from "chart.js/auto";
 import React, { useEffect, useRef } from "react";
 
+// interface YearData = {
+// year: number;
+// }
+
 const SalesChart: React.FC = () => {
   const chartRef = useRef<HTMLCanvasElement>(null);
 
