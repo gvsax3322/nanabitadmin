@@ -1,11 +1,17 @@
-import { ConfigProvider } from "antd";
 import React, { useEffect, useState } from "react";
-import { MainTitle, SearchButton, SelectStyle } from "../../styles/AdminBasic";
-import OrderChart from "./OrderChart";
+import SalesChart from "./SalesChart";
+import { ConfigProvider, Radio } from "antd";
+import {
+  BigCard,
+  MainTitle,
+  SearchButton,
+  SelectStyle,
+} from "../../styles/AdminBasic";
 
-const OrderChartView: React.FC = () => {
+const DSalesChartView = () => {
   // 년도와 월에 대한 상태 정의
-  const [year, setYear] = useState<number>(new Date().getFullYear());
+  const currentYear = new Date().getFullYear();
+  const [year, setYear] = useState<number>(currentYear);
   const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
 
   // 년도 변경 핸들러
@@ -19,23 +25,17 @@ const OrderChartView: React.FC = () => {
   };
 
   useEffect(() => {
-    // console.log(year, month);
+    console.log(year, month);
   }, [year, month]);
-
-  // const handleButtonClick = (
-  //   e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  // ) => {
-  //   console.log(e.currentTarget.value);
-  // };
   return (
     <div>
-      <MainTitle>주문통계</MainTitle>
+      <MainTitle>일별 매출통계</MainTitle>
       <div style={{ display: "flex", alignItems: "center" }}>
         {/* 년도 선택 */}
         <SelectStyle value={year} onChange={handleYearChange}>
-          {Array.from({ length: 10 }, (_, i) => (
-            <option key={i} value={year - i}>
-              {year - i}년
+          {Array.from({ length: 3 }, (_, i) => (
+            <option key={currentYear - i} value={currentYear - i}>
+              {currentYear - i}년
             </option>
           ))}
         </SelectStyle>
@@ -49,6 +49,7 @@ const OrderChartView: React.FC = () => {
         </SelectStyle>
         <SearchButton>검색</SearchButton>
       </div>
+
       <ConfigProvider
         theme={{
           components: {
@@ -69,46 +70,12 @@ const OrderChartView: React.FC = () => {
             },
           },
         }}
-      >
-        {/* <Radio.Group>
-          <Radio.Button
-            onClick={handleButtonClick}
-            style={{
-              fontSize: "12px",
-              height: "25px",
-              lineHeight: "25px",
-            }}
-            value="daily"
-          >
-            일별
-          </Radio.Button>
-          <Radio.Button
-            onClick={handleButtonClick}
-            style={{
-              fontSize: "12px",
-              height: "25px",
-              lineHeight: "25px",
-            }}
-            value="monthly"
-          >
-            월별
-          </Radio.Button>
-          <Radio.Button
-            onClick={handleButtonClick}
-            style={{
-              fontSize: "12px",
-              height: "25px",
-              lineHeight: "25px",
-            }}
-            value="years"
-          >
-            년별
-          </Radio.Button>
-        </Radio.Group> */}
-      </ConfigProvider>
-      <OrderChart />
+      ></ConfigProvider>
+      <BigCard style={{ marginTop: "15px" }}>
+        <SalesChart />
+      </BigCard>
     </div>
   );
 };
 
-export default OrderChartView;
+export default DSalesChartView;
