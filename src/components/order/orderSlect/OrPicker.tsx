@@ -10,7 +10,8 @@ interface OrderPickerProps {
 }
 
 const OrPicker: React.FC<OrderPickerProps> = ({ onDateChange }) => {
-  const [selectedDate, setSelectedDate] = useState<string[]>([]);
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
 
   const handleDateChange = (
     dates: (Dayjs | null)[] | null,
@@ -21,10 +22,12 @@ const OrPicker: React.FC<OrderPickerProps> = ({ onDateChange }) => {
       console.log("From: ", dateStrings[0], ", to: ", dateStrings[1]);
 
       // 변경된 날짜를 상태에 저장
-      setSelectedDate(dateStrings);
+      setStartDate(dateStrings[0] || "");
+      setEndDate(dateStrings[1] || "");
 
       // 선택된 날짜를 콘솔에 찍기
-      console.log("선택된 날짜 문자열:", dateStrings);
+      console.log("startDate:", startDate);
+      console.log("endDate:", endDate);
 
       // 부모 컴포넌트로 변경된 날짜 정보 전달
       onDateChange(dates, dateStrings);
