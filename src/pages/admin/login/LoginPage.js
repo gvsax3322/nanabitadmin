@@ -1,6 +1,5 @@
 import { Button, Form, Input } from "antd";
 import { useState } from "react";
-
 import {
   LoginBox,
   LoginFooter,
@@ -10,11 +9,9 @@ import {
 } from "../../../styles/loginpage/loginpagestyle";
 import useCustomLogin from "../../hooks/useCustomLogin";
 import { useNavigate } from "react-router";
-
 const LoginPage = () => {
   const { doLogin } = useCustomLogin();
   const navigate = useNavigate();
-
   const successFn = result => {
     console.log(result);
     navigate("/admin");
@@ -25,16 +22,13 @@ const LoginPage = () => {
   const errorFn = result => {
     console.log(result);
   };
-
   // 초기값
   const initState = {
-    uid: "",
-    upw: "",
+    uid: "ADMIN",
+    upw: "xptmxm12!@",
   };
-
   const [loginParam, setLoginParam] = useState(initState);
   // 커스텀 훅 사용하기
-
   const onFinish = values => {
     // console.log("Success:", values);
     doLogin({ loginParam, successFn, failFn, errorFn });
@@ -42,21 +36,17 @@ const LoginPage = () => {
   const onFinishFailed = errorInfo => {
     // console.log("Failed:", errorInfo);
   };
-
   // slice 값(state)을 읽을때        useSelector
   // slice 값(state)를 업데이트할때  useDispatch()
-
   const onValuesChanged = (changedValues, allValues) => {
     // console.log(_필드값);
     // console.log(_전체값);
     setLoginParam({ ...allValues });
   };
-
   return (
     <>
       <LoginPageWrap>
         <LoginHeader />
-
         <LoginMain>
           <LoginBox>
             <img
@@ -168,5 +158,4 @@ const LoginPage = () => {
     </>
   );
 };
-
 export default LoginPage;

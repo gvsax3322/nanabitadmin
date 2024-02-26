@@ -1,3 +1,4 @@
+import { ConfigProvider, Table } from "antd";
 import React, { useState } from "react";
 import {
   BigButton,
@@ -10,7 +11,6 @@ import {
   SubTitle,
 } from "../../styles/AdminBasic";
 import OrderAllSelect from "../order/orderSlect/OrderAllSelect";
-import { ConfigProvider, Table } from "antd";
 
 interface IDataItem {
   key: number;
