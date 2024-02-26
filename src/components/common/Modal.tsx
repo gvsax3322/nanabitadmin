@@ -30,20 +30,22 @@ interface Product {
   pics: string[];
   productDetails: string;
   dto: DTO;
+  dResultModalProps: { onClose: () => void };
 }
 
-const initState = [
-  {
-    reviewPics: [""], // 리뷰 사진
-    dto: {
-      idetails: 0, //   주문상세 KEY
-      iorder: 0, //   주문 PK
-      contents: "", //   리뷰 내용
-      productScore: 0, //   리뷰 별점
-    },
+const initState = {
+  pics: [],
+  productDetails: "",
+  dto: {
+    imain: 0,
+    imiddle: 0,
+    productNm: "",
+    recommendedAge: 0,
+    adminMemo: "",
+    price: 0,
+    remainedCount: 0,
   },
-];
-
+};
 const getBase64 = (file: any) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -88,6 +90,8 @@ const LoadBt = styled(Button)`
   padding: 10px;
 `;
 const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
+  //초기값
+  const [productInfo, setProductInfo] = useState(initState);
   // ================ 파일 업로드
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -224,6 +228,20 @@ const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
           wrapperCol={{
             span: 14,
           }}
+          initialValues={{
+            remember: true,
+            pics: ["string"],
+            productDetails: "string",
+            dto: {
+              imain: 0,
+              imiddle: 0,
+              productNm: "string",
+              recommendedAge: 0,
+              adminMemo: "string",
+              price: 0,
+              remainedCount: 0,
+            },
+          }}
           layout="horizontal"
           onFinish={handleSubmit}
           onFinishFailed={onFinishFailed}
@@ -249,7 +267,7 @@ const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
           >
             <div className="left">관리자메모</div>
             <div className="right">
-              <TextareaStyle name="notes" id="notes"></TextareaStyle>
+              <TextareaStyle name="adminMemo" id="notes" />
             </div>
           </BigKeyword>
 
