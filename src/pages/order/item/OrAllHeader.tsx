@@ -9,9 +9,10 @@ import {
 } from "../../../styles/AdminBasic";
 import styled from "@emotion/styled";
 import OrderAllSelect from "../../../components/order/orderSlect/OrderAllSelect";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import OrPicker from "../../../components/order/orderSlect/OrPicker";
 import { Dayjs } from "dayjs";
+import { getOrderAll } from "../../../api/order/orderAllApi";
 
 const Wrap = styled.div`
   margin-bottom: 30px;
@@ -48,7 +49,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = () => {
   const [paymentOp, setPaymentOp] = useState(0); //  결제수단 상태 옵션관리
   const [selectedDate, setSelectedDate] = useState<string[]>([]); // Date picker 관리
   const [userSearchActive, setUserSearchActive] = useState(false); // 검색버튼 옵션관리
-  const [searchText, setSearchText] = useState<string>(""); //  검색어텍스트 관리
+  const [searchText, setSearchText] = useState(""); //  검색어텍스트 관리
 
   // 기간버튼 핸들러
   const handlePeriodBt = (BTIndex: number) => {
@@ -187,14 +188,14 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    setPeriodBt(0);
-    setSearchOp(0);
-    setPrdOp(0);
-    setPaymentOp(0);
-    setStateOp(0);
+    // setPeriodBt(0);
+    // setSearchOp(0);
+    // setPrdOp(0);
+    // setPaymentOp(0);
+    // setStateOp(0);
     // 사용자는 검색을 했다.
     setUserSearchActive(true);
-    // fetchData();
+    fetchData();
     console.log(
       "검색버튼눌렀어융",
       periodBt,
@@ -208,40 +209,78 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = () => {
     );
   };
 
-  // const fetchData = () => {
-  //   getOrderAll({
-  //     orderParam: {
-  //       processState: setStateOp,
-  //       dateCategory: setPrdOp,
-  //       searchCategory: setSearchOp,
-  //       keyword: setSearchText,
-  //       startDate: setSelectedDate,
-  //       endDate: setSelectedDate,
-  //       dateFl: setPeriodBt,
-  //       payCategory: setPaymentOp,
-  //       sort: 0,
-  //     },
-  //     successFn,
-  //     failFn,
-  //     errorFn,
-  //   });
-  // };
+  const handleSearchreset = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    setPeriodBt(0);
+    setSearchOp(0);
+    setPrdOp(0);
+    setPaymentOp(0);
+    setStateOp(0);
+    setSearchText("");
+    setSelectedDate([""]);
+    setSelectedDate([""]);
 
-  // const successFn = data => {
-  //   // console.log("successFn : ", data);
-  //   setOrderData(data);
-  // };
+    // 사용자는 검색을 했다.
+    setUserSearchActive(true);
+    fetchData();
 
-  // const failFn = data => {
-  //   // console.log("failFn : ", data);
-  //   alert("failFn : 데이터 호출에 실패하였습니다.");
-  // };
+    console.log(
+      "초기화버튼눌렀어융",
+      periodBt,
+      searchOp,
+      prdOp,
+      paymentOp,
+      stateOp,
+      userSearchActive,
+      searchText,
+      selectedDate,
+    );
+  };
 
-  // const errorFn = data => {
-  //   // console.log("errorFn : ", data);
-  //   alert("서버상태 불안정 그래서, 데모테스트했음.");
-  //   setOrderData(data);
-  // };
+  // 서버연동
+  const fetchData = () => {
+    // 검색 버튼 클릭시만 API 날리기
+    if (userSearchActive) {
+      // 결과가 오기 전까지는 무효화
+      setUserSearchActive(false);
+      getOrderAll({
+        orderParam: {
+          processState: stateOp,
+          dateCategory: prdOp,
+          searchCategory: searchOp,
+          keyword: searchText,
+          startDate: selectedDate[0],
+          endDate: selectedDate[1] !== undefined ? selectedDate[1] : "",
+          dateFl: periodBt,
+          payCategory: paymentOp,
+          sort: 0,
+        },
+        successFn: successFn_AllOrder,
+        failFn: failFn_AllOrder,
+        errorFn: errorFn_AllOrder,
+      });
+    }
+  };
+
+  const successFn_AllOrder = (data: any) => {
+    // console.log("반품신청 successFn : ", data);
+
+    setUserSearchActive(false);
+    setOrderData(data);
+  };
+
+  const failFn_AllOrder = (data: any) => {
+    // console.log("failFn : ", data);
+    alert("failFn오더all : 데이터 호출에 실패하였습니다.");
+  };
+
+  const errorFn_AllOrder = (data: any) => {
+    // console.log("errorFn : ", data);
+    alert("오더all!!! 서버상태 불안정 그래서, 데모테스트했음.");
+    setOrderData(data);
+  };
 
   return (
     <>
@@ -358,8 +397,13 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = () => {
             marginBottom: "20px",
           }}
         >
-          <SearchButton onClick={handleClickSearch}>검색</SearchButton>
-          <SearchButton style={{ background: " #f44336" }}>초기화</SearchButton>
+          <SearchButton onClick={e => handleClickSearch(e)}>검색</SearchButton>
+          <SearchButton
+            style={{ background: " #f44336" }}
+            onClick={e => handleSearchreset(e)}
+          >
+            초기화
+          </SearchButton>
         </div>
       </Wrap>
       <div
