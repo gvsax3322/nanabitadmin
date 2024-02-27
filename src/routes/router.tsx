@@ -21,7 +21,7 @@ import MemberRouter from "./member/MemberRouter";
 import productAdmin from "./product";
 import UsermainRouter from "./usermainmanage/usermainrouter";
 import useCustomLogin from "../hooks/useCustomLogin";
-import CommunPage from "../pages/ community/ CommunPage";
+import CommunPage from "../pages/community/CommunPage";
 import DComPage from "../pages/order/sub/DComPage";
 import ShippingPage from "../pages/order/sub/ShippingPage";
 
