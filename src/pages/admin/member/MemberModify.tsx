@@ -23,7 +23,7 @@ import {
 } from "../../../styles/member/memberstyle";
 import { getMemberList } from "../../../api/member/memberApi";
 
-export interface ApiResponse {
+export interface MemberApiResponse {
   code: string;
   message: string;
   data: MemberList[];
@@ -36,6 +36,7 @@ export interface MemberList {
   phoneNumber: string;
   registeredAt: string;
 }
+
 const MemberModify = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [postModalVisible, setPostModalVisible] = useState(false);
@@ -45,7 +46,6 @@ const MemberModify = () => {
   const fetchData = async () => {
     try {
       const successFn = (data: MemberList[]) => {
-        // 데이터를 성공적으로 받았을 때 수행할 작업을 여기에 추가합니다.
         console.log("데이터:", data);
         setMemberList(data);
       };
@@ -83,17 +83,22 @@ const MemberModify = () => {
     setPostModalVisible(true);
   };
 
+  const formatDate = (dateString: string) => {
+    return dateString.slice(0, 10);
+  };
+
   const columns = [
     {
       title: "번호",
-      dataIndex: "key",
-      key: "key",
+      dataIndex: "index",
+      key: "index",
       width: "5%",
+      render: (text: string, record: MemberList, index: number) => index + 1,
     },
     {
       title: "회원명",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "nm",
+      key: "nm",
       width: "15%",
       render: (text: string, record: MemberList) => (
         <Dropdown
@@ -109,27 +114,28 @@ const MemberModify = () => {
           }
           trigger={["click"]}
         >
-          <div className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+          <span className="ant-dropdown-link" onClick={e => e.preventDefault()}>
             {text} <DownOutlined />
-          </div>
+          </span>
         </Dropdown>
       ),
     },
     {
       title: "이메일",
-      dataIndex: "address",
-      key: "address",
+      dataIndex: "email",
+      key: "email",
       width: "30%",
     },
     {
       title: "전화번호",
-      dataIndex: "address",
-      key: "address",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
     },
     {
       title: "가입일",
-      dataIndex: "age",
-      key: "age",
+      dataIndex: "registeredAt",
+      key: "registeredAt",
+      render: (text: string) => formatDate(text),
     },
   ];
 
@@ -178,7 +184,13 @@ const MemberModify = () => {
         </div>
       </BtList>
       <ListWrap>
-        <Table dataSource={memberList} columns={columns} />
+        <Table
+          columns={columns}
+          dataSource={memberList.map(member => ({
+            ...member,
+            key: member.iuser,
+          }))}
+        />
       </ListWrap>
       {editModalVisible && (
         <MemberModifyMD onClose={handleModalClose}></MemberModifyMD>
