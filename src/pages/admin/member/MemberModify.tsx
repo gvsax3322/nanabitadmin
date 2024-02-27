@@ -75,6 +75,7 @@ const MemberModify = () => {
 
   const handleMenuClick1 = (record: MemberList) => {
     setSelectedMember(record);
+    console.log(record);
     setEditModalVisible(true);
   };
 
@@ -193,7 +194,10 @@ const MemberModify = () => {
         />
       </ListWrap>
       {editModalVisible && (
-        <MemberModifyMD onClose={handleModalClose}></MemberModifyMD>
+        <MemberModifyMD
+          selectedMember={selectedMember}
+          onClose={handleModalClose}
+        ></MemberModifyMD>
       )}
       {postModalVisible && <PostModal onClose={handleModalClose}></PostModal>}
     </ModifyWrap>

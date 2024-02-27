@@ -1,4 +1,8 @@
 import {
+  MemberData,
+  PersonApiResponse,
+} from "../../components/member/modal/MemberModifyMD";
+import {
   MemberApiResponse,
   MemberList,
 } from "../../pages/admin/member/MemberModify";
@@ -52,6 +56,26 @@ export const getExMemberList = async (
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
       successFn(res.data.data);
+    } else {
+      failFn("목록 호출 오류입니다.");
+    }
+  } catch (error) {
+    errorFn("목록 호출 서버 에러에요");
+  }
+};
+
+// 회원정보 하나 가져오기
+export const getMember = async (
+  successFn: (data: MemberData[]) => void,
+  failFn: (error: string) => void,
+  errorFn: (error: string) => void,
+  iuser: number,
+) => {
+  try {
+    const res = await jwtAxios.get<PersonApiResponse>(`${host}/${iuser}`);
+    const status = res.status.toString();
+    if (status.charAt(0) === "2") {
+      successFn([res.data.data]);
     } else {
       failFn("목록 호출 오류입니다.");
     }
