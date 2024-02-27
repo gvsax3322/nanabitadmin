@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Radio } from "antd";
 import { motion } from "framer-motion";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BigInput,
   BigKeyword,
@@ -14,11 +14,14 @@ import {
   SubTitle,
   TextareaStyle,
 } from "../../../styles/AdminBasic";
+import { BtList, ModifyButton } from "../../../styles/member/memberstyle";
 import OrderPicker from "../../order/orderSlect/OrderPicker";
 import MyBaby from "./MyBaby";
-import { BtList, ModifyButton } from "../../../styles/member/memberstyle";
+import { MemberList } from "../../../pages/admin/member/MemberModify";
+import { getMember } from "../../../api/member/memberApi";
 
 interface ResultModalProps {
+  selectedMember: MemberList | null;
   onClose: () => void;
 }
 
@@ -56,12 +59,69 @@ const MenuList = styled.div`
   }
 `;
 
-const MemberModifyMD: React.FC<ResultModalProps> = ({ onClose }) => {
+interface Address {
+  zipCode: string;
+  address: string;
+  addressDetail: string;
+}
+interface Child {
+  ichildAge: number;
+  gender: string;
+}
+
+export interface MemberData {
+  nm: string;
+  registeredAt: string;
+  uid: string;
+  phoneNumber: string;
+  email: string;
+  addresses: Address[];
+  children: Child[];
+  adminMemo: string | null;
+}
+
+export interface PersonApiResponse {
+  code: string;
+  message: string;
+  data: MemberData;
+}
+
+const MemberModifyMD: React.FC<ResultModalProps> = ({
+  selectedMember,
+  onClose,
+}) => {
   const [selectedValue, setSelectedValue] = useState(1);
+  const [memberInfo, setMemberInfo] = useState<MemberData[]>([]);
   const handleRadioChange = (e: any) => {
     setSelectedValue(e.target.value);
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!selectedMember) return;
+
+        const successFn = (data: MemberData[]) => {
+          console.log("데이터:", data);
+          setMemberInfo(data);
+        };
+
+        const failFn = (error: string) => {
+          console.error("목록 호출 오류:", error);
+        };
+
+        const errorFn = (error: string) => {
+          console.error("목록 호출 서버 에러:", error);
+        };
+
+        await getMember(successFn, failFn, errorFn, selectedMember.iuser);
+      } catch (error) {
+        console.error("에러:", error);
+      }
+    };
+
+    fetchData();
+  }, [selectedMember]);
   return (
     <ModalOverlay>
       <ModalContent
@@ -113,13 +173,13 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({ onClose }) => {
                 이름
               </div>
               <div className="right">
-                <MiddleInput readOnly />
+                <h2>{memberInfo[0] && memberInfo[0].nm}</h2>
               </div>
               <div className="left" style={{ width: "130px" }}>
                 가입일
               </div>
               <div className="right">
-                <h2>2024.02.22</h2>
+                <h2>{memberInfo[0] && memberInfo[0].registeredAt}</h2>
               </div>
             </BigKeyword>
             <BigKeyword
@@ -129,13 +189,13 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({ onClose }) => {
                 아이디
               </div>
               <div className="right">
-                <MiddleInput readOnly style={{ marginRight: "10px" }} />
+                <h2>{memberInfo[0] && memberInfo[0].uid}</h2>
               </div>
               <div className="left" style={{ width: "130px" }}>
                 비밀번호
               </div>
               <div className="right">
-                <MiddleInput />
+                <MiddleInput style={{ fontSize: "15px" }} />
               </div>
             </BigKeyword>
             <BigKeyword
@@ -145,13 +205,13 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({ onClose }) => {
                 전화번호
               </div>
               <div className="right">
-                <MiddleInput readOnly />
+                <h2>{memberInfo[0] && memberInfo[0].phoneNumber}</h2>
               </div>
               <div className="left" style={{ width: "130px" }}>
                 이메일
               </div>
               <div className="right">
-                <MiddleInput readOnly />
+                <h2>{memberInfo[0] && memberInfo[0].email}</h2>
               </div>
             </BigKeyword>
             <BigKeyword
@@ -159,7 +219,7 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({ onClose }) => {
                 borderTop: `1px solid ${Common.color.primary}`,
               }}
             >
-              <div className="left" style={{ width: "70px" }}>
+              <div className="left" style={{ width: "5.05%" }}>
                 주소
               </div>
               <div
