@@ -46,4 +46,12 @@ export const ListWrap = styled.div`
     font-size: 18px;
     height: 40px;
   }
+  .ant-table-wrapper
+    .ant-table-thead
+    > tr
+    > th:not(:last-child):not(.ant-table-selection-column):not(
+      .ant-table-row-expand-icon-cell
+    ):not([colspan])::before {
+    display: none;
+  }
 `;
