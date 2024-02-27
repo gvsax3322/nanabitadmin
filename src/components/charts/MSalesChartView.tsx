@@ -1,3 +1,4 @@
+import { ConfigProvider } from "antd";
 import React, { useEffect, useState } from "react";
 import {
   BigCard,
@@ -5,13 +6,28 @@ import {
   SearchButton,
   SelectStyle,
 } from "../../styles/AdminBasic";
-import { ConfigProvider } from "antd";
 import SalesChart from "./SalesChart";
+import { getSalesChart } from "../../api/chart/chartApi";
+
+export interface getChartApi {
+  code: string;
+  message: string;
+  data: SalesChartData[];
+}
+
+export interface SalesChartData {
+  totalSales: number;
+  earnings: number;
+  costPrice: number;
+  date: string;
+}
 
 const MSalesChartView = () => {
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState<number>(currentYear);
   const [yearData, setYearData] = useState<number>();
+  const [resMonth, setResMonth] = useState<getChartApi | null>(null);
+  const month = 0;
 
   // 년도 변경 핸들러
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -19,14 +35,32 @@ const MSalesChartView = () => {
   };
 
   const onSearchYear = () => {
-    console.log(year);
-    setYearData(year);
+    setYearData(year); // 검색 버튼을 클릭할 때만 yearData를 설정합니다.
+    fetchData(); // fetchData 함수를 호출합니다.
+    // console.log("resMonth", resMonth);
   };
 
   useEffect(() => {
-    // console.log(year);
-  }, [year]);
+    // console.log("resMonth", resMonth);
+  }, [resMonth]);
 
+  const fetchData = async () => {
+    try {
+      const successFn = (data: getChartApi) => {
+        setResMonth(data);
+        // console.log("데이터:", resMonth);
+      };
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+      await getSalesChart(year, month, successFn, failFn, errorFn);
+    } catch (error) {
+      console.error("에러:", error);
+    }
+  };
   return (
     <div>
       <MainTitle>월별 매출통계</MainTitle>
@@ -65,8 +99,7 @@ const MSalesChartView = () => {
         }}
       ></ConfigProvider>
       <BigCard style={{ marginTop: "15px" }}>
-        {/* <SalesChart yearData={yearData} /> */}
-        <SalesChart />
+        <SalesChart yearData={yearData} monthData={month} resMonth={resMonth} />
       </BigCard>
     </div>
   );

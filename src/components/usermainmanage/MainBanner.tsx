@@ -10,7 +10,18 @@ import {
   SmallButton,
   SubTitle,
 } from "../../styles/AdminBasic";
+import { getBanner } from "../../api/usermain/mainbannerApi";
 // 테이블 스타일 관리
+
+// 배너
+export interface BannerData {
+  ibanner: number;
+  target: number;
+  status: number; // 노출여부
+  bannerUrl: "string";
+  bannerPic: "string";
+}
+
 const CenteredHeaderTable = styled(Table)`
   &&& {
     .ant-table-thead > tr > th {
@@ -22,6 +33,28 @@ const CenteredHeaderTable = styled(Table)`
   }
 `;
 const MainBanner: React.FC = () => {
+  const [bannerInfo, setBannerInfo] = useState<BannerData[] | null>(null);
+
+  const fetchData = async () => {
+    try {
+      const successFn = (data: BannerData[]) => {
+        setBannerInfo(data);
+      };
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+      await getBanner(successFn, failFn, errorFn);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    fetchData();
+    console.log("잘 나오고 있나요 ?", bannerInfo);
+  }, []);
+
   interface IDataItem {
     exposing: JSX.Element;
     ibanner: number;
