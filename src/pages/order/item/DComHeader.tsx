@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-
 import {
   BigKeyword,
   Common,
@@ -11,51 +9,24 @@ import {
 } from "../../../styles/AdminBasic";
 import styled from "@emotion/styled";
 import OrderAllSelect from "../../../components/order/orderSlect/OrderAllSelect";
-import { Dayjs } from "dayjs";
+import { useState } from "react";
 import OrPicker from "../../../components/order/orderSlect/OrPicker";
+import { Dayjs } from "dayjs";
 
+const Wrap = styled.div`
+  margin-bottom: 30px;
+  border-bottom: 2px solid ${Common.color.primary};
+`;
 interface OrAllHeaderProps {}
-
 const DComHeader: React.FC<OrAllHeaderProps> = () => {
   const [periodBt, setPeriodBt] = useState(0); // 선택된 기간 상태 버튼관리
-  const [searchOp, setSearchOp] = useState(0); // 검색어옵션 상태 옵션관리
-  const [prdOp, setPrdOp] = useState(0); //  기간검색 상태 옵션관리
+  const [prdOp, setPrdOp] = useState(0); // 기간검색 옵션
+  const [searchOp, setSearchOp] = useState(0); // 검색어 상태 옵션관리
   const [paymentOp, setPaymentOp] = useState(0); //  결제수단 상태 옵션관리
-  const [stateOp, setStateOp] = useState(0); //  주문상태 옵션관리
-  const [searchText, setSearchText] = useState<string>(""); //  검색어텍스트 관리
-  const [userSearchActive, setUserSearchActive] = useState(false); // 검색버튼 옵션관리
   const [selectedDate, setSelectedDate] = useState<string[]>([]); // Date picker 관리
+  const [userSearchActive, setUserSearchActive] = useState(false); // 검색버튼 옵션관리
+  const [searchText, setSearchText] = useState<string>(""); //  검색어텍스트 관리
 
-  // 검색 버튼 클릭시 처리
-  const handleClickSearch = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    e.preventDefault();
-    setPeriodBt(0);
-    setSearchOp(0);
-    setPrdOp(0);
-    setPaymentOp(0);
-    setStateOp(0);
-    // 사용자는 검색을 했다.
-    setUserSearchActive(true);
-    // fetchData();
-    console.log(
-      "검색버튼눌렀어융",
-      periodBt,
-      searchOp,
-      prdOp,
-      paymentOp,
-      stateOp,
-      userSearchActive,
-      searchText,
-      selectedDate,
-    );
-  };
-
-  // 검색어 작성
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  };
   // 기간버튼 핸들러
   const handlePeriodBt = (BTIndex: number) => {
     setPeriodBt(BTIndex);
@@ -63,6 +34,48 @@ const DComHeader: React.FC<OrAllHeaderProps> = () => {
     console.log("선택된 기간:", BTIndex);
   };
 
+  // DATE picker 범위 업데이트
+  const handleDateChange = (
+    dates: null | (Dayjs | null)[],
+    dateStrings: string[],
+  ) => {
+    setSelectedDate(dateStrings);
+  };
+
+  // 검색어 작성
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+
+  // 기간검색 셀렉함수
+  const handlePrdOp = (optionIndex: number): void => {
+    switch (optionIndex) {
+      case 0:
+        setPrdOp(0);
+        break;
+      case 1:
+        setPrdOp(1);
+        break;
+      case 2:
+        setPrdOp(2);
+        break;
+      case 3:
+        setPrdOp(3);
+        break;
+      case 4:
+        setPrdOp(4);
+        break;
+      case 5:
+        setPrdOp(5);
+        break;
+      case 6:
+        setPrdOp(6);
+        break;
+      default:
+        break;
+    }
+    console.log("기간검색", optionIndex);
+  };
   // 검색어 셀렉함수
   const handleSearchOp = (optionIndex: number): void => {
     switch (optionIndex) {
@@ -100,36 +113,6 @@ const DComHeader: React.FC<OrAllHeaderProps> = () => {
     console.log("검색어", optionIndex);
   };
 
-  // 기간검색 셀렉함수
-  const handlePrdOp = (optionIndex: number): void => {
-    switch (optionIndex) {
-      case 0:
-        setPrdOp(0);
-        break;
-      case 1:
-        setPrdOp(1);
-        break;
-      case 2:
-        setPrdOp(2);
-        break;
-      case 3:
-        setPrdOp(3);
-        break;
-      case 4:
-        setPrdOp(4);
-        break;
-      case 5:
-        setPrdOp(5);
-        break;
-      case 6:
-        setPrdOp(6);
-        break;
-      default:
-        break;
-    }
-    console.log("기간검색", optionIndex);
-  };
-
   // 결제수단 셀렉함수
   const handlePaymentOp = (optionIndex: number): void => {
     switch (optionIndex) {
@@ -142,54 +125,36 @@ const DComHeader: React.FC<OrAllHeaderProps> = () => {
       case 2:
         setPaymentOp(2);
         break;
-      case 3:
-        setPaymentOp(3);
+      default:
         break;
     }
     console.log("결제수단", optionIndex);
   };
-
-  // 주문상태 셀렉함수
-  const handleStateOp = (optionIndex: number): void => {
-    switch (optionIndex) {
-      case 0:
-        setStateOp(0);
-        break;
-      case 1:
-        setStateOp(1);
-        break;
-      case 2:
-        setStateOp(2);
-        break;
-      case 3:
-        setStateOp(3);
-        break;
-      case 4:
-        setStateOp(4);
-        break;
-      case 5:
-        setStateOp(5);
-        break;
-      case 6:
-        setStateOp(6);
-        break;
-      default:
-        break;
-    }
-    console.log("주문상태", optionIndex);
-  };
-
-  // 선택한 날짜 범위 업데이트
-  const handleDateChange = (
-    dates: null | (Dayjs | null)[],
-    dateStrings: string[],
+  // 검색 버튼 클릭시 처리
+  const handleClickSearch = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
-    setSelectedDate(dateStrings);
+    e.preventDefault();
+    setPeriodBt(0);
+    setSearchOp(0);
+    setPrdOp(0);
+    setPaymentOp(0);
+    // 사용자는 검색을 했다.
+    setUserSearchActive(true);
+    // fetchData();
+    console.log(
+      "검색버튼눌렀어융",
+      periodBt,
+      searchOp,
+      prdOp,
+      paymentOp,
+
+      userSearchActive,
+      searchText,
+      selectedDate,
+    );
   };
-  const Wrap = styled.div`
-    margin-bottom: 30px;
-    border-bottom: 2px solid ${Common.color.primary};
-  `;
+
   return (
     <>
       <Wrap>
@@ -301,7 +266,6 @@ const DComHeader: React.FC<OrAllHeaderProps> = () => {
           <SearchButton style={{ background: " #f44336" }}>초기화</SearchButton>
         </div>
       </Wrap>
-
       <div
         style={{
           display: "flex",
@@ -315,16 +279,7 @@ const DComHeader: React.FC<OrAllHeaderProps> = () => {
           </SmallButton>
           <SmallButton>엑셀 저장</SmallButton>
         </div>
-        <div style={{ textAlign: "right" }}>
-          <OrderAllSelect
-            option1="주문일 역순"
-            option2="처리일 역순"
-            option3="처리일 순"
-            option4="주문자명"
-          />
-        </div>
       </div>
-
       <div></div>
     </>
   );

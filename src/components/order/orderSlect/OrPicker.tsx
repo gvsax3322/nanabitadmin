@@ -1,5 +1,5 @@
 import { DatePicker, Space } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Common } from "../../../styles/AdminBasic";
 import { Dayjs } from "dayjs";
 
@@ -25,16 +25,18 @@ const OrPicker: React.FC<OrderPickerProps> = ({ onDateChange }) => {
       setStartDate(dateStrings[0] || "");
       setEndDate(dateStrings[1] || "");
 
-      // 선택된 날짜를 콘솔에 찍기
-      console.log("startDate:", startDate);
-      console.log("endDate:", endDate);
-
+      // 선택된 날짜를 콘솔에 찍기는 useEffect를 통해 수행
       // 부모 컴포넌트로 변경된 날짜 정보 전달
       onDateChange(dates, dateStrings);
     } else {
       console.log("Clear");
     }
   };
+
+  useEffect(() => {
+    console.log("startDate:", startDate);
+    console.log("endDate:", endDate);
+  }, [startDate, endDate]); // startDate 또는 endDate가 업데이트될 때마다 useEffect 실행
 
   return (
     <Space direction="vertical" size={12}>
