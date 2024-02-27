@@ -7,12 +7,16 @@ import {
   SelectStyle,
 } from "../../styles/AdminBasic";
 import OrderChart from "./OrderChart";
+import { getOChartApi } from "./MOrderChartView";
+import { getOrderChart } from "../../api/chart/chartApi";
 
 const DOrderChartView: React.FC = () => {
   // 년도와 월에 대한 상태 정의
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState<number>(currentYear);
   const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
+  const [yearData, setYearData] = useState<number>();
+  const [resMonth, setResMonth] = useState<getOChartApi | null>(null);
 
   // 년도 변경 핸들러
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -24,9 +28,33 @@ const DOrderChartView: React.FC = () => {
     setMonth(Number(e.target.value));
   };
 
+  const onSearchYear = () => {
+    setYearData(year); // 검색 버튼을 클릭할 때만 yearData를 설정합니다.
+    fetchData(); // fetchData 함수를 호출합니다.
+    // console.log("resMonth", resMonth);
+  };
+
   useEffect(() => {
-    console.log(year, month);
-  }, [year, month]);
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const successFn = (data: getOChartApi) => {
+        setResMonth(data);
+        // console.log("데이터:", resMonth);
+      };
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+      await getOrderChart(year, month, successFn, failFn, errorFn);
+    } catch (error) {
+      console.error("에러:", error);
+    }
+  };
 
   return (
     <div>
@@ -48,7 +76,7 @@ const DOrderChartView: React.FC = () => {
             </option>
           ))}
         </SelectStyle>
-        <SearchButton>검색</SearchButton>
+        <SearchButton onClick={onSearchYear}>검색</SearchButton>
       </div>
       <ConfigProvider
         theme={{
@@ -72,7 +100,7 @@ const DOrderChartView: React.FC = () => {
         }}
       ></ConfigProvider>
       <BigCard style={{ marginTop: "15px" }}>
-        <OrderChart />
+        <OrderChart yearData={yearData} monthData={month} resMonth={resMonth} />
       </BigCard>
     </div>
   );
