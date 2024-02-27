@@ -1,7 +1,6 @@
 import { ConfigProvider, Table } from "antd";
 import React, { useState } from "react";
 import {
-  BigButton,
   BigCard,
   BigKeyword,
   Common,
@@ -81,9 +80,6 @@ const Community = () => {
       // 모든 행에 대한 추가적인 처리
     },
   };
-  const cccc = () => {
-    window.scrollTo(0, 0);
-  };
 
   return (
     <>
@@ -142,12 +138,6 @@ const Community = () => {
       <BigCard />
       <BigCard />
       <BigCard />
-      <BigButton
-        onClick={cccc}
-        style={{ position: "fixed", bottom: "5%", right: "10%" }}
-      >
-        위로가자
-      </BigButton>
     </>
   );
 };
