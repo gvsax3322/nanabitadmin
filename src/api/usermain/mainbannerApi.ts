@@ -1,31 +1,27 @@
+import { BannerData } from "../../components/usermainmanage/MainBanner";
 import jwtAxios from "../../util/jwtUtil";
 import { API_SERVER_HOST } from "../../util/util";
 
 const host = `${API_SERVER_HOST}/api/admin`;
 
-// Main API 최근 주문 내역
-export interface BannerData {
-  ibanner: number;
-  target: number;
-  status: number; // 노출여부
-  bannerUrl: "string";
-  bannerPic: "string";
-}
-
-// 배너 조회
-export const getBanner = async (): Promise<BannerData[] | string> => {
+// 배너 조회 /api/admin/product/banner
+// http://192.168.0.144:5223/api/admin/product/banner
+export const getBanner = async (
+  successFn: (data: BannerData[]) => void,
+  failFn: (error: string) => void,
+  errorFn: (error: string) => void,
+) => {
   try {
     const res = await jwtAxios.get<BannerData[]>(`${host}/product/banner`);
     const status = res.status.toString();
-    const httpSt = status.charAt(0);
-    if (httpSt === "2") {
-      return res.data as BannerData[];
+    if (status.charAt(0) === "2") {
+      console.log("나와야하는데 ?", res.data);
+      successFn(res.data);
     } else {
-      return "이거 아님";
+      failFn("목록 호출 오류입니다.");
     }
   } catch (error) {
-    console.log(error);
-    return "500임";
+    errorFn("목록 호출 서버 에러에요");
   }
 };
 

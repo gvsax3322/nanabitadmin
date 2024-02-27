@@ -1,7 +1,7 @@
 import axios from "axios";
 import { API_SERVER_HOST } from "../../util/util";
 
-const host = `${API_SERVER_HOST}/api/admin`;
+const host = `${API_SERVER_HOST}/api/user/sign-in`;
 
 export const loginPost = async ({ loginParam, successFn, failFn, errorFn }) => {
   try {
