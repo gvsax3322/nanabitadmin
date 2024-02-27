@@ -41,8 +41,8 @@ const MSalesChartView = () => {
   };
 
   useEffect(() => {
-    // console.log("resMonth", resMonth);
-  }, [resMonth]);
+    fetchData();
+  }, []);
 
   const fetchData = async () => {
     try {

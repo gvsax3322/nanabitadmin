@@ -1,20 +1,65 @@
 import { ConfigProvider } from "antd";
 import React, { useEffect, useState } from "react";
-import { BigCard, MainTitle, SearchButton, SelectStyle } from "../../styles/AdminBasic";
+import {
+  BigCard,
+  MainTitle,
+  SearchButton,
+  SelectStyle,
+} from "../../styles/AdminBasic";
 import OrderChart from "./OrderChart";
+import { getOrderChart } from "../../api/chart/chartApi";
+
+export interface getOChartApi {
+  code: string;
+  message: string;
+  data: OrderChartData[];
+}
+export interface OrderChartData {
+  totalOrderCnt: number;
+  recallCnt: number;
+  netOrderCnt: number;
+  date: string;
+}
 
 const MOrderChartView = () => {
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState<number>(currentYear);
+  const [yearData, setYearData] = useState<number>();
+  const [resMonth, setResMonth] = useState<getOChartApi | null>(null);
+  const month = 0;
 
   // 년도 변경 핸들러
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setYear(Number(e.target.value));
   };
 
+  const onSearchYear = () => {
+    setYearData(year); // 검색 버튼을 클릭할 때만 yearData를 설정합니다.
+    fetchData(); // fetchData 함수를 호출합니다.
+    // console.log("resMonth", resMonth);
+  };
+
   useEffect(() => {
-    console.log(year);
-  }, [year]);
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const successFn = (data: getOChartApi) => {
+        setResMonth(data);
+        // console.log("데이터:", resMonth);
+      };
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+      await getOrderChart(year, month, successFn, failFn, errorFn);
+    } catch (error) {
+      console.error("에러:", error);
+    }
+  };
 
   return (
     <div>
@@ -28,7 +73,7 @@ const MOrderChartView = () => {
             </option>
           ))}
         </SelectStyle>
-        <SearchButton>검색</SearchButton>
+        <SearchButton onClick={onSearchYear}>검색</SearchButton>
       </div>
 
       <ConfigProvider
@@ -53,7 +98,7 @@ const MOrderChartView = () => {
         }}
       ></ConfigProvider>
       <BigCard style={{ marginTop: "15px" }}>
-        <OrderChart />
+        <OrderChart yearData={yearData} monthData={month} resMonth={resMonth} />
       </BigCard>
     </div>
   );
