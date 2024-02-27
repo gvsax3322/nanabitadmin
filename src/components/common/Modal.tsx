@@ -1,18 +1,16 @@
+import { PlusOutlined } from "@ant-design/icons";
 import styled from "@emotion/styled";
+import { Button, Form, Input, Upload } from "antd";
 import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   BigKeyword,
   Common,
   MainTitle,
+  SelectStyle,
   SubTitle,
-  TextareaStyle,
+  TextareaStyle
 } from "../../styles/AdminBasic";
-import { TableTicket } from "../main/TableTicket";
-import { SeletCt } from "../select/SeletCt";
-import { Button, Form, Upload } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
-import { Navigate } from "react-router";
 
 interface ResultModalProps {
   onClose: () => void;
@@ -211,6 +209,8 @@ const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
       </div>
     </button>
   );
+
+
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent
@@ -252,46 +252,141 @@ const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
           ></Form.Item>
           <MainTitle>신규 상품등록</MainTitle>
           <SubTitle>카테고리</SubTitle>
-          <div style={{ marginBottom: "15px" }}>
-            <SeletCt />
-            <SeletCt />
-          </div>
-          <TableTicket title="기본정보" />
-          <TableTicket title="가격 및 재고" />
-          <TableTicket title="상품이미지 및 상세정보" />
-          <BigKeyword
-            style={{
-              borderTop: `1px solid ${Common.color.primary}`,
-              marginBottom: "20px",
-            }}
+          
+
+          <motion.div
+            style={{ marginBottom: "15px", width: "100%" }}
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
           >
-            <div className="left">관리자메모</div>
-            <div className="right">
-              <TextareaStyle name="adminMemo" id="notes" />
+            <SelectStyle
+              style={{ width: "49%", height: "35px", marginRight: "20px" }}
+              name="imain"
+            >
+              {/* Use the optionone prop for the label of the first option */}
+              <option value={1}>옵션 1</option>
+              <option value={2}>옵션 2</option>
+              <option value={3}>옵션 3</option>
+            </SelectStyle>
+            <SelectStyle
+              style={{ width: "49%", height: "35px" }}
+              name="imiddle"
+            >
+              {/* Use the optionone prop for the label of the first option */}
+              <option value={1}>옵션 1</option>
+              <option value={2}>옵션 2</option>
+              <option value={3}>옵션 3</option>
+            </SelectStyle>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Form.Item name="productNm">
+              <Input placeholder="상품명" />
+            </Form.Item>
+          </motion.div>
+
+          <motion.div
+            style={{ marginBottom: "15px", width: "100%" }}
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Form.Item name="productNm">
+              <Input name="recommendedAge" placeholder="나이" />
+            </Form.Item>
+          </motion.div>
+
+          <motion.div
+            style={{ marginBottom: "15px", width: "100%" }}
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+          >
+            <Form.Item name="productNm">
+              <Input
+                name="price"
+                placeholder="상품 가격"
+                style={{ width: "1320px" }}
+              />
+            </Form.Item>
+          </motion.div>
+
+          <motion.div
+            style={{ marginBottom: "15px", width: "100%" }}
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2 }}
+          >
+            <Form.Item name="productNm">
+              <Input
+                name="remainedCount"
+                placeholder="재고"
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.4 }}
+          >
+            <SubTitle>상품 이미지</SubTitle>
+            <Upload
+              action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+              listType="picture-card"
+              fileList={fileList}
+              onPreview={handlePreview}
+              onChange={handleChange}
+              maxCount={4}
+              multiple
+              accept="image/png,image/jpeg,image/jpg,"
+            >
+              {fileList.length >= 4 ? null : uploadButton}
+            </Upload>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.6 }}
+          >
+            <div>
+              <i>최대 5장까지 업로드 가능합니다.</i>
             </div>
-          </BigKeyword>
-
-          <Upload
-            action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-            listType="picture-card"
-            fileList={fileList}
-            onPreview={handlePreview}
-            onChange={handleChange}
-            maxCount={5}
-            multiple
-            accept="image/png,image/jpeg,image/jpg,"
-          >
-            {fileList.length >= 5 ? null : uploadButton}
-          </Upload>
-
-          <div>
-            <i>최대 5장까지 업로드 가능합니다.</i>
-          </div>
+            <BigKeyword
+              style={{
+                borderTop: `1px solid ${Common.color.primary}`,
+                marginBottom: "20px",
+              }}
+            >
+              <div className="left">관리자메모</div>
+              <div className="right">
+                <TextareaStyle name="adminMemo" id="notes" />
+              </div>
+            </BigKeyword>
+          </motion.div>
           <div className="buttonDiv">
             <Form.Item>
-              <LoadBt type="primary" htmlType="submit">
-                작성완료
-              </LoadBt>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  delay: 1.8,
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 20,
+                }}
+              >
+                <LoadBt type="primary" htmlType="submit">
+                  작성완료
+                </LoadBt>
+              </motion.div>
             </Form.Item>
           </div>
         </Form>
