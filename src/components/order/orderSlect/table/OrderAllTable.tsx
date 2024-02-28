@@ -153,7 +153,7 @@ const OrderAllTable: React.FC<OrderAllTableProps> = ({
 
     {
       title: "주문일시",
-      dataIndex: { orderedAt },
+      dataIndex: { orderData },
     },
     {
       title: "주문목록",
