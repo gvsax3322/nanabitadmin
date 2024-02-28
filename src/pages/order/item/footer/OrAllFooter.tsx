@@ -17,6 +17,15 @@ const Wrap = styled.div`
 `;
 
 const OrAllFooter = () => {
+  const [stateBt, setStateBt] = useState(0);
+
+  // 기간버튼 핸들러
+  const handleStateBt = (BTIndex: number) => {
+    setStateBt(BTIndex);
+    // 선택된 기간에 따른 동작 수행
+    console.log("ㅎㅇ 나 일괄처리 버튼:", BTIndex);
+  };
+
   return (
     <>
       <Wrap>
@@ -30,10 +39,25 @@ const OrAllFooter = () => {
         >
           <div className="left">선택한 주문을</div>
           <div className="right">
-            <BigButton style={{ marginRight: "5px" }}>배송준비중</BigButton>
-            <BigButton style={{ marginRight: "5px" }}>배송중</BigButton>
-            <BigButton style={{ marginRight: "5px" }}>배송완료</BigButton>
-            <BigButton>주문취소</BigButton>
+            <BigButton
+              style={{ marginRight: "5px" }}
+              onClick={() => handleStateBt(2)}
+            >
+              배송준비중
+            </BigButton>
+            <BigButton
+              style={{ marginRight: "5px" }}
+              onClick={() => handleStateBt(3)}
+            >
+              배송중
+            </BigButton>
+            <BigButton
+              style={{ marginRight: "5px" }}
+              onClick={() => handleStateBt(4)}
+            >
+              배송완료
+            </BigButton>
+            <BigButton onClick={() => handleStateBt(5)}>주문취소</BigButton>
             {/* <MiddleInput /> */}
           </div>
         </BigKeyword>
