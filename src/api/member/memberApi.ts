@@ -2,6 +2,7 @@ import {
   MemberData,
   PersonApiResponse,
 } from "../../components/member/modal/MemberModifyMD";
+import { ResRegister } from "../../pages/admin/member/DailyReg";
 import {
   MemberApiResponse,
   MemberList,
@@ -76,6 +77,29 @@ export const getMember = async (
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
       successFn([res.data.data]);
+    } else {
+      failFn("목록 호출 오류입니다.");
+    }
+  } catch (error) {
+    errorFn("목록 호출 서버 에러에요");
+  }
+};
+
+export const getRegister = async (
+  year: number = 2024,
+  month: number = 0,
+  successFn: (data: ResRegister) => void,
+  failFn: (error: string) => void,
+  errorFn: (error: string) => void,
+) => {
+  try {
+    const res = await jwtAxios.get<ResRegister>(
+      `${host}/signup?year=${year}&month=${month}`,
+    );
+    const status = res.status.toString();
+    if (status.charAt(0) === "2") {
+      // console.log(res.data);
+      successFn(res.data);
     } else {
       failFn("목록 호출 오류입니다.");
     }

@@ -179,7 +179,15 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({
                 가입일
               </div>
               <div className="right">
-                <h2>{memberInfo[0] && memberInfo[0].registeredAt}</h2>
+                {memberInfo[0] && (
+                  <h2>
+                    {
+                      new Date(memberInfo[0].registeredAt)
+                        .toISOString()
+                        .split("T")[0]
+                    }
+                  </h2>
+                )}
               </div>
             </BigKeyword>
             <BigKeyword
