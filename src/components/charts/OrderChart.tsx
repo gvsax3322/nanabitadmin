@@ -1,6 +1,8 @@
 import { Chart } from "chart.js";
 import React, { useEffect, useRef } from "react";
 import { getOChartApi } from "./MOrderChartView";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
 interface OrderChartProps {
   yearData?: number;
@@ -93,8 +95,11 @@ const OrderChart: React.FC<OrderChartProps> = ({
           }}
         >
           <div>
-            <h1>데이터가 없습니다.</h1>
-            <p style={{ fontSize: "13px" }}>📅 다른 날짜를 선택해 주세요.</p>
+            <Spin
+              indicator={<LoadingOutlined style={{ fontSize: 50 }} spin />}
+            />
+            {/* <h1>데이터가 없습니다.</h1>
+            <p style={{ fontSize: "13px" }}>📅 다른 날짜를 선택해 주세요.</p> */}
           </div>
         </div>
       )}

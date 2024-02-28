@@ -5,10 +5,6 @@ import { API_SERVER_HOST } from "../../util/util";
 
 const host = `${API_SERVER_HOST}/api_v2/admin`;
 
-
-
-
-
 // http://192.168.0.144:5223/api_v2/admin/order/sales?year=2023&month=0
 export const getSalesChart = async (
   year: number,
