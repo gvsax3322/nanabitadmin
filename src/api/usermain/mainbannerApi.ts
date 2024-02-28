@@ -15,7 +15,7 @@ export const getBanner = async (
     const res = await jwtAxios.get<BannerData[]>(`${host}/product/banner`);
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      console.log("나와야하는데 ?", res.data);
+      // console.log("나와야하는데 ?", res.data);
       successFn(res.data);
     } else {
       failFn("목록 호출 오류입니다.");

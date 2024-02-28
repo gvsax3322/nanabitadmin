@@ -1,8 +1,9 @@
-import { CaretUpOutlined } from "@ant-design/icons";
+import { CaretUpOutlined, VerticalAlignTopOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import AdminFooter from "./AdminFooter";
 import AdminHeader from "./AdminHeader";
+import { FloatButton } from "antd";
 
 const AdminBasic = () => {
   const [showButton, setShowButton] = useState(false);
@@ -32,7 +33,8 @@ const AdminBasic = () => {
       <main>
         <Outlet />
         {showButton && (
-          <CaretUpOutlined
+          <>
+            {/* <CaretUpOutlined
             onClick={handleClickScroll}
             style={{
               position: "fixed",
@@ -40,7 +42,18 @@ const AdminBasic = () => {
               right: "1%",
               fontSize: 70,
             }}
-          />
+          /> */}
+            <FloatButton
+              icon={<VerticalAlignTopOutlined />}
+              onClick={handleClickScroll}
+              style={{
+                position: "fixed",
+                bottom: "5%",
+                right: "2%",
+                fontSize: 70,
+              }}
+            />
+          </>
         )}
       </main>
       <AdminFooter />

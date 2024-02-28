@@ -1,7 +1,9 @@
 import { Checkbox, ConfigProvider, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { getBanner } from "../../api/usermain/mainbannerApi";
 import {
+  DeleteButton,
   MainTitle,
   MiddleButton,
   MiddleInput,
@@ -10,7 +12,7 @@ import {
   SmallButton,
   SubTitle,
 } from "../../styles/AdminBasic";
-import { getBanner } from "../../api/usermain/mainbannerApi";
+import { API_SERVER_HOST } from "../../util/util";
 // 테이블 스타일 관리
 
 // 배너
@@ -18,8 +20,8 @@ export interface BannerData {
   ibanner: number;
   target: number;
   status: number; // 노출여부
-  bannerUrl: "string";
-  bannerPic: "string";
+  bannerUrl: string;
+  bannerPic: string;
 }
 
 const CenteredHeaderTable = styled(Table)`
@@ -52,232 +54,98 @@ const MainBanner: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-    console.log("잘 나오고 있나요 ?", bannerInfo);
+    // console.log("잘 나오고 있나요 ?", bannerInfo);
   }, []);
 
-  interface IDataItem {
-    exposing: JSX.Element;
-    ibanner: number;
-    bannerPic?: JSX.Element;
-    picupbt: JSX.Element;
-    bannerUrl: JSX.Element;
-    target: JSX.Element;
-    edbt: JSX.Element;
-  }
-  const columns = [
+  const dataSource = bannerInfo
+    ? bannerInfo.map(item => ({
+        key: item.ibanner,
+        ibanner: item.ibanner,
+        target: item.target,
+        status: item.status,
+        bannerUrl: item.bannerUrl,
+        bannerPic: `${API_SERVER_HOST}/pic/banner/${item.ibanner}/${item.bannerPic}`,
+      }))
+    : [];
+
+  //  =================배너 값 관리 함수 =================
+
+  const handleCheckChange = (ibanner: number, isChecked: boolean) => {
+    console.log(`ibanner: ${ibanner}, 변경된 체크 여부: ${isChecked}`);
+    // 변경된 체크 여부에 따라 원하는 작업 수행
+  };
+
+  const handleInputChange = (value: string) => {
+    // 입력값을 사용하여 원하는 작업을 수행합니다.
+    console.log("입력값:", value);
+    // 여기에 원하는 작업 추가
+  };
+
+  const handleTargetChange = (value: number, ibanner: number) => {
+    console.log("ibanner : ", ibanner, "타겟 :", value);
+  };
+
+  // 상태관리 버튼
+  const handleState = (action: string, ibanner: number) => {
+    if (action === "editbanner") {
+      // 수정 버튼이 클릭된 경우
+
+      console.log("수정 버튼이 클릭되었습니다.", "ibanner:", ibanner);
+    } else if (action === "deletebanner") {
+      // 삭제 버튼이 클릭된 경우
+
+      console.log("삭제 버튼이 클릭되었습니다.", "ibanner:", ibanner);
+    }
+  };
+
+  //  =================배너 값 관리 함수 =================
+
+  const columns: any = [
     {
       title: "노출",
-      dataIndex: "exposing",
+      dataIndex: "status",
+      key: "status",
+      render: (status: number, record: any) => (
+        <div>
+          {/* status가 0일때 true 아니면 false */}
+          <Checkbox
+            defaultChecked={status === 0 ? true : false}
+            onChange={e => handleCheckChange(record.ibanner, e.target.checked)}
+          />
+        </div>
+      ),
     },
     {
       title: "순서",
       dataIndex: "ibanner",
+      key: "ibanner",
     },
     {
       title: "미리보기",
       dataIndex: "bannerPic",
+      key: "bannerPic",
+      render: (bannerPic: string): any => (
+        <img
+          style={{ width: "190px", height: "66px", objectFit: "cover" }}
+          src={bannerPic}
+          alt=""
+          className="diaryadd-img-before"
+        />
+      ),
     },
     {
       title: "사진업로드",
-      dataIndex: "picupbt",
-    },
-    {
-      title: "링크주소",
-      dataIndex: "bannerUrl",
-    },
-    {
-      title: "TARGET",
-      dataIndex: "target",
-    },
-    {
-      title: "상태관리",
-      dataIndex: "edbt",
-    },
-  ];
-  const [uploadImgBefore, setUploadImgBefore] = useState<string | undefined>();
-  useEffect(() => {
-    // uploadImgBefore 값이 변경될 때마다 data 상태를 업데이트합니다.
-    setData(prevData => {
-      // 기존 데이터를 복사하여 업데이트합니다.
-      const updatedData = [...prevData];
-      // uploadImgBefore 값을 새로운 값으로 업데이트합니다.
-      updatedData.forEach(item => {
-        item.bannerPic = (
-          <>
-            <img
-              style={{
-                width: "190px",
-                height: "66px",
-                objectFit: "cover",
-              }}
-              src={uploadImgBefore}
-              alt=""
-              className="diaryadd-img-before"
-            />
-          </>
-        );
-      });
-      return updatedData;
-    });
-  }, [uploadImgBefore]);
-  const handleChangeFileOne = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number,
-  ) => {
-    const file = e.target.files![0]; // 파일이 반드시 존재한다고 가정합니다. 필요에 따라 null 체크를 추가할 수 있습니다.
-    // 파일을 읽기 위한 FileReader 객체 생성
-    const reader = new FileReader();
-    // 파일 읽기가 완료되었을 때의 이벤트 핸들러
-    reader.onloadend = () => {
-      // 읽은 파일의 URL을 상태에 설정하여 이미지를 업데이트합니다.
-      if (reader.readyState === FileReader.DONE) {
-        const imgStr = reader.result as string | undefined;
-        setData(prevData => {
-          const updatedData = [...prevData];
-          updatedData[index].bannerPic = (
-            <>
-              <img
-                style={{
-                  width: "190px",
-                  height: "66px",
-                  objectFit: "cover",
-                }}
-                src={imgStr}
-                alt=""
-                className="diaryadd-img-before"
-              />
-            </>
-          );
-          return updatedData;
-        });
-      }
-    };
-    // 파일을 읽습니다.
-    reader.readAsDataURL(file);
-  };
-  const defaultImgUrl = `${process.env.PUBLIC_URL}/assets/images/defaultitemimg.svg`;
-  // map 돌릴 리스트
-  const [data, setData] = useState<IDataItem[]>(() => {
-    const initialData: IDataItem[] = [];
-    for (let i = 0; i < 2; i++) {
-      initialData.push({
-        exposing: (
-          <div>
-            <Checkbox />
-          </div>
-        ),
-        ibanner: i + 1,
-        bannerPic: (
-          <>
-            <img
-              style={{ width: "190px", height: "66px", objectFit: "cover" }}
-              src={defaultImgUrl}
-              alt=""
-              className="diaryadd-img-before"
-            />
-          </>
-        ),
-        picupbt: (
-          <>
-            {/* <p>나는 i값 {i}</p> */}
-            <label htmlFor={`input-file-before-${i}`}>
-              <SmallButton
-                style={{ width: "100px", height: "30px" }}
-                type="button"
-                onClick={() => {
-                  const inputFile = document.getElementById(
-                    `input-file-before-${i}`,
-                  ) as HTMLInputElement;
-                  if (inputFile) {
-                    inputFile.click();
-                  }
-                }}
-                className="diaryadd-img-input-button-before"
-              >
-                파일 선택
-              </SmallButton>
-            </label>
-            <input
-              type="file"
-              accept="image/png, image/gif, image/jpeg"
-              onChange={e => handleChangeFileOne(e, i)}
-              id={`input-file-before-${i}`}
-              style={{ display: "none" }}
-            />
-          </>
-        ),
-        bannerUrl: (
-          <>
-            <MiddleInput></MiddleInput>
-          </>
-        ),
-        target: (
-          <>
-            <SelectStyle>
-              <option>현재창</option>
-              <option>새창</option>
-            </SelectStyle>
-          </>
-        ),
-        edbt: (
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              gap: "10px",
-              justifyContent: "center",
-            }}
-          >
-            <SearchButton>수정</SearchButton>
-            <SearchButton
-              style={{
-                background: "rgb(244, 67, 54)",
-              }}
-            >
-              삭제
-            </SearchButton>
-          </div>
-        ),
-      });
-    }
-    return initialData;
-  });
-  // 추가버튼 함수
-  const handleAdd = () => {
-    const newData: IDataItem = {
-      exposing: (
-        <div>
-          <Checkbox />
-        </div>
-      ),
-      ibanner: data.length + 1,
-      bannerPic: (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {/* 나는 i값 {data.length + 1} */}
-          <div
-            style={{
-              width: "190px",
-              height: "66px",
-              background: "#d9d9d9",
-            }}
-          />
-        </div>
-      ),
-      picupbt: (
+      dataIndex: "ibanner",
+      key: "ibanner",
+      render: (ibanner: any) => (
         <>
-          <label htmlFor={`input-file-before-${data.length + 1}`}>
+          <label htmlFor={`input-file-before-${ibanner}`}>
             <SmallButton
               style={{ width: "100px", height: "30px" }}
               type="button"
               onClick={() => {
                 const inputFile = document.getElementById(
-                  `input-file-before-${data.length + 1}`,
+                  `input-file-before-${ibanner}`,
                 ) as HTMLInputElement;
                 if (inputFile) {
                   inputFile.click();
@@ -291,39 +159,103 @@ const MainBanner: React.FC = () => {
           <input
             type="file"
             accept="image/png, image/gif, image/jpeg"
-            onChange={e => handleChangeFileOne(e, data.length)}
-            id={`input-file-before-${data.length + 1}`}
+            id={`input-file-before-${ibanner}`}
             style={{ display: "none" }}
           />
         </>
       ),
-      bannerUrl: (
+    },
+    {
+      title: "링크주소",
+      dataIndex: "bannerUrl",
+      key: "bannerUrl",
+      render: (bannerUrl: string, record: any) => (
         <>
-          <MiddleInput></MiddleInput>
+          <MiddleInput
+            defaultValue={bannerUrl}
+            onChange={e => handleInputChange(e.target.value)}
+          />
         </>
       ),
-      target: (
+    },
+    {
+      title: "TARGET",
+      dataIndex: "target",
+      key: "target",
+      render: (target: number, record: any) => (
         <>
-          <SelectStyle>
-            <option>현재창</option>
-            <option>새창</option>
+          <SelectStyle
+            defaultValue={target}
+            onChange={e =>
+              handleTargetChange(parseInt(e.target.value), record.ibanner)
+            }
+          >
+            <option value={0}>현재창</option>
+            <option value={1}>새창</option>
           </SelectStyle>
         </>
       ),
-      edbt: (
+    },
+    {
+      title: "상태관리",
+      dataIndex: "ibanner",
+      key: "ibanner",
+      render: (ibanner: number, record: any) => (
         <div
           style={{
             width: "100%",
             display: "flex",
             justifyContent: "center",
+            gap: "10px",
           }}
         >
-          <SearchButton style={{ background: "#4F95FF" }}>업로드</SearchButton>
+          {record ? (
+            <>
+              <SearchButton
+                onClick={() => handleState("editbanner", record.ibanner)}
+              >
+                수정
+              </SearchButton>
+              <SearchButton
+                onClick={() => handleState("deletebanner", record.ibanner)}
+                style={{ background: "#f44336" }}
+              >
+                삭제
+              </SearchButton>
+            </>
+          ) : (
+            // ibanner 값이 없는 경우에 렌더링할 내용
+            <SearchButton
+              onClick={() => handleState("업로드다!", record.ibanner)}
+            >
+              업로드
+            </SearchButton>
+          )}
         </div>
       ),
+    },
+  ];
+
+  const handleAdd = () => {
+    let newIbanner;
+    if (bannerInfo && bannerInfo.length > 0) {
+      newIbanner = bannerInfo.length + 1;
+    } else {
+      newIbanner = 1; // 만약 bannerInfo가 null이거나 길이가 0이면 1로 설정
+    }
+    const newData: BannerData = {
+      ibanner: newIbanner,
+      target: 0,
+      status: 0, // 노출여부
+      bannerUrl: "",
+      bannerPic: "",
     };
-    setData(prevData => [...prevData, newData]); // 이전 상태를 가져와서 새로운 데이터 추가
+    // bannerInfo가 null인 경우 빈 배열로 초기화
+    const newBannerInfo = bannerInfo || [];
+
+    setBannerInfo([...newBannerInfo, newData]);
   };
+
   return (
     <>
       <MainTitle>메인 배너</MainTitle>
@@ -337,11 +269,11 @@ const MainBanner: React.FC = () => {
         <SubTitle style={{ textAlign: "center", lineHeight: "15px" }}>
           전체 : <span style={{ color: "rgb(244, 67, 54)" }}>4</span> 건 조회 |
           순서는 숫자가 작을수록 우선 순위로 노출됩니다.
+          {/* <fetching /> */}
         </SubTitle>
-        {/* 추가버튼 */}
         <MiddleButton
-          onClick={handleAdd}
           style={{ marginBottom: 16, fontSize: "12px" }}
+          onClick={handleAdd}
         >
           배너 추가
         </MiddleButton>
@@ -361,7 +293,7 @@ const MainBanner: React.FC = () => {
       >
         <CenteredHeaderTable
           columns={columns}
-          dataSource={data}
+          dataSource={dataSource}
           pagination={false}
           bordered
         />

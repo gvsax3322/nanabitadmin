@@ -2,6 +2,8 @@ import { Chart } from "chart.js/auto";
 import "chartjs-adapter-date-fns";
 import React, { useEffect, useRef } from "react";
 import { getChartApi } from "./MSalesChartView";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
 export interface ChartProps {
   yearData?: number;
@@ -16,7 +18,6 @@ const SalesChart: React.FC<ChartProps> = ({
 }) => {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstanceRef = useRef<Chart | null>(null);
-  console.log(resMonth?.data);
 
   useEffect(() => {
     if (chartRef.current && resMonth && resMonth.data.length > 0) {
@@ -104,8 +105,11 @@ const SalesChart: React.FC<ChartProps> = ({
           }}
         >
           <div>
-            <h1>데이터가 없습니다.</h1>
-            <p style={{ fontSize: "13px" }}>📅 다른 날짜를 선택해 주세요.</p>
+            <Spin
+              indicator={<LoadingOutlined style={{ fontSize: 50 }} spin />}
+            />
+            {/* <h1>데이터가 없습니다.</h1>
+            <p style={{ fontSize: "13px" }}>📅 다른 날짜를 선택해 주세요.</p> */}
           </div>
         </div>
       )}

@@ -1,5 +1,5 @@
 import { ConfigProvider, Table } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   MainTitle,
@@ -8,16 +8,10 @@ import {
   SubTitle,
 } from "../../styles/AdminBasic";
 import MainUsermodal from "./MainUsermodal";
+import { MainProRc, getMainProRc } from "../../api/usermain/mainProductSetApi";
+import { API_SERVER_HOST } from "../../util/util";
 
-// type InputRef = GetRef<typeof Input>;
-// type FormInstance<T> = GetRef<typeof Form<T>>;
 
-// const EditableContext = React.createContext<FormInstance<any> | null>(null);
-
-// 이게뭘까
-// interface EditableRowProps {
-//   index: number;
-// }
 const CenteredHeaderTable = styled(Table)`
   &&& {
     .ant-table-thead > tr > th {
@@ -31,9 +25,33 @@ const CenteredHeaderTable = styled(Table)`
 
 const MdRecommend: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [data, setData] = useState<MainProRc[]>([]);
+
+  useEffect(() => {
+    // 데이터를 불러오는 비동기 함수
+    const fetchData = async () => {
+      try {
+        const successFn = (data: MainProRc[]) => {
+          setData(data);
+          // console.log("데이터:", resMonth);
+        };
+        const failFn = (error: string) => {
+          console.error("목록 호출 오류:", error);
+        };
+        const errorFn = (error: string) => {
+          console.error("목록 호출 서버 에러:", error);
+        };
+        await getMainProRc(successFn, failFn, errorFn);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    // 컴포넌트가 마운트될 때 데이터를 불러오도록 호출
+    fetchData();
+  }, []);
 
   const handleProductAdd = () => {
-    console.log("나와라고오");
     setIsOpen(true);
   };
 
@@ -41,84 +59,73 @@ const MdRecommend: React.FC = () => {
     setIsOpen(false);
   };
 
-  interface IDataItem {
-    key: number;
-    img: JSX.Element;
-    pnum: string;
-    pname: string;
-    price: number;
-    deletebt: JSX.Element;
-  }
-  const columns = [
-    {
-      title: "번호",
-      dataIndex: "key",
-      width: "50px",
-    },
-    {
-      title: "미리보기",
-      dataIndex: "img",
-      width: "100px",
-    },
-    {
-      title: "상품코드",
-      dataIndex: "pnum",
-    },
-    {
-      title: "상품명",
-      dataIndex: "pname",
-    },
-    {
-      title: "가격",
-      dataIndex: "price",
-      render: (price: number) => <span>{price.toLocaleString()}</span>,
-    },
-    {
-      title: "삭제",
-      dataIndex: "deletebt",
-      width: "80px",
-    },
-  ];
-
-  // 이미지 설정 설정
-  const defaultImgUrl = `${process.env.PUBLIC_URL}/assets/images/defaultitemimg.svg`;
-
   const handleDelete = () => {
     console.log("삭제할거라능");
   };
 
-  const [data, setData] = useState<IDataItem[]>(() => {
-    const initialData: IDataItem[] = [];
-    for (let i = 0; i < 2; i++) {
-      initialData.push({
-        key: i + 1,
-        img: (
-          <img
-            style={{ width: "66px", height: "66px", objectFit: "cover" }}
-            src={defaultImgUrl}
-            alt=""
-            className="diaryadd-img-before"
-          />
-        ),
-        pnum: "pnum",
-        pname: "pname",
-        price: 100000,
-        deletebt: (
-          <>
-            <SearchButton
-              style={{
-                background: "rgb(244, 67, 54)",
-              }}
-              onClick={handleDelete}
-            >
-              삭제
-            </SearchButton>
-          </>
-        ),
-      });
-    }
-    return initialData;
-  });
+  const columns: any[] = [
+    {
+      title: "번호",
+      dataIndex: "key",
+      key: "key",
+      width: "50px",
+    },
+    {
+      title: "미리보기",
+      dataIndex: "repPic",
+      key: "iproduct",
+      width: "100px",
+      render: (repPic: string) => (
+        <img
+          style={{ width: "66px", height: "66px", objectFit: "cover" }}
+          src={repPic}
+          alt=""
+        />
+      ),
+    },
+    {
+      title: "상품코드",
+      dataIndex: "iproduct",
+      key: "iproduct",
+    },
+    {
+      title: "상품명",
+      dataIndex: "productNm",
+      key: "productNm",
+    },
+    {
+      title: "가격",
+      dataIndex: "price",
+      key: "price",
+      render: (price: number) => <span>{price.toLocaleString()} 원</span>,
+    },
+    {
+      title: "삭제",
+      dataIndex: "deletebt",
+      key: "key",
+      width: "80px",
+      render: () => (
+        <>
+          <SearchButton
+            style={{
+              background: "rgb(244, 67, 54)",
+            }}
+            onClick={handleDelete}
+          >
+            삭제
+          </SearchButton>
+        </>
+      ),
+    },
+  ];
+
+  const dataSource = data.map((item, index) => ({
+    key: (index + 1).toString(),
+    repPic: `${API_SERVER_HOST}/pic/product/${item.iproduct}/${item.repPic}`,
+    productNm: item.productNm,
+    price: item.price,
+    iproduct: item.iproduct,
+  }));
 
   return (
     <>
@@ -157,7 +164,7 @@ const MdRecommend: React.FC = () => {
       >
         <CenteredHeaderTable
           columns={columns}
-          dataSource={data}
+          dataSource={dataSource}
           pagination={false}
           bordered
         />
