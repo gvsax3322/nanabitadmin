@@ -13,6 +13,8 @@ export interface OrderParam {
   dateFl: number;
   payCategory: number;
   sort: number;
+  page: number;
+  size: number;
 }
 
 const prefix = `${API_SERVER_HOST}/api/admin`;
@@ -29,7 +31,7 @@ export const getOrderAll = async ({
   errorFn: (error: string) => void;
 }) => {
   try {
-    const url = `${prefix}/order?`;
+    const url = `${prefix}/order`;
     const res = await jwtAxios.get(url, { params: orderParam });
 
     const resStatus = res.status.toString();
@@ -43,26 +45,8 @@ export const getOrderAll = async ({
   }
 };
 
-// http://112.222.157.156:5223/api/admin/order?
-// processState=1
-// &dateCategory=2
-// &searchCategory=3
-// &keyword=
-// &startDate=
-// &endDate=
-// &dateFl=0
-// &payCategory=0
-// &sort=0
-
-// http://localhost:3000/api/admin/order?&processState=3
-// &dateCategory=4
-// &searchCategory=4
-// &keyword=%EC%A3%BC%EC%98%81%EB%8B%98+%EC%A0%80+%EC%96%B4%EC%BC%80%EC%9A%94
-// &startDate=2024-02-01
-// &endDate=2024-03-04
-// &dateFl=0
-// &payCategory=1
-// &sort=0
+// api/admin/order?&processState=0&dateCategory=0&searchCategory=0&keyword=&startDate=2024-02-08&endDate=2024-03-20&dateFl=0&payCategory=0&sort=0
+// api/admin/order?processState=1&dateCategory=2&searchCategory=3&keyword=&startDate=&endDate=&dateFl=1&payCategory=2&sort=0
 
 // processState: 3
 // dateCategory: 4
@@ -74,16 +58,7 @@ export const getOrderAll = async ({
 // payCategory: 1
 // sort: 0
 
-// http://localhost:3000/api/admin/order?
-// &processState=0
-// &dateCategory=0
-// &searchCategory=0
-// &keyword=
-// &dateFl=0
-// &payCategory=0
-// &sort=0
-
-// {
+// // {
 //     "iorder": 100061,
 //     "orderedAt": "2024-06-13T14:31:23",
 //     "products": [

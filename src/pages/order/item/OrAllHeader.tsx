@@ -13,6 +13,7 @@ import { useState } from "react";
 import OrPicker from "../../../components/order/orderSlect/OrPicker";
 import { Dayjs } from "dayjs";
 import { getOrderAll } from "../../../api/order/orderAllApi";
+import OrderAllTable from "../../../components/order/orderSlect/table/OrderAllTable";
 
 const Wrap = styled.div`
   margin-bottom: 30px;
@@ -39,8 +40,30 @@ const initState = {
   refundFl: 0,
 };
 
-interface OrAllHeaderProps {}
-const OrAllHeader: React.FC<OrAllHeaderProps> = () => {
+interface ISubTableProps {
+  serverData: {
+    iorder: string;
+    orderedAt: string;
+    products: {
+      repPic: string;
+      productNm: string;
+      cnt: number;
+      processState: number;
+      amount: number;
+      refundFl: number;
+    }[];
+    ordered: string;
+    recipient: string;
+    totalAmount: number;
+    payCategory: number;
+    refundFl: number;
+  }[];
+}
+
+interface OrAllHeaderProps {
+  fetchData: (data: any) => void;
+}
+const OrAllHeader: React.FC<OrAllHeaderProps> = ({}) => {
   const [orderData, setOrderData] = useState([initState]);
   const [periodBt, setPeriodBt] = useState(0); // 선택된 기간 상태 버튼관리
   const [prdOp, setPrdOp] = useState(0);
@@ -50,6 +73,13 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = () => {
   const [selectedDate, setSelectedDate] = useState<string[]>([]); // Date picker 관리
   const [userSearchActive, setUserSearchActive] = useState(false); // 검색버튼 옵션관리
   const [searchText, setSearchText] = useState(""); //  검색어텍스트 관리
+  const [dataFromChild, setDataFromChild] = useState("");
+
+  // 테이블에서 발생한 데이터 처리 함수
+  const handleClickTableuum = (data: any) => {
+    setDataFromChild(data);
+    setOrderData(data);
+  };
 
   // 기간버튼 핸들러
   const handlePeriodBt = (BTIndex: number) => {
@@ -188,14 +218,9 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    // setPeriodBt(0);
-    // setSearchOp(0);
-    // setPrdOp(0);
-    // setPaymentOp(0);
-    // setStateOp(0);
-    // 사용자는 검색을 했다.
     setUserSearchActive(true);
     fetchData();
+
     console.log(
       "검색버튼눌렀어융",
       periodBt,
@@ -251,11 +276,13 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = () => {
           dateCategory: prdOp,
           searchCategory: searchOp,
           keyword: searchText,
-          startDate: selectedDate[0],
+          startDate: selectedDate[0] !== undefined ? selectedDate[0] : "",
           endDate: selectedDate[1] !== undefined ? selectedDate[1] : "",
           dateFl: periodBt,
           payCategory: paymentOp,
           sort: 0,
+          page: 0,
+          size: 1,
         },
         successFn: successFn_AllOrder,
         failFn: failFn_AllOrder,
@@ -420,7 +447,16 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = () => {
           <SmallButton>엑셀 저장</SmallButton>
         </div>
       </div>
-      <div></div>
+      <div>
+        {" "}
+        {/* 주문 테이블 컴포넌트 */}
+        <OrderAllTable
+          tableNum={handleClickTableuum}
+          serverData={orderData}
+          // columns={columns}
+          // dataSource={orderData}
+        />
+      </div>
     </>
   );
 };
