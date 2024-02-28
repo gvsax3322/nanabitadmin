@@ -1,7 +1,7 @@
 import { Bar } from "@nivo/bar";
 import { Table } from "antd";
 import React, { useEffect, useState } from "react";
-import MemberSelect from "../../../components/select/MemberSelect";
+import { getRegister } from "../../../api/member/memberApi";
 import {
   BigKeyword,
   Common,
@@ -10,80 +10,110 @@ import {
   SelectStyle,
   SubTitle,
 } from "../../../styles/AdminBasic";
-
-interface DataItem {
-  name: string;
-  value: number;
-}
-
-const DemoData: DataItem[] = [
-  { name: "John", value: 10 },
-  { name: "Alice", value: 15 },
-  { name: "Bob", value: 0 },
-  { name: "Diana", value: 20 },
-  // 추가 데이터를 원하는 만큼 추가할 수 있습니다.
-];
+import { RegisterChartData, ResRegister } from "./DailyReg";
 
 const columns = [
   {
     title: "날짜",
-    dataIndex: "name",
-    key: "name",
+    dataIndex: "date",
+    key: "date",
+    width: "10%",
   },
   {
     title: "그래프",
     key: "chart",
-    render: (text: any, record: DataItem) => (
-      <Bar
-        width={record.value * 10}
-        height={10}
-        data={[{ id: record.name, value: record.value }]}
-        keys={["value"]}
-        indexBy="id"
-        padding={0.3}
-        colors={{ scheme: "nivo" }}
-        borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
-        axisTop={null}
-        axisRight={null}
-        axisBottom={null}
-        axisLeft={null}
-        enableGridX={false}
-        enableGridY={false}
-        labelSkipWidth={12}
-        labelSkipHeight={12}
-        labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
-        animate={true}
-        layout="horizontal"
-      />
+    width: "50%",
+    render: (text: any, record: RegisterChartData) => (
+      <div style={{ width: "100%" }}>
+        <Bar
+          width={Math.floor(parseFloat(record.registerRate) * 500)}
+          height={10}
+          data={[
+            {
+              id: record.date,
+              value: Math.floor(parseFloat(record.registerRate) * 100),
+            },
+          ]}
+          keys={["value"]}
+          indexBy="id"
+          padding={0.3}
+          colors={{ scheme: "nivo" }}
+          borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+          axisTop={null}
+          axisRight={null}
+          axisBottom={null}
+          axisLeft={null}
+          enableGridX={false}
+          enableGridY={false}
+          labelSkipWidth={12}
+          labelSkipHeight={12}
+          labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+          animate={true}
+          layout="horizontal"
+        />
+      </div>
     ),
   },
   {
     title: "비율",
-    dataIndex: "value",
-    key: "value",
+    dataIndex: "registerRate",
+    key: "registerRate",
+    width: "20%",
+
+    render: (registerRate: string) => {
+      const parsedRate = parseFloat(registerRate);
+      return isNaN(parsedRate) ? "0%" : (parsedRate * 100).toFixed(2) + "%";
+    },
   },
   {
     title: "전체",
-    dataIndex: "value",
-    key: "value",
+    dataIndex: "totalRegisterCnt",
+    key: "totalRegisterCnt",
+    width: "20%",
   },
 ];
 
 const MonthlyReg: React.FC = () => {
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState<number>(currentYear);
-
+  const [yearData, setYearData] = useState<number>();
+  const [resMonth, setResMonth] = useState<ResRegister | null>(null);
+  const month = 0;
+  // 년도 변경 핸들러
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setYear(Number(e.target.value));
   };
 
+  const onSearchYear = () => {
+    setYearData(year); // 검색 버튼을 클릭할 때만 yearData를 설정합니다.
+    fetchData();
+  };
+
   useEffect(() => {
-    console.log(year);
-  }, [year]);
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const successFn = (data: ResRegister) => {
+        setResMonth(data);
+        console.log("데이터:", resMonth);
+      };
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+      await getRegister(year, month, successFn, failFn, errorFn);
+    } catch (error) {
+      console.error("에러:", error);
+    }
+  };
 
   return (
     <>
-      <MainTitle>월별 가입통계분석</MainTitle>
+      <MainTitle>일별 가입통계분석</MainTitle>
       <SubTitle>통계분석</SubTitle>
       <BigKeyword
         style={{
@@ -91,7 +121,7 @@ const MonthlyReg: React.FC = () => {
           marginBottom: "40px",
         }}
       >
-        <div className="left">검색어</div>
+        <div className="left">기간검색</div>
         <div className="right">
           <SelectStyle value={year} onChange={handleYearChange}>
             {Array.from({ length: 3 }, (_, i) => (
@@ -100,10 +130,17 @@ const MonthlyReg: React.FC = () => {
               </option>
             ))}
           </SelectStyle>
-          <SearchButton>검색</SearchButton>
+          {/* 월 선택 */}
+          <SearchButton onClick={onSearchYear}>검색</SearchButton>
         </div>
       </BigKeyword>
-      <Table<DataItem> dataSource={DemoData} columns={columns} />
+      {resMonth && (
+        <Table<RegisterChartData>
+          dataSource={resMonth.data}
+          columns={columns}
+          pagination={false}
+        />
+      )}
     </>
   );
 };

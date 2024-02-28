@@ -42,6 +42,9 @@ const MemberModify = () => {
   const [postModalVisible, setPostModalVisible] = useState(false);
   const [selectedMember, setSelectedMember] = useState<MemberList | null>(null);
   const [memberList, setMemberList] = useState<MemberList[]>([]);
+  const [searchText, setSearchText] = useState<string>("");
+  const [searchOp, setSearchOp] = useState(0);
+  const [phone, setPhone] = useState<string>("");
 
   const fetchData = async () => {
     try {
@@ -82,6 +85,29 @@ const MemberModify = () => {
   const handleMenuClick2 = (record: MemberList) => {
     setSelectedMember(record);
     setPostModalVisible(true);
+  };
+
+  const handleSearchOp = (optionIndex: number): void => {
+    switch (optionIndex) {
+      case 0:
+        setSearchOp(1);
+        break;
+      case 1:
+        setSearchOp(2);
+        break;
+      case 2:
+        setSearchOp(2);
+        break;
+    }
+    console.log("검색어", optionIndex);
+  };
+
+  const handleClickSearch = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    // fetchData();
+    console.log("검색버튼눌렀어융", searchOp, searchText, phone);
   };
 
   const formatDate = (dateString: string) => {
@@ -148,8 +174,21 @@ const MemberModify = () => {
         <BigKeyword style={{ borderTop: `1px solid ${Common.color.primary}` }}>
           <div className="left">검색어</div>
           <div className="right">
-            <MemberSelect optionone={"아이디"} optiontwo={"이름"} />
-            <MiddleInput />
+            <MemberSelect
+              option1={"전체보기"}
+              option2={"이메일"}
+              option3={"이름"}
+              onClick={handleSearchOp}
+            />
+            <MiddleInput
+              type="text"
+              placeholder="검색어를 입력하세요"
+              autoFocus
+              value={searchText}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSearchText(e.target.value)
+              }
+            />
           </div>
         </BigKeyword>
         <BigKeyword>
@@ -168,12 +207,20 @@ const MemberModify = () => {
         <BigKeyword>
           <div className="left">전화번호</div>
           <div className="right">
-            <MiddleInput />
+            <MiddleInput
+              type="text"
+              placeholder="전화번호를 입력하세요"
+              autoFocus
+              value={phone}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setPhone(e.target.value)
+              }
+            />
           </div>
         </BigKeyword>
       </ModifyInfo>
       <ModifyButton>
-        <SearchButton>검색</SearchButton>
+        <SearchButton onClick={handleClickSearch}>검색</SearchButton>
         <SearchButton style={{ background: " #f44336" }}>초기화</SearchButton>
       </ModifyButton>
       <BtList>
