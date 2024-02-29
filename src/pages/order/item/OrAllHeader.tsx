@@ -23,6 +23,27 @@ const Wrap = styled.div`
   border-bottom: 2px solid ${Common.color.primary};
 `;
 
+export interface AllOrderData {
+  idk: number;
+  iorder: number;
+  orderedAt: string;
+  products: [];
+  ordered: string;
+  recipient: string;
+  totalAmount: number;
+  payCategory: number;
+  refundFl: number;
+}
+
+export interface products {
+  repPic: string;
+  productNm: string;
+  cnt: number;
+  processState: number;
+  amount: number;
+  refundFl: number;
+}
+
 const initState = {
   idk: 0,
   iorder: 0,
@@ -70,6 +91,30 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   const [stateBt, setStateBt] = useState(0);
   const [activeStateBt, setActiveStateBt] = useState(0);
 
+  // ----------------------------------------------------------------------------
+
+  const dataSource = orderData.map(item => ({
+    key: item.iorder, // iorder를 key로 사용
+    idk: item.idk,
+    iorder: item.iorder,
+    orderedAt: item.orderedAt,
+    ordered: item.ordered,
+    recipient: item.recipient,
+    totalAmount: item.totalAmount,
+    payCategory: item.payCategory,
+    refundFl: item.refundFl,
+    // products 배열을 반복하면서 각 상품 정보를 키로 추가합니다.
+    products: item.products.map((product, index) => ({
+      repPic: product.repPic,
+      productNm: product.productNm,
+      cnt: product.cnt,
+      processState: product.processState,
+      amount: product.amount,
+      refundFl: product.refundFl,
+      key: `${item.iorder}_${index}`, // 상품마다 고유한 key 생성
+    })),
+  }));
+  // ----------------------------------------------------------------------------
   // 기간버튼 핸들러
   const handleStateBt = (BTIndex: number) => {
     setStateBt(BTIndex);
@@ -324,29 +369,11 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-  // const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-  //   console.log("selectedRowKeys changed이거라: ", newSelectedRowKeys);
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    console.log("selectedRowKeys changed이거라: ", newSelectedRowKeys);
 
-  //   setSelectedRowKeys(newSelectedRowKeys);
-  //   tableNum(newSelectedRowKeys);
-  // };
-
-  // const rowSelection = {
-  //   selectedRowKeys,
-  //   onChange: onSelectChange,
-  // };
-
-  const onSelectChange = (newSelectedRowKeys: any[]) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
-
-    setSelectedRowKeys(newSelectedRowKeys); // 이전 선택된 키를 새로운 키로 업데이트하지 않고 완전히 대체
-
-    // newSelectedRowKeys를 사용하여 iorder 값을 가져옴
-    const selectedOrders = newSelectedRowKeys.map(key => {
-      // 각 선택된 행의 데이터에서 iorder 값을 가져와서 반환
-      return orderData.find(item => item.iorder === key)?.iorder || 0;
-    });
-    tableNum(selectedOrders); // iorder 값들을 전달
+    setSelectedRowKeys(newSelectedRowKeys);
+    tableNum(newSelectedRowKeys);
   };
 
   const rowSelection = {
@@ -741,7 +768,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
           <Aaa
             rowSelection={rowSelection}
             columns={columns}
-            dataSource={orderData}
+            dataSource={dataSource}
             // dataSource={orderData}
             pagination={false}
           />
