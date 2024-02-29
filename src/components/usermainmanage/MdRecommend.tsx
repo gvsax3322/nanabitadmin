@@ -1,4 +1,4 @@
-import { ConfigProvider, Table } from "antd";
+import { ConfigProvider, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
@@ -10,7 +10,6 @@ import {
 import MainUsermodal from "./MainUsermodal";
 import { MainProRc, getMainProRc } from "../../api/usermain/mainProductSetApi";
 import { API_SERVER_HOST } from "../../util/util";
-
 
 const CenteredHeaderTable = styled(Table)`
   &&& {
@@ -26,6 +25,29 @@ const CenteredHeaderTable = styled(Table)`
 const MdRecommend: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [data, setData] = useState<MainProRc[]>([]);
+
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const success = () => {
+    messageApi.open({
+      type: "success",
+      content: "글 넣으삼",
+    });
+  };
+
+  const error = () => {
+    messageApi.open({
+      type: "error",
+      content: "글 넣으삼",
+    });
+  };
+
+  const warning = () => {
+    messageApi.open({
+      type: "warning",
+      content: "등록된 상품이 8개를 넘을 수 없습니다.",
+    });
+  };
 
   useEffect(() => {
     // 데이터를 불러오는 비동기 함수
@@ -52,7 +74,12 @@ const MdRecommend: React.FC = () => {
   }, []);
 
   const handleProductAdd = () => {
-    setIsOpen(true);
+    console.log("data.length :", data.length);
+    if (data.length > 9) {
+      warning();
+    } else if (data.length < 9) {
+      setIsOpen(true);
+    }
   };
 
   const handleCloseModal = () => {
@@ -97,6 +124,7 @@ const MdRecommend: React.FC = () => {
       title: "가격",
       dataIndex: "price",
       key: "price",
+      width: "100px",
       render: (price: number) => <span>{price.toLocaleString()} 원</span>,
     },
     {
@@ -129,6 +157,7 @@ const MdRecommend: React.FC = () => {
 
   return (
     <>
+      {contextHolder}
       {isOpen && <MainUsermodal onClose={handleCloseModal} />}
       <MainTitle>MD 추천상품</MainTitle>
       <div
