@@ -22,6 +22,7 @@ export interface BannerData {
   status: number; // 노출여부
   bannerUrl: string;
   bannerPic: string;
+  bannerNew: number;
 }
 
 const CenteredHeaderTable = styled(Table)`
@@ -39,17 +40,23 @@ const MainBanner: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const successFn = (data: BannerData[]) => {
-        setBannerInfo(data);
-      };
-      const failFn = (error: string) => {
-        console.error("목록 호출 오류:", error);
-      };
-      const errorFn = (error: string) => {
-        console.error("목록 호출 서버 에러:", error);
-      };
       await getBanner(successFn, failFn, errorFn);
     } catch (error) {}
+  };
+
+  const successFn = (data: BannerData[]) => {
+    console.log("성공이요");
+    const arr = data.map(item => {
+      item.bannerNew = 0;
+      return item;
+    });
+    setBannerInfo(arr);
+  };
+  const failFn = (error: string) => {
+    console.error("목록 호출 오류:", error);
+  };
+  const errorFn = (error: string) => {
+    console.error("목록 호출 서버 에러:", error);
   };
 
   useEffect(() => {
@@ -65,8 +72,35 @@ const MainBanner: React.FC = () => {
         status: item.status,
         bannerUrl: item.bannerUrl,
         bannerPic: `${API_SERVER_HOST}/pic/banner/${item.ibanner}/${item.bannerPic}`,
+        bannerNew: item.bannerNew,
       }))
     : [];
+
+  const handleAddCom = () => {
+    console.log("성공했다규");
+  };
+
+  // 배너추가버튼!
+  const handleAdd = () => {
+    let newIbanner;
+    if (bannerInfo && bannerInfo.length > 0) {
+      newIbanner = bannerInfo.length + 1;
+    } else {
+      newIbanner = 1; // 만약 bannerInfo가 null이거나 길이가 0이면 1로 설정
+    }
+    const newData: BannerData = {
+      ibanner: newIbanner,
+      target: 0,
+      status: 0, // 노출여부
+      bannerUrl: "",
+      bannerPic: "",
+      bannerNew: 1, // 새로운 이미지
+    };
+    // bannerInfo가 null인 경우 빈 배열로 초기화
+    const newBannerInfo = bannerInfo || [];
+
+    setBannerInfo([...newBannerInfo, newData]);
+  };
 
   //  =================배너 값 관리 함수 =================
 
@@ -95,6 +129,9 @@ const MainBanner: React.FC = () => {
       // 삭제 버튼이 클릭된 경우
 
       console.log("삭제 버튼", "ibanner:", ibanner);
+    } else if (action === "uploadbanner") {
+      // 업로드 버튼이 클릭된 경우
+      console.log("업로드 버튼", "ibanner: ", ibanner);
     }
   };
 
@@ -107,7 +144,7 @@ const MainBanner: React.FC = () => {
       key: "status",
       render: (status: number, record: any) => (
         <div>
-          {/* status가 0일때 true 아니면 false */}
+          {/* status가 0일때 true 아니면 false를 ...? */}
           <Checkbox
             defaultChecked={status === 0 ? true : false}
             onChange={e => handleCheckChange(record.ibanner, e.target.checked)}
@@ -209,52 +246,33 @@ const MainBanner: React.FC = () => {
             gap: "10px",
           }}
         >
-          {record ? (
-            <>
+          <>
+            {record.bannerNew === 1 ? (
               <SearchButton
-                onClick={() => handleState("editbanner", record.ibanner)}
+                onClick={() => handleState("uploadbanner", record.ibanner)}
               >
-                수정
+                업로드
               </SearchButton>
-              <SearchButton
-                onClick={() => handleState("deletebanner", record.ibanner)}
-                style={{ background: "#f44336" }}
-              >
-                삭제
-              </SearchButton>
-            </>
-          ) : (
-            // ibanner 값이 없는 경우에 렌더링할 내용
-            <SearchButton
-              onClick={() => handleState("업로드다!", record.ibanner)}
-            >
-              업로드
-            </SearchButton>
-          )}
+            ) : (
+              <>
+                <SearchButton
+                  onClick={() => handleState("editbanner", record.ibanner)}
+                >
+                  수정
+                </SearchButton>
+                <SearchButton
+                  onClick={() => handleState("deletebanner", record.ibanner)}
+                  style={{ background: "#f44336" }}
+                >
+                  삭제
+                </SearchButton>
+              </>
+            )}
+          </>
         </div>
       ),
     },
   ];
-
-  const handleAdd = () => {
-    let newIbanner;
-    if (bannerInfo && bannerInfo.length > 0) {
-      newIbanner = bannerInfo.length + 1;
-    } else {
-      newIbanner = 1; // 만약 bannerInfo가 null이거나 길이가 0이면 1로 설정
-    }
-    const newData: BannerData = {
-      ibanner: newIbanner,
-      target: 0,
-      status: 0, // 노출여부
-      bannerUrl: "",
-      bannerPic: "",
-    };
-    // bannerInfo가 null인 경우 빈 배열로 초기화
-    const newBannerInfo = bannerInfo || [];
-
-    setBannerInfo([...newBannerInfo, newData]);
-  };
 
   return (
     <>

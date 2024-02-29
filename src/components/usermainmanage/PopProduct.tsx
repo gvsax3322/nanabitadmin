@@ -106,6 +106,7 @@ const PopProduct: React.FC = () => {
       title: "가격",
       dataIndex: "price",
       key: "price",
+      width: "100px",
       render: (price: number) => <span>{price.toLocaleString()} 원</span>,
     },
     {

@@ -3,9 +3,9 @@ import { getChartApi } from "../../components/charts/MSalesChartView";
 import jwtAxios from "../../util/jwtUtil";
 import { API_SERVER_HOST } from "../../util/util";
 
-const host = `${API_SERVER_HOST}/api_v2/admin`;
+const host = `${API_SERVER_HOST}/api/admin`;
 
-// http://192.168.0.144:5223/api_v2/admin/order/sales?year=2023&month=0
+// http://192.168.0.144:5223/api/admin/order/sales?year=0&month=0
 export const getSalesChart = async (
   year: number,
   month: number,
