@@ -45,8 +45,8 @@ const MemberModify = () => {
   const [selectedMember, setSelectedMember] = useState<MemberList | null>(null);
   const [memberList, setMemberList] = useState<MemberList[]>([]);
   // 검색관련
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
   const [searchText, setSearchText] = useState<string>("");
   const [searchOp, setSearchOp] = useState(1);
   const [phone, setPhone] = useState<string>("");
@@ -146,9 +146,8 @@ const MemberModify = () => {
   };
 
   const handleDateChange = (dateRange: string[]) => {
-    const [start, end] = dateRange;
-    setStartDate(start);
-    setEndDate(end);
+    setStartDate(dateRange[0]);
+    setEndDate(dateRange[1]);
   };
 
   const formatDate = (dateString: string) => {
@@ -234,7 +233,10 @@ const MemberModify = () => {
         <BigKeyword>
           <div className="left">기간검색</div>
           <div className="right" style={{ gap: "5x" }}>
-            <DatePick onChange={handleDateChange} />
+            <DatePick
+              onChange={handleDateChange}
+              value={[startDate, endDate]}
+            />
           </div>
         </BigKeyword>
         <BigKeyword>

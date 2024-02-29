@@ -7,10 +7,12 @@ const { RangePicker } = DatePicker;
 
 const DatePick = ({
   onChange,
+  value,
 }: {
   onChange: (dateRange: string[]) => void;
+  value: string[];
 }): JSX.Element => {
-  const [selectedDate, setSelectedDate] = useState<string[]>([]);
+  const [selectedDate, setSelectedDate] = useState<string[]>(value);
 
   // 오늘 날짜를 Day.js 객체로 변환
   const today = dayjs();
@@ -50,21 +52,21 @@ const DatePick = ({
   };
 
   const handleMonthClick = () => {
-    const startDate = today.subtract(30, "d").format("YYYY-MM-DD");
+    const startDate = today.subtract(1, "m").format("YYYY-MM-DD");
     const endDate = today.format("YYYY-MM-DD");
     setSelectedDate([startDate, endDate]);
     onChange([startDate, endDate]);
   };
 
   const handlequarterClick = () => {
-    const startDate = today.subtract(90, "d").format("YYYY-MM-DD");
+    const startDate = today.subtract(3, "m").format("YYYY-MM-DD");
     const endDate = today.format("YYYY-MM-DD");
     setSelectedDate([startDate, endDate]);
     onChange([startDate, endDate]);
   };
 
   const handleAllClick = () => {
-    const startDate = today.subtract(1000, "d").format("YYYY-MM-DD");
+    const startDate = today.subtract(1000, "y").format("YYYY-MM-DD");
     const endDate = today.format("YYYY-MM-DD");
     setSelectedDate([startDate, endDate]);
     onChange([startDate, endDate]);
@@ -80,7 +82,12 @@ const DatePick = ({
           height: "26px",
           marginRight: "5px",
         }}
-        defaultValue={[dayjs(), dayjs()]}
+        defaultValue={[today, today]}
+        value={
+          value
+            ? [dayjs(selectedDate[0]), dayjs(selectedDate[1])]
+            : [undefined, undefined]
+        }
       />
       <SmallButton style={{ minWidth: "40px" }} onClick={handleDayClick}>
         오늘
