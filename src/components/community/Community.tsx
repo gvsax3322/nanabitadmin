@@ -1,15 +1,19 @@
 import { ConfigProvider, Table } from "antd";
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import styled from "@emotion/styled";
 import {
-  BigCard,
   BigKeyword,
   Common,
   MainTitle,
   MiddleInput,
   SearchButton,
+  SelectStyle,
+  SmallButton,
   SubTitle,
 } from "../../styles/AdminBasic";
-import OrderAllSelect from "../order/orderSlect/OrderAllSelect";
 
 interface IDataItem {
   key: number;
@@ -19,6 +23,7 @@ interface IDataItem {
 }
 
 const Community = () => {
+  //테이블
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const onSelectChange = (selectedRowKeys: React.Key[], record: any[]) => {
     console.log("selectedRowKeys changed: ", selectedRowKeys);
@@ -26,6 +31,36 @@ const Community = () => {
     setSelectedRowKeys(selectedRowKeys);
     console.log(record);
   };
+  const CenteredHeaderTable = styled(Table)`
+    &&& {
+      .ant-table-thead > tr > th,
+      .ant-table-tbody > tr > td {
+        text-align: center;
+      }
+
+      .ant-table-thead > tr > :nth-of-type(1),
+      .ant-table-tbody > tr > :nth-of-type(1) {
+        width: 5%;
+      }
+      .ant-table-thead > tr > :nth-of-type(2),
+      .ant-table-tbody > tr > :nth-of-type(2) {
+        width: 10%;
+      }
+      .ant-table-thead > tr > :nth-of-type(3),
+      .ant-table-tbody > tr > :nth-of-type(3) {
+        width: 40%;
+      }
+      .ant-table-thead > tr > :nth-of-type(4),
+      .ant-table-tbody > tr > :nth-of-type(4) {
+        width: 10%;
+      }
+      .ant-table-thead > tr > :nth-of-type(5),
+      .ant-table-tbody > tr > :nth-of-type(5) {
+        width: 20%;
+      }
+    }
+  `;
+
   const columns = [
     {
       title: "번호",
@@ -57,62 +92,94 @@ const Community = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            gap: 10,
           }}
         >
-          <SearchButton>수정</SearchButton>
-          <SearchButton>삭제</SearchButton>
+          <SearchButton type="button">답변</SearchButton>
+          <SearchButton type="button" style={{ background: "red" }}>
+            삭제
+          </SearchButton>
         </div>
       ),
     });
   }
 
+  //리액트 훅 폼
+
+  const validationSchema = yup.object({
+    userpass: yup
+      .string()
+      .required("검색어는 필수입니다.")
+      .min(1, "1자 이상 입력하세요.")
+      .max(10, "10자까지만 입력하세요"),
+  });
+
+  const { register, handleSubmit, reset, formState } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
+
+  const handleSubmitMy = (data: any) => {
+    const parsedUserId = parseInt(data.userid);
+    const asd = {
+      userid: parsedUserId,
+      userpass: data.userpass,
+    };
+    console.log(asd);
+  };
+
+  console.log("리랜더링");
+
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
-    // onSelect,
-    onSelectAll: (selected: any, selectedRows: any) => {
-      console.log(
-        "All rows selected:",
-        selected,
-        "Selected Rows:",
-        selectedRows,
-      );
-      // 모든 행에 대한 추가적인 처리
-    },
   };
 
   return (
     <>
-      <MainTitle>게시판 관리</MainTitle>
+      <MainTitle>Q&A</MainTitle>
       <SubTitle>기본검색</SubTitle>
-      <BigKeyword
-        style={{
-          borderTop: `1px solid ${Common.color.primary}`,
-          marginBottom: 20,
-        }}
-      >
-        <div className="left">검색어</div>
-        <div className="right">
-          <OrderAllSelect
-            option1="전체보기"
-            option2="공지사항"
-            option3="소통해요"
-            option4="궁금해요"
-          />
-          <MiddleInput />
+      <form onSubmit={handleSubmit(handleSubmitMy)}>
+        <BigKeyword
+          style={{
+            borderTop: `1px solid ${Common.color.primary}`,
+            marginBottom: 20,
+          }}
+        >
+          <div className="left">검색어</div>
+          <div className="right">
+            <MiddleInput type="text" {...register("userpass")} />
+          </div>
+        </BigKeyword>
+        <div
+          style={{
+            color: "red",
+            textAlign: "center",
+            fontSize: "2rem",
+            marginBottom: 10,
+          }}
+        >
+          {formState.errors.userpass?.message}
         </div>
-      </BigKeyword>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "5px",
-          marginBottom: "20px",
-        }}
-      >
-        <SearchButton>검색</SearchButton>
-        <SearchButton style={{ background: " #f44336" }}>초기화</SearchButton>
-      </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "5px",
+            marginBottom: "20px",
+          }}
+        >
+          <SearchButton type="submit">검색</SearchButton>
+          <SearchButton
+            style={{ background: " #f44336" }}
+            onClick={() => {
+              reset();
+            }}
+          >
+            초기화
+          </SearchButton>
+        </div>
+      </form>
+      <SmallButton>선택 삭제</SmallButton>
       <ConfigProvider
         theme={{
           token: {
@@ -126,7 +193,7 @@ const Community = () => {
           },
         }}
       >
-        <Table
+        <CenteredHeaderTable
           rowSelection={rowSelection}
           columns={columns}
           dataSource={data}
@@ -134,10 +201,6 @@ const Community = () => {
           bordered
         />
       </ConfigProvider>
-      <BigCard />
-      <BigCard />
-      <BigCard />
-      <BigCard />
     </>
   );
 };
