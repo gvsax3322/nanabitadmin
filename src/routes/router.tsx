@@ -24,6 +24,7 @@ import useCustomLogin from "../hooks/useCustomLogin";
 import CommunPage from "../pages/community/CommunPage";
 import DComPage from "../pages/order/sub/DComPage";
 import ShippingPage from "../pages/order/sub/ShippingPage";
+import TestPage from "../pages/TestPage";
 
 const RouteComponent = () => {
   const { isLogin } = useCustomLogin();
@@ -37,6 +38,11 @@ export const routerAdmin = createBrowserRouter([
   {
     path: "",
     element: <RouteComponent />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/test",
+    element: <TestPage />,
     errorElement: <ErrorPage />,
   },
   {

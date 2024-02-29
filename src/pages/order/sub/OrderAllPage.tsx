@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import OrAllHeader from "../item/OrAllHeader";
-import OrAllFooter from "../item/footer/OrAllFooter";
+
 import { getOrderAll } from "../../../api/order/orderAllApi";
 
 const OrderAllPage = () => {
@@ -22,7 +22,6 @@ const OrderAllPage = () => {
       />
 
       {/* 푸터 컴포넌트 */}
-      <OrAllFooter />
     </div>
   );
 };

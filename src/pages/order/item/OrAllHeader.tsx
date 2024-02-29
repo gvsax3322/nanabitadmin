@@ -1,4 +1,5 @@
 import {
+  BigButton,
   BigKeyword,
   Common,
   MainTitle,
@@ -62,6 +63,19 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
+  // 리스트  출력 순서 정렬
+  const [sortBy, setSortBy] = useState(0); // 기본값으로 최신순(0)을 설정
+
+  // 일괄처리 버튼 컨트롤
+  const [stateBt, setStateBt] = useState(0);
+  const [activeStateBt, setActiveStateBt] = useState(0);
+
+  // 기간버튼 핸들러
+  const handleStateBt = (BTIndex: number) => {
+    setStateBt(BTIndex);
+    // 선택된 기간에 따른 동작 수행
+    console.log("ㅎㅇ 나 일괄처리 버튼:", BTIndex);
+  };
   // 테이블에서 발생한 데이터 처리 함수
   const handleClickTableuum = (data: any) => {
     setDataFromChild(data);
@@ -182,24 +196,26 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     }
     console.log("주문상태", optionIndex);
   };
-
-  // 결제수단 셀렉함수
   const handlePaymentOp = (optionIndex: number): void => {
     switch (optionIndex) {
       case 0:
         setPaymentOp(0);
         break;
       case 1:
-        setPaymentOp(1);
+        setPaymentOp(2);
         break;
       case 2:
-        setPaymentOp(2);
+        setPaymentOp(3);
         break;
       default:
         break;
     }
-    console.log("결제수단", optionIndex);
+    console.log("결제수단", handlePaymentOp);
   };
+  useEffect(() => {
+    console.log("paymentOp 변경됨", paymentOp);
+  }, [paymentOp]);
+
   // 검색 버튼 클릭시 처리
   const handleClickSearch = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -308,11 +324,29 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+  // const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+  //   console.log("selectedRowKeys changed이거라: ", newSelectedRowKeys);
+
+  //   setSelectedRowKeys(newSelectedRowKeys);
+  //   tableNum(newSelectedRowKeys);
+  // };
+
+  // const rowSelection = {
+  //   selectedRowKeys,
+  //   onChange: onSelectChange,
+  // };
+
+  const onSelectChange = (newSelectedRowKeys: any[]) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys);
 
-    setSelectedRowKeys(newSelectedRowKeys);
-    tableNum(newSelectedRowKeys);
+    setSelectedRowKeys(newSelectedRowKeys); // 이전 선택된 키를 새로운 키로 업데이트하지 않고 완전히 대체
+
+    // newSelectedRowKeys를 사용하여 iorder 값을 가져옴
+    const selectedOrders = newSelectedRowKeys.map(key => {
+      // 각 선택된 행의 데이터에서 iorder 값을 가져와서 반환
+      return orderData.find(item => item.iorder === key)?.iorder || 0;
+    });
+    tableNum(selectedOrders); // iorder 값들을 전달
   };
 
   const rowSelection = {
@@ -379,8 +413,8 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
                 style={{
                   marginBottom: "10px",
                   marginTop: "10px",
-                  width: "66px",
-                  height: "66px",
+                  width: "50px",
+                  height: "50px",
                   // objectFit: "cover",
                 }}
                 // key={index}
@@ -497,6 +531,18 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
       title: "결제수단",
       dataIndex: "payCategory",
       key: "payCategory",
+      render: (payCategory: number) => (
+        <ul>
+          <li
+            style={{ marginBottom: "30px", marginTop: "30px" }}
+            key={payCategory}
+          >
+            {payCategory === 0 && "전체"}
+            {payCategory === 2 && "무통장"}
+            {payCategory === 3 && "카드"}
+          </li>
+        </ul>
+      ),
     },
   ];
   const Aaa = styled(Table)`
@@ -701,6 +747,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
           />
           {showModal && <TestMd onClose={handleCloseModal} />}
         </ConfigProvider>
+        {/* <OrAllFooter /> */}
       </div>
     </>
   );
