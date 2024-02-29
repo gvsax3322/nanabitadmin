@@ -22,6 +22,8 @@ import {
   SubTitle,
 } from "../../../styles/AdminBasic";
 import { MainBt, MainWrap, OrderList } from "../../../styles/main/main";
+import SalesChartCom from "../../../components/common/SalesChartCom";
+import OrderChartCom from "../../../components/common/OrderChartCom";
 
 const MainAdmin = () => {
   const [recentUsers, setRecentUsers] = useState<UserData[] | string>("");
@@ -102,14 +104,14 @@ const MainAdmin = () => {
             style={{ cursor: "pointer" }}
           >
             <SubTitle>최근 매출통계</SubTitle>
-            {/* <SalesChartCom /> */}
+            <SalesChartCom />
           </BigCard>
           <BigCard
             onClick={() => handleClickMove("charts/dorder")}
             style={{ cursor: "pointer" }}
           >
             <SubTitle>최근 주문내역</SubTitle>
-            {/* <OrderChartCom /> */}
+            <OrderChartCom />
           </BigCard>
         </div>
       </LayoutMain>
