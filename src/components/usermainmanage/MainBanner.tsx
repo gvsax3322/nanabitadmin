@@ -37,6 +37,15 @@ const CenteredHeaderTable = styled(Table)`
 `;
 const MainBanner: React.FC = () => {
   const [bannerInfo, setBannerInfo] = useState<BannerData[] | null>(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileUpload = (event: any) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
+
+    // 파일을 선택할 때마다 콘솔에 선택된 파일 정보를 출력합니다.
+    console.log("선택된 파일:", file);
+  };
 
   const fetchData = async () => {
     try {
@@ -75,10 +84,6 @@ const MainBanner: React.FC = () => {
         bannerNew: item.bannerNew,
       }))
     : [];
-
-  const handleAddCom = () => {
-    console.log("성공했다규");
-  };
 
   // 배너추가버튼!
   const handleAdd = () => {
@@ -198,6 +203,7 @@ const MainBanner: React.FC = () => {
             accept="image/png, image/gif, image/jpeg"
             id={`input-file-before-${ibanner}`}
             style={{ display: "none" }}
+            onChange={handleFileUpload}
           />
         </>
       ),
