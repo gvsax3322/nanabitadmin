@@ -8,7 +8,11 @@ import {
   SubTitle,
 } from "../../styles/AdminBasic";
 import MainUsermodal from "./MainUsermodal";
-import { MainProRc, getMainProRc } from "../../api/usermain/mainProductSetApi";
+import {
+  MainProRc,
+  getMainProRc,
+  putMainProRc,
+} from "../../api/usermain/mainProductSetApi";
 import { API_SERVER_HOST } from "../../util/util";
 
 const CenteredHeaderTable = styled(Table)`
@@ -25,13 +29,13 @@ const CenteredHeaderTable = styled(Table)`
 const MdRecommend: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [data, setData] = useState<MainProRc[]>([]);
-
   const [messageApi, contextHolder] = message.useMessage();
+  const [refresh, setRefresh] = useState(0);
 
-  const success = () => {
+  const success = (txt: string) => {
     messageApi.open({
       type: "success",
-      content: "글 넣으삼",
+      content: txt,
     });
   };
 
@@ -71,7 +75,7 @@ const MdRecommend: React.FC = () => {
 
     // 컴포넌트가 마운트될 때 데이터를 불러오도록 호출
     fetchData();
-  }, []);
+  }, [refresh]);
 
   const handleProductAdd = () => {
     console.log("data.length :", data.length);
@@ -86,8 +90,23 @@ const MdRecommend: React.FC = () => {
     setIsOpen(false);
   };
 
-  const handleDelete = () => {
-    console.log("삭제할거라능");
+  const handleDelete = (iproduct: number) => {
+    console.log("삭제할거라능", iproduct);
+    putMainProRc(iproduct, putSuccessFn, putFailFn, putErrorFn);
+  };
+
+  const putSuccessFn = () => {
+    console.log("성공!");
+    success("삭제 완료하였습니다.");
+    setRefresh(refresh + 1);
+    console.log("리프레시값", refresh);
+  };
+  const putFailFn = () => {
+    console.log("실패!");
+  };
+
+  const putErrorFn = () => {
+    console.log("에러!");
   };
 
   const columns: any[] = [
@@ -129,16 +148,17 @@ const MdRecommend: React.FC = () => {
     },
     {
       title: "삭제",
-      dataIndex: "deletebt",
-      key: "key",
+      dataIndex: "iproduct",
+      key: "iproduct",
       width: "80px",
-      render: () => (
+      render: (record: any) => (
         <>
+          {/* {console.log(record)} */}
           <SearchButton
             style={{
               background: "rgb(244, 67, 54)",
             }}
-            onClick={handleDelete}
+            onClick={() => handleDelete(record)}
           >
             삭제
           </SearchButton>

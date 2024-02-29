@@ -3,14 +3,13 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { getBanner } from "../../api/usermain/mainbannerApi";
 import {
-  DeleteButton,
   MainTitle,
   MiddleButton,
   MiddleInput,
   SearchButton,
   SelectStyle,
   SmallButton,
-  SubTitle,
+  SubTitle
 } from "../../styles/AdminBasic";
 import { API_SERVER_HOST } from "../../util/util";
 // 테이블 스타일 관리
@@ -54,7 +53,6 @@ const MainBanner: React.FC = () => {
   };
 
   const successFn = (data: BannerData[]) => {
-    console.log("성공이요");
     const arr = data.map(item => {
       item.bannerNew = 0;
       return item;
@@ -142,6 +140,26 @@ const MainBanner: React.FC = () => {
 
   //  =================배너 값 관리 함수 =================
 
+  const handleFileChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    dataIndex: string,
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const newBannerPic = e.target?.result as string;
+        // 선택한 파일의 Data URL을 가져왔으니, 이미지 태그에 설정해줍니다.
+        const imageElement = 1
+        // bannerInfo ? document.getElementById(`input-file-before-${bannerInfo.ibanner}`) as HTMLImageElement : null;
+        if (imageElement) {
+          // imageElement.src = newBannerPic;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const columns: any = [
     {
       title: "노출",
@@ -166,11 +184,12 @@ const MainBanner: React.FC = () => {
       title: "미리보기",
       dataIndex: "bannerPic",
       key: "bannerPic",
-      render: (bannerPic: string): any => (
+      render: (bannerPic: string,ibanner: any): any => (
         <img
           style={{ width: "190px", height: "66px", objectFit: "cover" }}
           src={bannerPic}
           alt=""
+          id={`input-file-before-${ibanner}`}
           className="diaryadd-img-before"
         />
       ),
@@ -203,7 +222,7 @@ const MainBanner: React.FC = () => {
             accept="image/png, image/gif, image/jpeg"
             id={`input-file-before-${ibanner}`}
             style={{ display: "none" }}
-            onChange={handleFileUpload}
+            onChange={event => handleFileChange(event, "bannerPic")}
           />
         </>
       ),

@@ -32,24 +32,26 @@ export const getMainProRc = async (
 };
 
 // 진열관리_MD 추천상품 등록해제
-// http://192.168.0.144:5223/api/admin/product/productRcDel?iproduct=50
+// http://192.168.0.144:5223/api/admin/product/toggleRcProduct?iproduct=52
 export const putMainProRc = async (
   iproduct: number,
-  successFn: (data: any) => void,
-  failFn: (error: string) => void,
-  errorFn: (error: string) => void,
+  putSuccessFn: (data: any) => void,
+  putFailFn: (error: string) => void,
+  putErrorFn: (error: string) => void,
 ) => {
   try {
-    const res = await jwtAxios.put(`${host}/productRcDel?iproduct=${iproduct}`);
+    const res = await jwtAxios.put(
+      `${host}/toggleRcProduct?iproduct=${iproduct}`,
+    );
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
       // console.log(res.data);
-      successFn(res);
+      putSuccessFn(res);
     } else {
-      failFn("목록 호출 오류입니다.");
+      putFailFn("목록 호출 오류입니다.");
     }
   } catch (error) {
-    errorFn("목록 호출 서버 에러에요");
+    putErrorFn("목록 호출 서버 에러에요");
   }
 };
 
