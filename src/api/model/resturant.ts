@@ -33,12 +33,15 @@ export interface ShoppingCart {
 
 // 상품등록
 export interface DTO {
-  imain: number;
-  imiddle: number;
+  imain?: number;
+  imiddle?: number;
   productNm: string;
-  recommandAge: number;
-  price: number;
-  remainedCnt: number;
+  price?: number;
+  remainedCount?: number;
+  recommendedAge?: number;
+  adminMemo: string;
+  newFl: number;
+  popFl: number;
 }
 
 export interface Product {
