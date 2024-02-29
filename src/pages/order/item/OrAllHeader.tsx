@@ -9,11 +9,13 @@ import {
 } from "../../../styles/AdminBasic";
 import styled from "@emotion/styled";
 import OrderAllSelect from "../../../components/order/orderSlect/OrderAllSelect";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import OrPicker from "../../../components/order/orderSlect/OrPicker";
 import { Dayjs } from "dayjs";
 import { getOrderAll } from "../../../api/order/orderAllApi";
-import OrderAllTable from "../../../components/order/orderSlect/table/OrderAllTable";
+
+import { ConfigProvider, Table } from "antd";
+import TestMd from "../../../components/order/TestMd";
 
 const Wrap = styled.div`
   margin-bottom: 30px;
@@ -21,49 +23,31 @@ const Wrap = styled.div`
 `;
 
 const initState = {
-  iorder: "",
-  orderedAt: "2024-06-13T14:31:23",
+  idk: 0,
+  iorder: 0,
+  orderedAt: "",
   products: [
     {
       repPic: "",
-      productNm: "led보온분유",
-      cnt: 6,
-      processState: 1,
-      amount: 29900,
+      productNm: "",
+      cnt: 0,
+      processState: 0,
+      amount: 0,
       refundFl: 0,
     },
   ],
-  ordered: "이강인",
-  recipient: "이강인",
-  totalAmount: 357200,
-  payCategory: 2,
+  ordered: "",
+  recipient: "",
+  totalAmount: 0,
+  payCategory: 0,
   refundFl: 0,
 };
 
-interface ISubTableProps {
-  serverData: {
-    iorder: string;
-    orderedAt: string;
-    products: {
-      repPic: string;
-      productNm: string;
-      cnt: number;
-      processState: number;
-      amount: number;
-      refundFl: number;
-    }[];
-    ordered: string;
-    recipient: string;
-    totalAmount: number;
-    payCategory: number;
-    refundFl: number;
-  }[];
-}
-
 interface OrAllHeaderProps {
   fetchData: (data: any) => void;
+  tableNum: (selectedRowKeys: React.Key[]) => void;
 }
-const OrAllHeader: React.FC<OrAllHeaderProps> = ({}) => {
+const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   const [orderData, setOrderData] = useState([initState]);
   const [periodBt, setPeriodBt] = useState(0); // 선택된 기간 상태 버튼관리
   const [prdOp, setPrdOp] = useState(0);
@@ -74,6 +58,9 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({}) => {
   const [userSearchActive, setUserSearchActive] = useState(false); // 검색버튼 옵션관리
   const [searchText, setSearchText] = useState(""); //  검색어텍스트 관리
   const [dataFromChild, setDataFromChild] = useState("");
+
+  const [showModal, setShowModal] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   // 테이블에서 발생한 데이터 처리 함수
   const handleClickTableuum = (data: any) => {
@@ -264,6 +251,9 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({}) => {
     );
   };
 
+  useEffect(() => {
+    fetchData(); // 페이지가 처음 렌더링될 때 데이터를 호출합니다.
+  }, []);
   // 서버연동
   const fetchData = () => {
     // 검색 버튼 클릭시만 API 날리기
@@ -308,6 +298,241 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({}) => {
     alert("오더all!!! 서버상태 불안정 그래서, 데모테스트했음.");
     setOrderData(data);
   };
+
+  // ResultModal을 보여주는 함수
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+
+  // ResultModal을 닫는 함수
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+
+    setSelectedRowKeys(newSelectedRowKeys);
+    tableNum(newSelectedRowKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
+  const columns: any[] = [
+    {
+      title: "No",
+      dataIndex: "idk",
+      key: "idk",
+    },
+    {
+      title: "주문일시",
+      dataIndex: "orderedAt",
+      key: "orderedAt",
+    },
+    {
+      title: "주문목록",
+      dataIndex: "refundFl",
+      key: "refundFl",
+      render: (refundFl: number) => (
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div>
+            <SearchButton
+              style={{ marginBottom: "12px" }}
+              onClick={handleShowModal}
+            >
+              주문목록
+            </SearchButton>
+            {refundFl === 0 && (
+              <SearchButton style={{ background: "rgb(244, 67, 54)" }}>
+                주문취소
+              </SearchButton>
+            )}
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "이미지",
+      dataIndex: "products",
+      key: "repPic",
+      render: (items: any[]) => (
+        <div
+          style={{
+            width: "100%",
+            // display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {items.map((item, index) => (
+            <div>
+              <img
+                style={{
+                  marginBottom: "10px",
+                  marginTop: "10px",
+                  width: "66px",
+                  height: "66px",
+                  // objectFit: "cover",
+                }}
+                // key={index}
+              />
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: "상품명",
+      dataIndex: "products",
+      key: "productNm",
+      render: (items: any[]) => (
+        <ul>
+          {items.map((item, index) => (
+            <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
+              {item.productNm}
+            </li>
+          ))}
+        </ul>
+      ),
+    },
+    {
+      title: "수량",
+      dataIndex: "products",
+      key: "cnt",
+      render: (items: any[]) => (
+        <ul>
+          {items.map((item, index) => (
+            <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
+              {item.cnt}
+            </li>
+          ))}
+        </ul>
+      ),
+    },
+    {
+      title: "상품금액",
+      dataIndex: "products",
+      key: "amount",
+      render: (items: any[]) => (
+        <ul>
+          {items.map((item, index) => (
+            <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
+              {item.amount}
+            </li>
+          ))}
+        </ul>
+      ),
+    },
+    {
+      title: "처리상태",
+      dataIndex: "products",
+      key: "processState",
+      render: (items: any[]) => (
+        <ul>
+          {items.map((item, index) => (
+            <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
+              {item.processState === 1 && "입금대기"}
+              {item.processState === 2 && "배송준비중"}
+              {item.processState === 3 && "배송중"}
+              {item.processState === 4 && "배송완료"}
+            </li>
+          ))}
+        </ul>
+      ),
+    },
+    {
+      title: "반품신청",
+      dataIndex: "products",
+      key: "refundFlProduct",
+      render: (products: any[]) => (
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div>
+            {products.map((product, index) => (
+              <React.Fragment key={index}>
+                {product.refundFl === 0 && (
+                  <SearchButton
+                    style={{ marginBottom: "30px", marginTop: "30px" }}
+                  >
+                    반품신청
+                  </SearchButton>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "주문자",
+      dataIndex: "ordered",
+      key: "ordered",
+    },
+    {
+      title: "수령자",
+      dataIndex: "recipient",
+      key: "recipient",
+    },
+    {
+      title: "총주문액",
+      dataIndex: "totalAmount",
+      key: "totalAmount",
+    },
+    {
+      title: "결제수단",
+      dataIndex: "payCategory",
+      key: "payCategory",
+    },
+  ];
+  const Aaa = styled(Table)`
+    :where(.css-dev-only-do-not-override-1xg9z9n).ant-table-wrapper
+      .ant-table-tbody
+      .ant-table-row.ant-table-row-selected
+      > .ant-table-cell {
+      background-color: ${Common.color.p800};
+    }
+    .ant-checkbox-checked .ant-checkbox-inner {
+      background-color: ${Common.color.p600};
+      border-color: ${Common.color.p800};
+    }
+    .ant-checkbox-wrapper-checked:hover .ant-checkbox-inner,
+    .ant-checkbox-checked:hover .ant-checkbox-inner {
+      border-color: rgba(40, 40, 40, 0.8) !important;
+    }
+
+    .ant-checkbox-wrapper:hover .ant-checkbox-inner,
+    .ant-checkbox:hover .ant-checkbox-inner,
+    .ant-checkbox-input:focus + .ant-checkbox-inner {
+      border-color: #d9d9d9 !important;
+    }
+    :where(.css-dev-only-do-not-override-1xg9z9n).ant-checkbox-indeterminate
+      .ant-checkbox-inner:after {
+      background-color: ${Common.color.p800};
+    }
+    &&& {
+      .ant-table-thead > tr > th {
+        text-align: center;
+      }
+      .ant-table-tbody > tr > td {
+        text-align: center;
+      }
+    }
+  `;
 
   return (
     <>
@@ -448,14 +673,34 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({}) => {
         </div>
       </div>
       <div>
-        {" "}
-        {/* 주문 테이블 컴포넌트 */}
-        <OrderAllTable
+        {/* <OrderAllTable
           tableNum={handleClickTableuum}
           serverData={orderData}
           // columns={columns}
           // dataSource={orderData}
-        />
+        /> */}
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: "#a5a5a5",
+            },
+            components: {
+              Table: {
+                headerBg: "#535353",
+                headerColor: "#fff",
+              },
+            },
+          }}
+        >
+          <Aaa
+            rowSelection={rowSelection}
+            columns={columns}
+            dataSource={orderData}
+            // dataSource={orderData}
+            pagination={false}
+          />
+          {showModal && <TestMd onClose={handleCloseModal} />}
+        </ConfigProvider>
       </div>
     </>
   );

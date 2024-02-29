@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import OrderAllTable from "../../../components/order/orderSlect/table/OrderAllTable";
+
 import OrAllHeader from "../item/OrAllHeader";
 import OrAllFooter from "../item/footer/OrAllFooter";
 import { getOrderAll } from "../../../api/order/orderAllApi";
@@ -16,7 +16,10 @@ const OrderAllPage = () => {
   return (
     <div>
       {/* 헤더 컴포넌트 */}
-      <OrAllHeader fetchData={handleClickTableuum} />
+      <OrAllHeader
+        fetchData={handleClickTableuum}
+        tableNum={handleClickTableuum}
+      />
 
       {/* 푸터 컴포넌트 */}
       <OrAllFooter />
