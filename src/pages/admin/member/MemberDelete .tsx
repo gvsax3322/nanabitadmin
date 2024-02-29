@@ -25,15 +25,10 @@ export interface ExMemberList {
   registeredAt: string;
 }
 
-export interface PostExMember {
-  keyword: string;
-  keywordType: number;
-}
-
 const MemberDelete = () => {
   const [memberList, setMemberList] = useState<ExMemberList[]>([]);
   const [searchText, setSearchText] = useState<string>("");
-  const [searchOp, setSearchOp] = useState(0);
+  const [searchOp, setSearchOp] = useState(1);
 
   const fetchData = async () => {
     try {
@@ -156,14 +151,13 @@ const MemberDelete = () => {
           <div className="left">검색어</div>
           <div className="right">
             <MemberSelect
-              option2={"이메일"}
-              option3={"이름"}
+              option1={"이메일"}
+              option2={"이름"}
               onClick={handleSearchOp}
             />
             <MiddleInput
               type="text"
               placeholder="검색어를 입력하세요"
-              autoFocus
               value={searchText}
               onChange={handleInputChange}
             />

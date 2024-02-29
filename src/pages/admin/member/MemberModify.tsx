@@ -1,7 +1,10 @@
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Menu, Table } from "antd";
 import { useEffect, useState } from "react";
+import { getMemberList } from "../../../api/member/memberApi";
+import DatePick from "../../../components/member/DatePick";
 import MemberModifyMD from "../../../components/member/modal/MemberModifyMD";
+import PostModal from "../../../components/member/modal/PostModal";
 import MemberSelect from "../../../components/select/MemberSelect";
 import {
   BigKeyword,
@@ -12,8 +15,6 @@ import {
   SmallButton,
   SubTitle,
 } from "../../../styles/AdminBasic";
-import OrderPicker from "../../../components/order/orderSlect/OrderPicker";
-import PostModal from "../../../components/member/modal/PostModal";
 import {
   BtList,
   ListWrap,
@@ -21,7 +22,6 @@ import {
   ModifyInfo,
   ModifyWrap,
 } from "../../../styles/member/memberstyle";
-import { getMemberList } from "../../../api/member/memberApi";
 
 export interface MemberApiResponse {
   code: string;
@@ -38,12 +38,17 @@ export interface MemberList {
 }
 
 const MemberModify = () => {
+  // 모달창 관련
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [postModalVisible, setPostModalVisible] = useState(false);
+  // 멤버관련
   const [selectedMember, setSelectedMember] = useState<MemberList | null>(null);
   const [memberList, setMemberList] = useState<MemberList[]>([]);
+  // 검색관련
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [searchText, setSearchText] = useState<string>("");
-  const [searchOp, setSearchOp] = useState(0);
+  const [searchOp, setSearchOp] = useState(1);
   const [phone, setPhone] = useState<string>("");
 
   const fetchData = async () => {
@@ -61,7 +66,16 @@ const MemberModify = () => {
         console.error("목록 호출 서버 에러:", error);
       };
 
-      await getMemberList(successFn, failFn, errorFn);
+      await getMemberList(
+        successFn,
+        failFn,
+        errorFn,
+        searchText,
+        searchOp,
+        startDate,
+        endDate,
+        phone,
+      );
     } catch (error) {
       console.error("에러:", error);
     }
@@ -95,19 +109,46 @@ const MemberModify = () => {
       case 1:
         setSearchOp(2);
         break;
-      case 2:
-        setSearchOp(2);
-        break;
     }
     console.log("검색어", optionIndex);
   };
 
-  const handleClickSearch = (
+  const handleClickSearch = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    // fetchData();
-    console.log("검색버튼눌렀어융", searchOp, searchText, phone);
+    try {
+      await fetchData();
+    } catch (error) {
+      console.error("검색 오류:", error);
+    }
+  };
+
+  const ResetData = async () => {
+    try {
+      const successFn = (data: MemberList[]) => {
+        console.log("데이터:", data);
+        setMemberList(data);
+      };
+
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+
+      await getMemberList(successFn, failFn, errorFn);
+    } catch (error) {
+      console.error("에러:", error);
+    }
+  };
+
+  const handleDateChange = (dateRange: string[]) => {
+    const [start, end] = dateRange;
+    setStartDate(start);
+    setEndDate(end);
   };
 
   const formatDate = (dateString: string) => {
@@ -175,9 +216,8 @@ const MemberModify = () => {
           <div className="left">검색어</div>
           <div className="right">
             <MemberSelect
-              option1={"전체보기"}
-              option2={"이메일"}
-              option3={"이름"}
+              option1={"이메일"}
+              option2={"이름"}
               onClick={handleSearchOp}
             />
             <MiddleInput
@@ -194,14 +234,7 @@ const MemberModify = () => {
         <BigKeyword>
           <div className="left">기간검색</div>
           <div className="right" style={{ gap: "5x" }}>
-            <OrderPicker />
-            <SmallButton style={{ minWidth: "40px" }}>오늘</SmallButton>
-            <SmallButton style={{ minWidth: "40px" }}>어제</SmallButton>
-            <SmallButton style={{ minWidth: "40px" }}>일주일</SmallButton>
-            <SmallButton style={{ minWidth: "40px" }}>지난달</SmallButton>
-            <SmallButton style={{ minWidth: "40px" }}>1개월</SmallButton>
-            <SmallButton style={{ minWidth: "40px" }}>3개월</SmallButton>
-            <SmallButton style={{ minWidth: "40px" }}>전체</SmallButton>
+            <DatePick onChange={handleDateChange} />
           </div>
         </BigKeyword>
         <BigKeyword>
@@ -221,7 +254,9 @@ const MemberModify = () => {
       </ModifyInfo>
       <ModifyButton>
         <SearchButton onClick={handleClickSearch}>검색</SearchButton>
-        <SearchButton style={{ background: " #f44336" }}>초기화</SearchButton>
+        <SearchButton style={{ background: " #f44336" }} onClick={ResetData}>
+          초기화
+        </SearchButton>
       </ModifyButton>
       <BtList>
         <div>
@@ -234,10 +269,13 @@ const MemberModify = () => {
       <ListWrap>
         <Table
           columns={columns}
-          dataSource={memberList.map(member => ({
-            ...member,
-            key: member.iuser,
-          }))}
+          dataSource={
+            memberList &&
+            memberList.map(member => ({
+              ...member,
+              key: member.iuser,
+            }))
+          }
         />
       </ListWrap>
       {editModalVisible && (
