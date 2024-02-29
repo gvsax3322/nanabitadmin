@@ -14,12 +14,10 @@ import {
   ShoppingCart,
   UserData,
 } from "../../../api/model/resturant";
-import OrderChart from "../../../components/charts/OrderChart";
-import SalesChart from "../../../components/charts/SalesChart";
+import MemberTable from "../../../components/common/MemberTable";
 import {
   BigCard,
   LayoutMain,
-  SearchButton,
   SmallCard,
   SubTitle,
 } from "../../../styles/AdminBasic";
@@ -42,96 +40,76 @@ const MainAdmin = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getList();
-        setRecentUsers(result);
-      } catch (error) {
-        alert("데이터 호출에 실패하였습니다.");
-      }
-    };
-    fetchData();
-  }, []);
+        const [
+          recentUsersResult,
+          recentOrdersResult,
+          orderStatusResult,
+          cancelCountResult,
+          shoppingCartResult,
+        ] = await Promise.all([
+          getList(),
+          getRecentList(),
+          getOrderStatus(),
+          getCancelCount(),
+          getShoppingCart(),
+        ]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await getRecentList();
-        setRecentOrders(result);
+        setRecentUsers(recentUsersResult);
+        setRecentOrders(recentOrdersResult);
+        setOrderStatus(orderStatusResult);
+        setCancelCount(cancelCountResult);
+        setShoppingCart(shoppingCartResult);
       } catch (error) {
         alert("데이터 호출에 실패하였습니다.");
       }
     };
-    fetchData();
-  }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await getOrderStatus();
-        setOrderStatus(result);
-      } catch (error) {
-        alert("데이터 호출에 실패하였습니다.");
-      }
-    };
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await getCancelCount();
-        setCancelCount(result);
-      } catch (error) {
-        alert("데이터 호출에 실패하였습니다.");
-      }
-    };
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await getShoppingCart();
-        setShoppingCart(result);
-      } catch (error) {
-        alert("데이터 호출에 실패하였습니다.");
-      }
-    };
     fetchData();
   }, []);
 
   return (
     <MainWrap>
       <LayoutMain>
-        <MainBt style={{ justifyContent: "space-between" }}>
-          <SubTitle>전체 주문통계</SubTitle>
-          <SearchButton onClick={() => handleClickMove("item/all")}>
-            주문내역 바로가기
-          </SearchButton>
-        </MainBt>
+        <MainBt style={{ justifyContent: "space-between" }}></MainBt>
         <OrderList style={{ marginBottom: "20px" }}>
-          <SmallCard>
-            <SalesChart />
+          <SmallCard
+            onClick={() => handleClickMove("member/daily")}
+            style={{ cursor: "pointer" }}
+          >
+            <SubTitle>최근 가입통계</SubTitle>
+            <MemberTable />
           </SmallCard>
-          <SmallCard>
-            <SalesChart />
+          <SmallCard
+            onClick={() => handleClickMove("order/all")}
+            style={{ cursor: "pointer" }}
+          >
+            <SubTitle>전체 주문통계</SubTitle>
+            {/* <SalesChart /> */}
           </SmallCard>
-          <SmallCard>
-            <SalesChart />
+          <SmallCard
+            onClick={() => handleClickMove("order/all")}
+            style={{ cursor: "pointer" }}
+          >
+            <SubTitle>전체 주문통계</SubTitle>
+            {/* <SalesChart /> */}
           </SmallCard>
         </OrderList>
-        <MainBt style={{ justifyContent: "space-between" }}>
-          <SubTitle>최근 주문내역</SubTitle>
-          <SearchButton onClick={() => handleClickMove("item/inventory")}>
-            주문내역 바로가기
-          </SearchButton>
-        </MainBt>
+        <MainBt style={{ justifyContent: "space-between" }}></MainBt>
         <div style={{ display: "flex", justifyContent: "center", gap: "40px" }}>
           {" "}
-          <BigCard>
-            <OrderChart />
+          <BigCard
+            onClick={() => handleClickMove("charts/dsales")}
+            style={{ cursor: "pointer" }}
+          >
+            <SubTitle>최근 매출통계</SubTitle>
+            {/* <SalesChartCom /> */}
           </BigCard>
-          <BigCard>
-            <OrderChart />
+          <BigCard
+            onClick={() => handleClickMove("charts/dorder")}
+            style={{ cursor: "pointer" }}
+          >
+            <SubTitle>최근 주문내역</SubTitle>
+            {/* <OrderChartCom /> */}
           </BigCard>
         </div>
       </LayoutMain>

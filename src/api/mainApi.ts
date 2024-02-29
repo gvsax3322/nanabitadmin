@@ -122,9 +122,17 @@ export const getDeldel = async (): Promise<MyData[] | string> => {
 };
 
 // 상품등록
-export const postProduct = async (): Promise<Product[] | string> => {
+export const postProduct = async ({
+  product,
+}: any): Promise<Product[] | string> => {
+  console.log("product", product);
   try {
-    const res = await jwtAxios.post<Product[]>(`${host}/product/Product`);
+    const header = { headers: { "Content-Type": "multipart/form-data" } };
+    const res = await jwtAxios.post<Product[]>(
+      `${host}/product/product`,
+      product,
+      header,
+    );
     const status = res.status.toString();
     const httpSt = status.charAt(0);
     if (httpSt === "2") {
