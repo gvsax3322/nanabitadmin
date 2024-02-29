@@ -90,11 +90,11 @@ const MainBanner: React.FC = () => {
     if (action === "editbanner") {
       // 수정 버튼이 클릭된 경우
 
-      console.log("수정 버튼이 클릭되었습니다.", "ibanner:", ibanner);
+      console.log("수정 버튼", "ibanner:", ibanner);
     } else if (action === "deletebanner") {
       // 삭제 버튼이 클릭된 경우
 
-      console.log("삭제 버튼이 클릭되었습니다.", "ibanner:", ibanner);
+      console.log("삭제 버튼", "ibanner:", ibanner);
     }
   };
 
