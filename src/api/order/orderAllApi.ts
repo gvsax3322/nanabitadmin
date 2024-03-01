@@ -1,7 +1,6 @@
 import jwtAxios from "../../util/jwtUtil";
 import { API_SERVER_HOST } from "../../util/util";
 
-import axios from "axios";
 
 export interface OrderParam {
   processState: number;

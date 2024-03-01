@@ -1,16 +1,30 @@
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
-import { FC } from "react";
+import { ChangeEvent, FC, useState } from "react";
 import {
   BigInput,
   BigKeyword,
   MainTitle,
   MiddleButton,
+  SubTitle,
 } from "../../../styles/AdminBasic";
 import { ModifyButton } from "../../../styles/member/memberstyle";
+import { MemberList } from "../../../pages/admin/member/MemberModify";
+import { postMail } from "../../../api/mail/mailApi";
 
 interface ResultModalProps {
   onClose: () => void;
+  selectedMember: MemberList | null;
+}
+
+export interface PostRes {
+  code: string;
+  message: string;
+  data: {
+    to: string[];
+    subject: string;
+    message: string;
+  };
 }
 
 const ModalOverlay = styled.div`
@@ -34,7 +48,38 @@ const ModalContent = styled(motion.div)`
   padding: 20px;
 `;
 
-const PostModal: FC<ResultModalProps> = ({ onClose }) => {
+const PostModal: FC<ResultModalProps> = ({ onClose, selectedMember }) => {
+  const [title, setTitle] = useState<string>();
+  const [message, setMessage] = useState<string>();
+
+  const handleClickModify = async () => {
+    try {
+      const successFn = (data: PostRes) => {
+        console.log("데이터:", data);
+      };
+
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+
+      await postMail(
+        successFn,
+        failFn,
+        errorFn,
+        selectedMember?.email || "",
+        title,
+        message,
+      );
+    } catch (error) {
+      console.error("에러:", error);
+    }
+    onClose();
+  };
+
   return (
     <ModalOverlay>
       <ModalContent
@@ -45,7 +90,9 @@ const PostModal: FC<ResultModalProps> = ({ onClose }) => {
         onClick={e => e.stopPropagation()}
       >
         <MainTitle>메일 보내기</MainTitle>
-
+        <SubTitle>
+          고객명 : {selectedMember?.nm} ( {selectedMember?.email} )
+        </SubTitle>
         <BigKeyword
           style={{
             border: "1px solid #000",
@@ -58,6 +105,9 @@ const PostModal: FC<ResultModalProps> = ({ onClose }) => {
           <div className="right">
             <BigInput
               style={{ width: "95%", height: "50px", fontSize: "20px" }}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setTitle(e.target.value)
+              }
             />
           </div>
         </BigKeyword>
@@ -79,11 +129,19 @@ const PostModal: FC<ResultModalProps> = ({ onClose }) => {
                 height: "160px",
                 fontSize: "20px",
               }}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setMessage(e.target.value)
+              }
             />
           </div>
         </BigKeyword>
         <ModifyButton>
-          <MiddleButton style={{ background: " #575757" }}>저장</MiddleButton>
+          <MiddleButton
+            style={{ background: " #575757" }}
+            onClick={handleClickModify}
+          >
+            전송
+          </MiddleButton>
           <MiddleButton
             style={{
               background: " #fff",
