@@ -1,7 +1,10 @@
-import ItemTable from "../../../components/table/ItemTable";
 import styled from "@emotion/styled";
+import { useEffect, useState } from "react";
+import { getDeldel, getProductlist } from "../../../api/mainApi";
+import ResultModal from "../../../components/common/Modal";
 import OrderAllSelect from "../../../components/order/orderSlect/OrderAllSelect";
 import OrderPicker from "../../../components/order/orderSlect/OrderPicker";
+import ItemTable from "../../../components/table/ItemTable";
 import {
   BigKeyword,
   Common,
@@ -13,18 +16,75 @@ import {
   SubTitle,
 } from "../../../styles/AdminBasic";
 import ExcelDownloadButton from "./ExcelDownloadButton";
-import ResultModal from "../../../components/common/Modal";
-import { useState } from "react";
 
 const Wrap = styled.div`
   margin-bottom: 30px;
   border-bottom: 2px solid ${Common.color.primary};
 `;
 
+export interface GetProduct {
+  productNm: string;
+  iproduct: number;
+  price: number;
+  imain: number;
+  imiddle: number;
+  repPic: string;
+}
+
+export type ProductGetList = GetProduct[];
+
 const ItemAll = () => {
   // ResultModal을 표시할지 여부를 결정하는 상태
   const [showModal, setShowModal] = useState(false);
   const [dataFromChild, setDataFromChild] = useState<any[]>([]);
+
+  const [productList, setProductList] = useState<GetProduct[]>([]);
+
+  const fetchData = async () => {
+    try {
+      const successPr = (data: GetProduct[]) => {
+        console.log("데이터:", data);
+        setProductList(data);
+      };
+
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+
+      await getProductlist(successPr, failFn, errorFn);
+    } catch (error) {
+      console.error("에러:", error);
+    }
+  };
+
+  const ResetData = async () => {
+    try {
+      const successFn = (data: GetProduct[]) => {
+        console.log("데이터:", data);
+        setProductList(data);
+      };
+
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+
+      await getProductlist(successFn, failFn, errorFn);
+    } catch (error) {
+      console.error("에러:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   // ResultModal을 보여주는 함수
   const handleShowModal = () => {
@@ -40,8 +100,11 @@ const ItemAll = () => {
     setDataFromChild(data);
   };
   const handleClcikRemove = () => {
-    console.log(dataFromChild);
+    const iproductList: number[] = dataFromChild.map(item => item.iproduct);
+    console.log("선택된 iproduct 리스트:", iproductList);
+    getDeldel(iproductList);
   };
+
   return (
     <>
       <Wrap>
@@ -144,7 +207,9 @@ const ItemAll = () => {
           }}
         >
           <SearchButton>검색</SearchButton>
-          <SearchButton style={{ background: " #f44336" }}>초기화</SearchButton>
+          <SearchButton style={{ background: " #f44336" }} onClick={ResetData}>
+            초기화
+          </SearchButton>
         </div>
       </Wrap>
       <div
@@ -173,7 +238,7 @@ const ItemAll = () => {
         </div>
       </div>
       <div>
-        <ItemTable tableNum={handleClickTableuum} />
+        <ItemTable tableNum={handleClickTableuum} productList={productList} />
       </div>
       {showModal && <ResultModal onClose={handleCloseModal} />}
     </>

@@ -1,10 +1,10 @@
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
-import { IDataItem } from "../../../components/table/ItemTable";
 import { SmallButton } from "../../../styles/AdminBasic";
+import { GetProduct } from "./ItemAll";
 
 interface ExcelDownloadButtonProps {
-  exceldata: IDataItem[]; // IDataItem 타입으로 된 배열을 exceldata로 전달받음
+  exceldata: GetProduct[]; // IDataItem 타입으로 된 배열을 exceldata로 전달받음
 }
 
 const ExcelDownloadButton: React.FC<ExcelDownloadButtonProps> = ({
@@ -15,17 +15,17 @@ const ExcelDownloadButton: React.FC<ExcelDownloadButtonProps> = ({
   const handleDownload = () => {
     // 엑셀 시트에 넣을 데이터를 배열로 만들기
     const excelData = exceldata.map(item => [
-      item.key,
-      item.item,
-      item.category,
-      item.inventory,
-      item.sale,
+      item.iproduct,
+      item.productNm,
+      item.imain,
+      item.iproduct,
+      item.price,
     ]);
 
     // 엑셀 워크북 생성
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet([
-      ["번호", "상품명", "카테고리", "재고", "판매가"],
+      ["상품번호", "상품명", "카테고리", "재고", "판매가"],
       ...excelData,
     ]);
 

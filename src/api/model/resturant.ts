@@ -49,3 +49,17 @@ export interface Product {
   productDetails: string;
   dto: DTO;
 }
+
+
+export interface getRetrunApi {
+  code: string;
+  message: string;
+  data: RetrunData[];
+}
+
+export interface RetrunData {
+  date: string;
+  registerCnt: number;
+  registerRate: string;
+  totalRegisterCnt: number;
+}

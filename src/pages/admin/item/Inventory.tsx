@@ -180,8 +180,8 @@ const Inventory = () => {
         </div>
       </div>
       <div>
-      <ItemTable tableNum={handleClickTableuum} />
-        {showModal && <ResultModal onClose={handleCloseModal} />}
+      {/* <ItemTable tableNum={handleClickTableuum} /> */}
+        {/* {showModal && <ResultModal onClose={handleCloseModal} />} */}
       </div>
     </>
   );

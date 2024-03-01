@@ -1,8 +1,9 @@
 import styled from "@emotion/styled";
 import { ConfigProvider, Table } from "antd";
 import React, { useState } from "react";
+import { GetProduct } from "../../pages/admin/item/ItemAll";
 import { Common, SearchButton } from "../../styles/AdminBasic";
-import ResultModal from "../common/Modal";
+import ModifyModal from "../common/ModifyModal";
 
 export interface IDataItem {
   key: number;
@@ -14,23 +15,32 @@ export interface IDataItem {
   bt?: JSX.Element;
   img?: JSX.Element;
 }
-interface ISubTableProps {
-  tableNum: (selectedRowKeys: React.Key[]) => void;
+interface ItemTableModify {
+  tableNum: (data: any) => void;
+  productList: GetProduct[]; // 이 부분 수정
 }
 
-const ItemTable: React.FC<ISubTableProps> = ({ tableNum }) => {
+const ItemTable: React.FC<ItemTableModify> = ({ tableNum, productList }) => {
+  console.log(productList);
+  const aaa = productList;
+  console.log(aaa);
   const [showModal, setShowModal] = useState(false);
+  const [modifyData, setModifyData] = useState<GetProduct[]>([]);
 
   // ResultModal을 보여주는 함수
-  const handleShowModal = () => {
+  const handleShowModal = (record: GetProduct) => {
+    console.log(record);
     setShowModal(true);
+    const bbb = [record]; // 배열로 감싸기
+    setModifyData(bbb);
   };
-
+  console.log("각 데이터", modifyData);
   // ResultModal을 닫는 함수
   const handleCloseModal = () => {
     setShowModal(false);
   };
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [getTableData, setGetTableData] = useState<GetProduct[]>([]);
 
   const onSelectChange = (selectedRowKeys: React.Key[], record: any[]) => {
     console.log("selectedRowKeys changed: ", selectedRowKeys);
@@ -61,32 +71,44 @@ const ItemTable: React.FC<ISubTableProps> = ({ tableNum }) => {
 
   const columns = [
     {
-      title: "No",
+      title: "상품번호",
       dataIndex: "key",
     },
     {
       title: "이미지",
-      dataIndex: "img",
+      dataIndex: "repPic",
     },
     {
       title: "상품명",
-      dataIndex: "item",
+      dataIndex: "productNm",
     },
     {
       title: "카테고리",
-      dataIndex: "category",
+      render: (record: GetProduct) => `${record.imain} > ${record.imiddle}`,
     },
     {
       title: "재고",
-      dataIndex: "inventory",
+      dataIndex: "iproduct",
     },
     {
       title: "판매가",
-      dataIndex: "sale",
+      dataIndex: "price",
     },
     {
       title: "관리",
-      dataIndex: "bt",
+      render: (record: GetProduct) => (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <SearchButton onClick={() => handleShowModal(record)}>
+            수정
+          </SearchButton>
+        </div>
+      ),
     },
   ];
 
@@ -100,23 +122,12 @@ const ItemTable: React.FC<ISubTableProps> = ({ tableNum }) => {
       inventory: `재고 얼마나 있나요? ${i}`,
       sale: `얼마에 팔까요? ${i}`,
 
-      bt: (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <SearchButton onClick={handleShowModal}>수정</SearchButton>
-        </div>
-      ),
-      img: (
-        <img
-          style={{ width: "100px", height: "50px" }}
-          src={process.env.PUBLIC_URL + "/assets/images/testimg.jpg"}
-        />
-      ),
+      // img: (
+      //   <img
+      //     style={{ width: "100px", height: "50px" }}
+      //     src={process.env.PUBLIC_URL + "/assets/images/testimg.jpg"}
+      //   />
+      // ),
     });
   }
 
@@ -172,11 +183,19 @@ const ItemTable: React.FC<ISubTableProps> = ({ tableNum }) => {
       <Aaa
         rowSelection={rowSelection}
         columns={columns}
-        dataSource={data}
+        dataSource={
+          aaa &&
+          aaa.map(product => ({
+            ...product,
+            key: product.iproduct,
+          }))
+        }
         pagination={false}
         bordered
       />
-      {showModal && <ResultModal onClose={handleCloseModal} />}
+      {showModal && (
+        <ModifyModal onClose={handleCloseModal} patchData={modifyData} />
+      )}
     </ConfigProvider>
   );
 };

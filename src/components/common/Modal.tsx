@@ -2,7 +2,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { Button, Form, Input, InputNumber, Select, Upload } from "antd";
 import React, { useState } from "react";
 import { postProduct } from "../../api/mainApi";
-import { SearchButton, SubTitle } from "../../styles/AdminBasic";
+import { MainTitle, SearchButton, SubTitle } from "../../styles/AdminBasic";
 import { ModalContent, ModalOverlay } from "../../styles/main/main";
 import { API_SERVER_HOST } from "../../util/util";
 // import { postAlbum } from "../../api/album/album_api";
@@ -153,8 +153,9 @@ const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
         transition={{ duration: 0.5 }}
         onClick={e => e.stopPropagation()}
       >
+        <MainTitle>상품관리 상세페이지</MainTitle>
         <div>
-          <SubTitle>상품명</SubTitle>
+          <SubTitle>카테고리</SubTitle>
           <Form form={form} onFinish={onFinish}>
             <div>
               <div
@@ -162,6 +163,10 @@ const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
                   display: "flex",
                   justifyContent: "center",
                   gap: "30px",
+                  paddingTop: "20px",
+                  borderTop: "1px solid black",
+                  borderBottom: "1px solid black",
+                  marginBottom: "10px",
                 }}
               >
                 <Form.Item
@@ -190,7 +195,7 @@ const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
                   </Select>
                 </Form.Item>
               </div>
-              <SubTitle>새상품</SubTitle>
+              <SubTitle>신상품</SubTitle>
               <Form.Item
                 name="newFl"
                 rules={[{ required: true, message: "제목을 입력해주세요!" }]}
@@ -214,35 +219,35 @@ const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
                   <Select.Option value={4}>Demo</Select.Option>
                 </Select>
               </Form.Item>
-              <SubTitle>인기상품</SubTitle>
+              <SubTitle>상품명</SubTitle>
               <Form.Item
                 name="productNm"
                 rules={[{ required: true, message: "제목을 입력해주세요!" }]}
               >
                 <Input placeholder="상품명 입력" />
               </Form.Item>
-              <SubTitle>인기상품</SubTitle>
+              <SubTitle>나이별상품</SubTitle>
               <Form.Item
                 name="recommendedAge"
                 rules={[{ required: true, message: "제목을 입력해주세요!" }]}
               >
                 <InputNumber placeholder="상품명 입력" controls={false} />
               </Form.Item>
-              <SubTitle>인기상품</SubTitle>
+              <SubTitle>상품가격</SubTitle>
               <Form.Item
                 name="price"
                 rules={[{ required: true, message: "제목을 입력해주세요!" }]}
               >
                 <InputNumber placeholder="상품명 입력" controls={false} />
               </Form.Item>
-              <SubTitle>인기상품</SubTitle>
+              <SubTitle>상품재고</SubTitle>
               <Form.Item
                 name="remainedCount"
                 rules={[{ required: true, message: "제목을 입력해주세요!" }]}
               >
                 <InputNumber placeholder="상품명 입력" controls={false} />
               </Form.Item>
-              <SubTitle>상품명</SubTitle>
+              <SubTitle>관리자메모</SubTitle>
               <Form.Item
                 style={{ height: "150px" }}
                 name="adminMemo"
@@ -253,10 +258,10 @@ const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
                   style={{ height: "150px" }}
                 />
               </Form.Item>
-              <SubTitle>상품명</SubTitle>
+              <SubTitle>상품이미지</SubTitle>
               <div style={{ marginBottom: "30px" }}>
                 <Upload.Dragger
-                   action={`${host}`}
+                  action={`${host}`}
                   listType="picture"
                   fileList={fileList}
                   onChange={handleChange}
@@ -269,7 +274,7 @@ const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
                   <Button icon={<UploadOutlined />}>업로드(최대 4개) </Button>
                 </Upload.Dragger>
               </div>
-              <SubTitle>상품명</SubTitle>
+              <SubTitle>상품상세이미지</SubTitle>
               <div style={{ marginBottom: "30px" }}>
                 <Upload.Dragger
                   action={`${host}`}
@@ -282,7 +287,7 @@ const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
                   beforeUpload={() => false}
                   maxCount={1}
                 >
-                  <Button icon={<UploadOutlined />}>업로드(최대 4개) </Button>
+                  <Button icon={<UploadOutlined />}>업로드(최대 1개) </Button>
                 </Upload.Dragger>
               </div>
             </div>

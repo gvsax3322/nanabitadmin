@@ -1,20 +1,8 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  getCancelCount,
-  getList,
-  getOrderStatus,
-  getRecentList,
-  getShoppingCart,
-} from "../../../api/mainApi";
-import {
-  MyData,
-  OrderData,
-  OrderStatistics,
-  ShoppingCart,
-  UserData,
-} from "../../../api/model/resturant";
 import MemberTable from "../../../components/common/MemberTable";
+import OrderChartCom from "../../../components/common/OrderChartCom";
+import SalesChartCom from "../../../components/common/SalesChartCom";
+import YCancel from "../../../components/common/YCancel";
 import {
   BigCard,
   LayoutMain,
@@ -22,52 +10,51 @@ import {
   SubTitle,
 } from "../../../styles/AdminBasic";
 import { MainBt, MainWrap, OrderList } from "../../../styles/main/main";
-import SalesChartCom from "../../../components/common/SalesChartCom";
-import OrderChartCom from "../../../components/common/OrderChartCom";
+import Yretrun from "../../../components/common/Yretrun";
 
 const MainAdmin = () => {
-  const [recentUsers, setRecentUsers] = useState<UserData[] | string>("");
-  const [recentOrders, setRecentOrders] = useState<OrderData[] | string>("");
-  const [orderStatus, setOrderStatus] = useState<OrderStatistics[] | string>(
-    "",
-  );
-  const [cancelCount, setCancelCount] = useState<MyData[] | string>("");
-  const [shoppingCart, setShoppingCart] = useState<ShoppingCart[] | string>("");
+  // const [recentUsers, setRecentUsers] = useState<UserData[] | string>("");
+  // const [recentOrders, setRecentOrders] = useState<OrderData[] | string>("");
+  // const [orderStatus, setOrderStatus] = useState<OrderStatistics[] | string>(
+  //   "",
+  // );
+  // const [cancelCount, setCancelCount] = useState<MyData[] | string>("");
+  // const [shoppingCart, setShoppingCart] = useState<ShoppingCart[] | string>("");
   const navigate = useNavigate();
 
   const handleClickMove = (path: string) => {
     navigate(path);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [
-          recentUsersResult,
-          recentOrdersResult,
-          orderStatusResult,
-          cancelCountResult,
-          shoppingCartResult,
-        ] = await Promise.all([
-          getList(),
-          getRecentList(),
-          getOrderStatus(),
-          getCancelCount(),
-          getShoppingCart(),
-        ]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const [
+  //         recentUsersResult,
+  //         recentOrdersResult,
+  //         orderStatusResult,
+  //         cancelCountResult,
+  //         shoppingCartResult,
+  //       ] = await Promise.all([
+  //         getList(),
+  //         getRecentList(),
+  //         getOrderStatus(),
+  //         getCancelCount(),
+  //         getShoppingCart(),
+  //       ]);
 
-        setRecentUsers(recentUsersResult);
-        setRecentOrders(recentOrdersResult);
-        setOrderStatus(orderStatusResult);
-        setCancelCount(cancelCountResult);
-        setShoppingCart(shoppingCartResult);
-      } catch (error) {
-        alert("데이터 호출에 실패하였습니다.");
-      }
-    };
+  //       setRecentUsers(recentUsersResult);
+  //       setRecentOrders(recentOrdersResult);
+  //       setOrderStatus(orderStatusResult);
+  //       setCancelCount(cancelCountResult);
+  //       setShoppingCart(shoppingCartResult);
+  //     } catch (error) {
+  //       alert("데이터 호출에 실패하였습니다.");
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   return (
     <MainWrap>
@@ -82,18 +69,20 @@ const MainAdmin = () => {
             <MemberTable />
           </SmallCard>
           <SmallCard
-            onClick={() => handleClickMove("order/all")}
+            onClick={() => handleClickMove("order/cancel")}
             style={{ cursor: "pointer" }}
           >
-            <SubTitle>전체 주문통계</SubTitle>
+            <SubTitle>주문 취소통계</SubTitle>
             {/* <SalesChart /> */}
+            <YCancel />
           </SmallCard>
           <SmallCard
-            onClick={() => handleClickMove("order/all")}
+            onClick={() => handleClickMove("order/return")}
             style={{ cursor: "pointer" }}
           >
-            <SubTitle>전체 주문통계</SubTitle>
+            <SubTitle>주문 반품통계</SubTitle>
             {/* <SalesChart /> */}
+            <Yretrun />
           </SmallCard>
         </OrderList>
         <MainBt style={{ justifyContent: "space-between" }}></MainBt>
