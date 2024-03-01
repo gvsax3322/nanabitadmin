@@ -1,3 +1,4 @@
+import { ResModify } from "../../components/member/modal/MemberInfoSection";
 import {
   MemberData,
   PersonApiResponse,
@@ -84,7 +85,7 @@ export const getMember = async (
     errorFn("목록 호출 서버 에러에요");
   }
 };
-
+// 가입통계 가져오기
 export const getRegister = async (
   year: number = 2024,
   month: number = 0,
@@ -100,6 +101,53 @@ export const getRegister = async (
     if (status.charAt(0) === "2") {
       // console.log(res.data);
       successFn(res.data);
+    } else {
+      failFn("목록 호출 오류입니다.");
+    }
+  } catch (error) {
+    errorFn("목록 호출 서버 에러에요");
+  }
+};
+
+// 회원정보 수정
+
+export const modifyMember = async (
+  successFn: (data: ResModify) => void,
+  failFn: (error: string) => void,
+  errorFn: (error: string) => void,
+  iuser: number | null,
+  upw: string | undefined = "",
+  adminMemo: string | undefined,
+) => {
+  const params = {
+    upw,
+    adminMemo,
+  };
+  try {
+    const res = await jwtAxios.patch<ResModify>(`${host}/${iuser}`, params);
+    const status = res.status.toString();
+    if (status.charAt(0) === "2") {
+      // console.log(res.data);
+      successFn(res.data);
+    } else {
+      failFn("목록 호출 오류입니다.");
+    }
+  } catch (error) {
+    errorFn("목록 호출 서버 에러에요");
+  }
+};
+
+export const deleteMember = async (
+  successFn: (data: MemberData[]) => void,
+  failFn: (error: string) => void,
+  errorFn: (error: string) => void,
+  iuser: number | undefined,
+) => {
+  try {
+    const res = await jwtAxios.delete<PersonApiResponse>(`${host}/${iuser}`);
+    const status = res.status.toString();
+    if (status.charAt(0) === "2") {
+      successFn([res.data.data]);
     } else {
       failFn("목록 호출 오류입니다.");
     }

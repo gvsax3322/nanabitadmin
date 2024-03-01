@@ -10,10 +10,11 @@ const DatePick = ({
   value,
 }: {
   onChange: (dateRange: string[]) => void;
-  value: string[];
+  value: string[] | undefined[];
 }): JSX.Element => {
-  const [selectedDate, setSelectedDate] = useState<string[]>(value);
-
+  // value가 undefined이면 [undefined, undefined]로, 아니면 받은 value를 그대로 사용
+  const initialValue = () => (value ? value : [undefined, undefined]);
+  const [selectedDate, setSelectedDate] = useState<any[]>(initialValue);
   // 오늘 날짜를 Day.js 객체로 변환
   const today = dayjs();
 
@@ -52,14 +53,14 @@ const DatePick = ({
   };
 
   const handleMonthClick = () => {
-    const startDate = today.subtract(1, "m").format("YYYY-MM-DD");
+    const startDate = today.subtract(30, "d").format("YYYY-MM-DD");
     const endDate = today.format("YYYY-MM-DD");
     setSelectedDate([startDate, endDate]);
     onChange([startDate, endDate]);
   };
 
   const handlequarterClick = () => {
-    const startDate = today.subtract(3, "m").format("YYYY-MM-DD");
+    const startDate = today.subtract(90, "d").format("YYYY-MM-DD");
     const endDate = today.format("YYYY-MM-DD");
     setSelectedDate([startDate, endDate]);
     onChange([startDate, endDate]);

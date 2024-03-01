@@ -2,27 +2,22 @@ import styled from "@emotion/styled";
 import { Radio } from "antd";
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
-import {
-  BigInput,
-  BigKeyword,
-  Common,
-  DeleteButton,
-  MainTitle,
-  MiddleButton,
-  MiddleInput,
-  SmallButton,
-  SubTitle,
-  TextareaStyle,
-} from "../../../styles/AdminBasic";
-import { BtList, ModifyButton } from "../../../styles/member/memberstyle";
-import OrderPicker from "../../order/orderSlect/OrderPicker";
-import MyBaby from "./MyBaby";
+import { deleteMember, getMember } from "../../../api/member/memberApi";
 import { MemberList } from "../../../pages/admin/member/MemberModify";
-import { getMember } from "../../../api/member/memberApi";
+import { MainTitle, SubTitle } from "../../../styles/AdminBasic";
+import MemberInfoSection from "./MemberInfoSection";
+import OrderInfoSection from "./OrderInfoSection";
+import { RegisterChartData } from "../../../pages/admin/member/DailyReg";
 
 interface ResultModalProps {
   selectedMember: MemberList | null;
   onClose: () => void;
+}
+
+interface DeleteRes {
+  code: string;
+  message: string;
+  data: any[];
 }
 
 const ModalOverlay = styled.div`
@@ -54,8 +49,8 @@ const MenuList = styled.div`
     .ant-radio-button,
   .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)
     .ant-radio-button:hover {
-    background-color: #666; /* 선택됐을 때의 배경색 */
-    color: #000 !important; /* 선택됐을 때의 글자색 */
+    background-color: #666;
+    color: #000 !important;
   }
 `;
 
@@ -90,11 +85,9 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({
   selectedMember,
   onClose,
 }) => {
+  // 데이터 관련
   const [selectedValue, setSelectedValue] = useState(1);
   const [memberInfo, setMemberInfo] = useState<MemberData[]>([]);
-  const handleRadioChange = (e: any) => {
-    setSelectedValue(e.target.value);
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -122,6 +115,37 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({
 
     fetchData();
   }, [selectedMember]);
+
+  const handleRadioChange = (e: any) => {
+    setSelectedValue(e.target.value);
+  };
+
+  const handleClickDelete = async () => {
+    try {
+      const successFn = (data: any) => {
+        console.log("데이터:", data);
+      };
+
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+
+      await deleteMember(
+        successFn,
+        failFn,
+        errorFn,
+        selectedMember?.iuser || undefined,
+      );
+    } catch (error) {
+      console.error("에러:", error);
+    }
+    onClose();
+  };
+
   return (
     <ModalOverlay>
       <ModalContent
@@ -165,185 +189,13 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({
         </MenuList>
         <SubTitle>기본정보</SubTitle>
         {selectedValue === 1 ? (
-          <>
-            <BigKeyword
-              style={{ borderTop: `1px solid ${Common.color.primary}` }}
-            >
-              <div className="left" style={{ width: "130px" }}>
-                이름
-              </div>
-              <div className="right">
-                <h2>{memberInfo[0] && memberInfo[0].nm}</h2>
-              </div>
-              <div className="left" style={{ width: "130px" }}>
-                가입일
-              </div>
-              <div className="right">
-                {memberInfo[0] && (
-                  <h2>
-                    {
-                      new Date(memberInfo[0].registeredAt)
-                        .toISOString()
-                        .split("T")[0]
-                    }
-                  </h2>
-                )}
-              </div>
-            </BigKeyword>
-            <BigKeyword
-              style={{ borderTop: `1px solid ${Common.color.primary}` }}
-            >
-              <div className="left" style={{ width: "130px" }}>
-                아이디
-              </div>
-              <div className="right">
-                <h2>{memberInfo[0] && memberInfo[0].uid}</h2>
-              </div>
-              <div className="left" style={{ width: "130px" }}>
-                비밀번호
-              </div>
-              <div className="right">
-                <MiddleInput style={{ fontSize: "15px" }} />
-              </div>
-            </BigKeyword>
-            <BigKeyword
-              style={{ borderTop: `1px solid ${Common.color.primary}` }}
-            >
-              <div className="left" style={{ width: "130px" }}>
-                전화번호
-              </div>
-              <div className="right">
-                <h2>{memberInfo[0] && memberInfo[0].phoneNumber}</h2>
-              </div>
-              <div className="left" style={{ width: "130px" }}>
-                이메일
-              </div>
-              <div className="right">
-                <h2>{memberInfo[0] && memberInfo[0].email}</h2>
-              </div>
-            </BigKeyword>
-            <BigKeyword
-              style={{
-                borderTop: `1px solid ${Common.color.primary}`,
-              }}
-            >
-              <div className="left" style={{ width: "5.05%" }}>
-                주소
-              </div>
-              <div
-                className="right"
-                style={{
-                  width: "1450px",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "start",
-                  justifyContent: "center",
-                  gap: "10px",
-                }}
-              >
-                <BigInput readOnly />
-              </div>
-            </BigKeyword>
-            <MyBaby />
-            <BigKeyword
-              style={{
-                borderTop: `1px solid ${Common.color.primary}`,
-                marginBottom: "20px",
-              }}
-            >
-              <div className="left" style={{ width: "65px" }}>
-                관리자메모
-              </div>
-              <div
-                className="right"
-                style={{
-                  width: "1450px",
-                }}
-              >
-                <TextareaStyle />
-              </div>
-            </BigKeyword>
-            <DeleteButton>회원 삭제</DeleteButton>
-            <ModifyButton>
-              <MiddleButton style={{ background: " #575757" }}>
-                저장
-              </MiddleButton>
-              <MiddleButton
-                style={{
-                  background: " #fff",
-                  border: "1px solid #000",
-                  color: "black",
-                }}
-                onClick={onClose}
-              >
-                닫기
-              </MiddleButton>
-            </ModifyButton>
-          </>
+          <MemberInfoSection
+            memberInfo={memberInfo}
+            onClose={onClose}
+            memberId={selectedMember && selectedMember.iuser}
+          />
         ) : (
-          <div>
-            <BigKeyword style={{ border: `1px solid ${Common.color.primary}` }}>
-              <div className="left">기간검색</div>
-              <div className="right" style={{ gap: "5px" }}>
-                <OrderPicker />
-                <SmallButton style={{ minWidth: "40px" }}>오늘</SmallButton>
-                <SmallButton style={{ minWidth: "40px" }}>어제</SmallButton>
-                <SmallButton style={{ minWidth: "40px" }}>일주일</SmallButton>
-                <SmallButton style={{ minWidth: "40px" }}>지난달</SmallButton>
-                <SmallButton style={{ minWidth: "40px" }}>1개월</SmallButton>
-                <SmallButton style={{ minWidth: "40px" }}>3개월</SmallButton>
-                <SmallButton style={{ minWidth: "40px" }}>전체</SmallButton>
-              </div>
-            </BigKeyword>
-            <BigKeyword
-              style={{
-                borderLeft: `1px solid ${Common.color.primary}`,
-                borderRight: `1px solid ${Common.color.primary}`,
-                borderBottom: `1px solid ${Common.color.primary}`,
-                height: "auto",
-                marginBottom: "15px",
-              }}
-            >
-              <div className="left">주문상태</div>
-              <div
-                className="right"
-                style={{
-                  gap: "10px",
-                  height: "80px",
-                }}
-              >
-                <Radio.Group defaultValue={0} style={{ marginRight: "10px" }}>
-                  <Radio value={0}>전체</Radio>
-                  <Radio value={1}>입금대기</Radio>
-                  <Radio value={2}>배송준비중</Radio>
-                  <Radio value={3}>배송중</Radio>
-                  <Radio value={4}>배송완료</Radio>
-                  <Radio value={5}>취소</Radio>
-                  <Radio value={6}>반품</Radio>
-                </Radio.Group>
-              </div>
-            </BigKeyword>
-            <BtList>
-              <div>
-                <SmallButton style={{ marginRight: "10px" }}>
-                  전체메일 발송
-                </SmallButton>
-                <SmallButton>엑셀 저장</SmallButton>
-              </div>
-            </BtList>
-            <ModifyButton>
-              <MiddleButton
-                style={{
-                  background: " #fff",
-                  border: "1px solid #000",
-                  color: "black",
-                }}
-                onClick={onClose}
-              >
-                닫기
-              </MiddleButton>
-            </ModifyButton>
-          </div>
+          <OrderInfoSection onClose={onClose} />
         )}
       </ModalContent>
     </ModalOverlay>

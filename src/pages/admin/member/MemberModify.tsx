@@ -1,6 +1,6 @@
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Menu, Table } from "antd";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { getMemberList } from "../../../api/member/memberApi";
 import DatePick from "../../../components/member/DatePick";
 import MemberModifyMD from "../../../components/member/modal/MemberModifyMD";
@@ -50,7 +50,7 @@ const MemberModify = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [searchOp, setSearchOp] = useState(1);
   const [phone, setPhone] = useState<string>("");
-
+  // 화원정보 가져오기
   const fetchData = async () => {
     try {
       const successFn = (data: MemberList[]) => {
@@ -84,23 +84,24 @@ const MemberModify = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
+  // 모달 닫기
   const handleModalClose = () => {
     setEditModalVisible(false);
     setPostModalVisible(false);
   };
-
+  // 회원정보수정 모달
   const handleMenuClick1 = (record: MemberList) => {
     setSelectedMember(record);
     console.log(record);
     setEditModalVisible(true);
   };
-
+  // 메일 보내기 모달
   const handleMenuClick2 = (record: MemberList) => {
     setSelectedMember(record);
+    console.log(record);
     setPostModalVisible(true);
   };
-
+  // 옵션 선택
   const handleSearchOp = (optionIndex: number): void => {
     switch (optionIndex) {
       case 0:
@@ -112,7 +113,7 @@ const MemberModify = () => {
     }
     console.log("검색어", optionIndex);
   };
-
+  // 검색버튼
   const handleClickSearch = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
@@ -123,7 +124,7 @@ const MemberModify = () => {
       console.error("검색 오류:", error);
     }
   };
-
+  // 초기화 버튼
   const ResetData = async () => {
     try {
       const successFn = (data: MemberList[]) => {
@@ -144,7 +145,7 @@ const MemberModify = () => {
       console.error("에러:", error);
     }
   };
-
+  // 날짜 변경
   const handleDateChange = (dateRange: string[]) => {
     setStartDate(dateRange[0]);
     setEndDate(dateRange[1]);
@@ -224,7 +225,7 @@ const MemberModify = () => {
               placeholder="검색어를 입력하세요"
               autoFocus
               value={searchText}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setSearchText(e.target.value)
               }
             />
@@ -235,7 +236,11 @@ const MemberModify = () => {
           <div className="right" style={{ gap: "5x" }}>
             <DatePick
               onChange={handleDateChange}
-              value={[startDate, endDate]}
+              value={
+                startDate && endDate
+                  ? [startDate, endDate]
+                  : [undefined, undefined]
+              }
             />
           </div>
         </BigKeyword>
@@ -247,7 +252,7 @@ const MemberModify = () => {
               placeholder="전화번호를 입력하세요"
               autoFocus
               value={phone}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setPhone(e.target.value)
               }
             />
@@ -262,9 +267,6 @@ const MemberModify = () => {
       </ModifyButton>
       <BtList>
         <div>
-          <SmallButton style={{ marginRight: "10px" }}>
-            전체메일 발송
-          </SmallButton>
           <SmallButton>엑셀 저장</SmallButton>
         </div>
       </BtList>
@@ -286,7 +288,12 @@ const MemberModify = () => {
           onClose={handleModalClose}
         ></MemberModifyMD>
       )}
-      {postModalVisible && <PostModal onClose={handleModalClose}></PostModal>}
+      {postModalVisible && (
+        <PostModal
+          selectedMember={selectedMember}
+          onClose={handleModalClose}
+        ></PostModal>
+      )}
     </ModifyWrap>
   );
 };
