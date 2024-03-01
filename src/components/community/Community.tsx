@@ -1,5 +1,5 @@
 import { ConfigProvider, Table } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -10,19 +10,75 @@ import {
   MainTitle,
   MiddleInput,
   SearchButton,
-  SelectStyle,
   SmallButton,
   SubTitle,
 } from "../../styles/AdminBasic";
+import { getAnswer, getBoard } from "../../api/ commun/commun";
+import ModalComm from "./ModalComm";
 
-interface IDataItem {
-  key: number;
+interface BoardData {
+  iboard: number;
   title: string;
-  item: string;
+  contents?: string;
+  responseFl: number;
   bt?: JSX.Element;
 }
 
 const Community = () => {
+  //api 연동
+  const [board, setBoard] = useState<BoardData[]>([]);
+  const [answer, setAnswer] = useState();
+
+  const handleClickBord = (iboard: number) => {
+    console.log("답변", iboard);
+    getAnswer(iboard).then(res => {
+      setAnswer(res);
+      setShowModal(true);
+    });
+  };
+
+  const handleDeleteBord = (iboard: number) => {
+    console.log("삭제", iboard);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getBoard();
+      setBoard(
+        res.map((row: BoardData) => ({
+          key: row?.iboard,
+          title: row?.title,
+          responseFl: row?.responseFl === 0 ? "미답변" : "답변완료",
+          bt: (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 10,
+              }}
+            >
+              <SearchButton
+                type="button"
+                onClick={() => handleClickBord(row.iboard)}
+              >
+                답변
+              </SearchButton>
+              <SearchButton
+                type="button"
+                style={{ background: "red" }}
+                onClick={() => handleDeleteBord(row.iboard)}
+              >
+                삭제
+              </SearchButton>
+            </div>
+          ),
+        })),
+      );
+    };
+    fetchData();
+  }, []);
+
   //테이블
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const onSelectChange = (selectedRowKeys: React.Key[], record: any[]) => {
@@ -72,37 +128,13 @@ const Community = () => {
     },
     {
       title: "답변여부",
-      dataIndex: "item",
+      dataIndex: "responseFl",
     },
     {
       title: "관리",
       dataIndex: "bt",
     },
   ];
-
-  const data: IDataItem[] = [];
-  for (let i = 0; i < 10; i++) {
-    data.push({
-      key: i + 1,
-      title: `제목 ${i}`,
-      item: `답변`,
-      bt: (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 10,
-          }}
-        >
-          <SearchButton type="button">답변</SearchButton>
-          <SearchButton type="button" style={{ background: "red" }}>
-            삭제
-          </SearchButton>
-        </div>
-      ),
-    });
-  }
 
   //리액트 훅 폼
 
@@ -119,12 +151,43 @@ const Community = () => {
   });
 
   const handleSubmitMy = (data: any) => {
-    const parsedUserId = parseInt(data.userid);
-    const asd = {
-      userid: parsedUserId,
-      userpass: data.userpass,
-    };
-    console.log(asd);
+    getBoard(data.userpass).then(res => {
+      if (res) {
+        setBoard(
+          res.map((row: BoardData) => ({
+            key: row?.iboard,
+            title: row?.title,
+            responseStatus: row?.responseFl === 0 ? "미답변" : "답변완료",
+            bt: (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                }}
+              >
+                <SearchButton
+                  type="button"
+                  onClick={() => handleClickBord(row.iboard)}
+                >
+                  답변
+                </SearchButton>
+                <SearchButton
+                  type="button"
+                  style={{ background: "red" }}
+                  onClick={() => handleDeleteBord(row.iboard)}
+                >
+                  삭제
+                </SearchButton>
+              </div>
+            ),
+          })),
+        );
+      } else {
+        setBoard([]);
+      }
+    });
   };
 
   console.log("리랜더링");
@@ -134,8 +197,16 @@ const Community = () => {
     onChange: onSelectChange,
   };
 
+  //모달
+  const [showModal, setShowModal] = useState(false);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <>
+      {showModal && <ModalComm onClose={handleCloseModal} answer={answer} />}
       <MainTitle>Q&A</MainTitle>
       <SubTitle>기본검색</SubTitle>
       <form onSubmit={handleSubmit(handleSubmitMy)}>
@@ -196,7 +267,7 @@ const Community = () => {
         <CenteredHeaderTable
           rowSelection={rowSelection}
           columns={columns}
-          dataSource={data}
+          dataSource={board}
           pagination={false}
           bordered
         />
