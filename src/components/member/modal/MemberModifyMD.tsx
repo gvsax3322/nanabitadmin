@@ -7,7 +7,6 @@ import { MemberList } from "../../../pages/admin/member/MemberModify";
 import { MainTitle, SubTitle } from "../../../styles/AdminBasic";
 import MemberInfoSection from "./MemberInfoSection";
 import OrderInfoSection from "./OrderInfoSection";
-import { RegisterChartData } from "../../../pages/admin/member/DailyReg";
 
 interface ResultModalProps {
   selectedMember: MemberList | null;
@@ -120,31 +119,7 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({
     setSelectedValue(e.target.value);
   };
 
-  const handleClickDelete = async () => {
-    try {
-      const successFn = (data: any) => {
-        console.log("데이터:", data);
-      };
 
-      const failFn = (error: string) => {
-        console.error("목록 호출 오류:", error);
-      };
-
-      const errorFn = (error: string) => {
-        console.error("목록 호출 서버 에러:", error);
-      };
-
-      await deleteMember(
-        successFn,
-        failFn,
-        errorFn,
-        selectedMember?.iuser || undefined,
-      );
-    } catch (error) {
-      console.error("에러:", error);
-    }
-    onClose();
-  };
 
   return (
     <ModalOverlay>
@@ -162,6 +137,7 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({
             value={selectedValue}
             onChange={handleRadioChange}
             style={{ marginRight: "10px" }}
+            
           >
             <Radio.Button
               value={1}
