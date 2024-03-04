@@ -1,6 +1,7 @@
 import jwtAxios from "../../util/jwtUtil";
 import { API_SERVER_HOST } from "../../util/util";
 
+import axios from "axios";
 
 export interface OrderParam {
   processState: number;
@@ -14,6 +15,11 @@ export interface OrderParam {
   sort: number;
   page: number;
   size: number;
+}
+
+export interface processOrder {
+  iorders: number[];
+  processState: number;
 }
 
 const prefix = `${API_SERVER_HOST}/api/admin`;
@@ -44,20 +50,20 @@ export const getOrderAll = async ({
   }
 };
 
-export const putOrderAll = async ({
-  orderParam,
+export const putOrderState = async ({
+  processOrder,
   successFn,
   failFn,
   errorFn,
 }: {
-  orderParam: OrderParam;
+  processOrder: processOrder;
   successFn: (data: any) => void;
   failFn: (message: string) => void;
   errorFn: (error: string) => void;
 }) => {
   try {
     const url = `${prefix}/order`;
-    const res = await jwtAxios.put(url, { params: orderParam });
+    const res = await jwtAxios.put(url, processOrder);
 
     const resStatus = res.status.toString();
     if (resStatus.charAt(0) === "2") {

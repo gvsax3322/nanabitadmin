@@ -13,10 +13,12 @@ import OrderAllSelect from "../../../components/order/orderSlect/OrderAllSelect"
 import React, { useEffect, useState } from "react";
 import OrPicker from "../../../components/order/orderSlect/OrPicker";
 import { Dayjs } from "dayjs";
-import { getOrderAll } from "../../../api/order/orderAllApi";
+import { getOrderAll, putOrderState } from "../../../api/order/orderAllApi";
 
 import { ConfigProvider, Table } from "antd";
 import TestMd from "../../../components/order/TestMd";
+
+// import OrAllFooter from "./footer/OrAllFooter";
 
 const Wrap = styled.div`
   margin-bottom: 30px;
@@ -88,8 +90,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   const [sortBy, setSortBy] = useState(0); // 기본값으로 최신순(0)을 설정
 
   // 일괄처리 버튼 컨트롤
-  const [stateBt, setStateBt] = useState(0);
-  const [activeStateBt, setActiveStateBt] = useState(0);
+  const [procesStateBt, setProcesStateBt] = useState(0);
 
   // ----------------------------------------------------------------------------
 
@@ -115,17 +116,6 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     })),
   }));
   // ----------------------------------------------------------------------------
-  // 기간버튼 핸들러
-  const handleStateBt = (BTIndex: number) => {
-    setStateBt(BTIndex);
-    // 선택된 기간에 따른 동작 수행
-    console.log("ㅎㅇ 나 일괄처리 버튼:", BTIndex);
-  };
-  // 테이블에서 발생한 데이터 처리 함수
-  const handleClickTableuum = (data: any) => {
-    setDataFromChild(data);
-    setOrderData(data);
-  };
 
   // 기간버튼 핸들러
   const handlePeriodBt = (BTIndex: number) => {
@@ -342,6 +332,30 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     }
   };
 
+  const handleProcessBtApi = (iorder: number[], processNum: number) => {
+    console.log(
+      "일괄처리 API 호출, 주문번호:",
+      iorder,
+      "상태번호:",
+      processNum,
+    );
+    // 선택한 일괄 처리 버튼의 상태를 업데이트합니다.
+    setProcesStateBt(processNum);
+    // 주문 상태 변경을 위한 데이터를 준비합니다.
+    const requestData = {
+      iorders: iorder, // 주문 번호를 배열에 담음
+      processState: processNum, // 상태 번호
+    };
+
+    // API를 호출하여 주문 상태를 변경합니다.
+    putOrderState({
+      processOrder: requestData,
+      successFn: successFn_AllOrder,
+      failFn: failFn_AllOrder,
+      errorFn: errorFn_AllOrder,
+    });
+  };
+
   const successFn_AllOrder = (data: any) => {
     // console.log("반품신청 successFn : ", data);
 
@@ -369,6 +383,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
+
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log("selectedRowKeys changed이거라: ", newSelectedRowKeys);
 
@@ -774,7 +789,62 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
           />
           {showModal && <TestMd onClose={handleCloseModal} />}
         </ConfigProvider>
-        {/* <OrAllFooter /> */}
+        <Wrap>
+          <SubTitle style={{ marginTop: "100px" }}>주문일괄처리</SubTitle>
+          <BigKeyword
+            style={{
+              borderTop: `1px solid ${Common.color.primary}`,
+              height: "80px",
+            }}
+          >
+            <div className="left">선택한 주문을</div>
+            <div className="right">
+              <BigButton
+                style={{ marginRight: "5px" }}
+                onClick={() =>
+                  handleProcessBtApi(
+                    selectedRowKeys as number[], // 명시적인 타입 단언을 사용하여 배열임을 알림
+                    2,
+                  )
+                }
+              >
+                배송준비중
+              </BigButton>
+              <BigButton
+                style={{ marginRight: "5px" }}
+                onClick={() =>
+                  handleProcessBtApi(
+                    selectedRowKeys as number[], // 명시적인 타입 단언을 사용하여 배열임을 알림
+                    2,
+                  )
+                }
+              >
+                배송중
+              </BigButton>
+              <BigButton
+                style={{ marginRight: "5px" }}
+                onClick={() =>
+                  handleProcessBtApi(
+                    selectedRowKeys as number[], // 명시적인 타입 단언을 사용하여 배열임을 알림
+                    2,
+                  )
+                }
+              >
+                배송완료
+              </BigButton>
+              <BigButton
+                onClick={() =>
+                  handleProcessBtApi(
+                    selectedRowKeys as number[], // 명시적인 타입 단언을 사용하여 배열임을 알림
+                    2,
+                  )
+                }
+              >
+                주문취소
+              </BigButton>
+            </div>
+          </BigKeyword>
+        </Wrap>
       </div>
     </>
   );
