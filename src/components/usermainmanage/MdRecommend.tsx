@@ -6,7 +6,11 @@ import {
   getMainProRc,
   putMainProRc,
 } from "../../api/usermain/mainProductSetApi";
-import { MainTitle, SearchButton, SubTitle } from "../../styles/AdminBasic";
+import {
+  MainTitle,
+  SearchButton,
+  SubTitle
+} from "../../styles/AdminBasic";
 import { API_SERVER_HOST } from "../../util/util";
 
 const CenteredHeaderTable = styled(Table)`
@@ -138,6 +142,7 @@ const MdRecommend: React.FC = () => {
       width: "80px",
       render: (record: any) => (
         <>
+          {/* {console.log(record)} */}
           <SearchButton
             style={{
               background: "rgb(244, 67, 54)",

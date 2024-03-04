@@ -46,6 +46,7 @@ export const getMainProRc = async (
   }
 };
 
+
 // MD 추천상품 등록해제
 // http://192.168.0.144:5223/api/admin/product/toggleRcProduct?iproduct=52
 // http://192.168.0.144:5223/api/admin/product/togglePopProduct?iproduct=54
@@ -59,7 +60,9 @@ export const putMainProRc = async (
 ) => {
   try {
     const res = await jwtAxios.put(
+
       `${host}/${toggleType}?iproduct=${iproduct}`,
+
     );
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
@@ -77,8 +80,8 @@ export const putMainProRc = async (
 // http://192.168.0.144:5223/api/admin/product/searchRcProduct?keyword=&iproduct=0&imain=0&imiddle=0&page=0
 export const getMdSearch = async (
   successFn: (data: SearchProduct[]) => void,
-  failFn: (error: string) => void,
-  errorFn: (error: string) => void,
+  putFailFn: (error: string) => void,
+  putErrorFn: (error: string) => void,
   searchType: string = "",
   keyword: string = "",
   iproduct: number = 0,
@@ -94,11 +97,12 @@ export const getMdSearch = async (
     if (status.charAt(0) === "2") {
       // console.log(res.data);
       successFn(res.data);
+
     } else {
-      failFn("목록 호출 오류입니다.");
+      putFailFn("목록 호출 오류입니다.");
     }
   } catch (error) {
-    errorFn("목록 호출 서버 에러에요");
+    putErrorFn("목록 호출 서버 에러에요");
   }
 };
 //=====================================================================================================

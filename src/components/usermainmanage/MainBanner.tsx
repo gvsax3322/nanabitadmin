@@ -187,6 +187,12 @@ const MainBanner: React.FC = () => {
         const imageElement =bannerInfo ? document.getElementById(`input-file-before-${dataSource[0].ibanner}`) as HTMLImageElement : null;
         if (imageElement) {
           imageElement.src = newBannerPic;
+// =======
+//         const imageElement = 1
+//         // bannerInfo ? document.getElementById(`input-file-before-${bannerInfo.ibanner}`) as HTMLImageElement : null;
+//         if (imageElement) {
+//           // imageElement.src = newBannerPic;
+// >>>>>>> f324dcc34c0fc739a4ad5de865843fe30e999729
         }
       };
       reader.readAsDataURL(file);
