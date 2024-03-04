@@ -1,7 +1,7 @@
 import { UploadOutlined } from "@ant-design/icons";
 import { Button, Form, Input, InputNumber, Select, Upload } from "antd";
 import React, { useState } from "react";
-import { postProduct } from "../../api/mainApi";
+import { productPatch } from "../../api/mainApi";
 import { MainTitle, SearchButton, SubTitle } from "../../styles/AdminBasic";
 import { ModalContent, ModalOverlay } from "../../styles/main/main";
 import { API_SERVER_HOST } from "../../util/util";
@@ -23,6 +23,14 @@ interface Product {
     remainedCount: number;
     adminMemo: string;
   };
+}
+interface PatchValue {
+  productNm: string;
+  iproduct: number;
+  price: number;
+  imain: number;
+  imiddle: number;
+  repPic: string;
 }
 
 const initState: Product = {
@@ -54,8 +62,8 @@ const host = `${API_SERVER_HOST}/api/admin`;
 
 const ModifyModal: React.FC<ResultModalProps> = ({ onClose, patchData }) => {
   console.log("여기도 들어오니?", patchData);
-  const abc = JSON.parse(JSON.stringify(patchData));
-  console.log(abc);
+ const abc = JSON.parse(JSON.stringify(patchData));
+  console.log(abc); 
 
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState<any[]>([]);
@@ -98,12 +106,34 @@ const ModifyModal: React.FC<ResultModalProps> = ({ onClose, patchData }) => {
     form.submit();
   };
 
-  const onFinish = async (data: FormData) => {
-    console.log(data);
+  // const handleProductPatch = async () => {
+  //   try {
+  //     // product와 iproduct 값을 준비합니다.
+  //     const productData = {
+  //       /* product 데이터 */
+  //     };
+  //     const iproductValue = 58; // 예시로 임의의 값 사용
+
+  //     // productPatch 함수를 호출할 때 두 번째 인수로 iproduct 값을 전달합니다.
+  //     const result = await productPatch(productData, iproductValue);
+
+  //     // 결과를 처리합니다.
+  //     console.log("결과:", result);
+  //   } catch (error) {
+  //     console.error("오류 발생:", error);
+  //   }
+  // };
+
+  // 함수 호출
+  // handleProductPatch();
+
+  const onFinish = async (data: FormData, abc: any) => {
+    console.log(data, abc);
     if (!submitClicked) return;
     if (fileList.length === 0) {
       return;
     }
+
     const formData = new FormData();
     const dto = new Blob(
       [
@@ -134,8 +164,9 @@ const ModifyModal: React.FC<ResultModalProps> = ({ onClose, patchData }) => {
       console.log("pair", pair);
     }
 
-    postProduct({
+    productPatch({
       product: formData,
+      abc,
     });
 
     setSubmitClicked(false);
@@ -145,6 +176,7 @@ const ModifyModal: React.FC<ResultModalProps> = ({ onClose, patchData }) => {
   const uploadAreaStyle = {
     lineHeight: "15rem",
   };
+  
 
   return (
     <ModalOverlay onClick={onClose}>
@@ -158,7 +190,10 @@ const ModifyModal: React.FC<ResultModalProps> = ({ onClose, patchData }) => {
         <MainTitle>상품관리 상세페이지</MainTitle>
         <div>
           <SubTitle>카테고리</SubTitle>
-          <Form form={form} onFinish={onFinish}>
+          <Form
+            form={form}
+            onFinish={(values: FormData) => onFinish(values, abc)}
+          >
             <div>
               <div
                 style={{
