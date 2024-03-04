@@ -26,7 +26,7 @@ const useCustomLogin = () => {
 
   // 로그아웃 기능
   const doLogout = () => {
-    dispatch(logout());
+    dispatch(logout);
   };
 
   // 패스이동 기능
