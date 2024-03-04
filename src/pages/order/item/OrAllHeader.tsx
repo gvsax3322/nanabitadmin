@@ -17,6 +17,8 @@ import { getOrderAll, putOrderState } from "../../../api/order/orderAllApi";
 
 import { ConfigProvider, Table } from "antd";
 import TestMd from "../../../components/order/TestMd";
+import { API_SERVER_HOST } from "../../../util/util";
+import { useNavigate } from "react-router";
 
 // import OrAllFooter from "./footer/OrAllFooter";
 
@@ -38,6 +40,7 @@ export interface AllOrderData {
 }
 
 export interface products {
+  iproduct: string;
   repPic: string;
   productNm: string;
   cnt: number;
@@ -52,6 +55,7 @@ const initState = {
   orderedAt: "",
   products: [
     {
+      iproduct: 0,
       repPic: "",
       productNm: "",
       cnt: 0,
@@ -78,8 +82,13 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   const [stateOp, setStateOp] = useState(0); //  주문상태 옵션관리
   const [searchOp, setSearchOp] = useState(0); // 검색어 상태 옵션관리
   const [paymentOp, setPaymentOp] = useState(0); //  결제수단 상태 옵션관리
-  const [selectedDate, setSelectedDate] = useState<string[]>([]); // Date picker 관리
-  const [userSearchActive, setUserSearchActive] = useState(false); // 검색버튼 옵션관리
+  const [selectedDate, setSelectedDate] = useState<string[]>([
+    // "2024-03-04",
+    // "2024-03-04",
+  ]); // Date picker 관리
+
+  const iorderNavi = useNavigate();
+  // const [userSearchActive, setUserSearchActive] = useState(true); // 검색버튼 옵션관리
   const [searchText, setSearchText] = useState(""); //  검색어텍스트 관리
   const [dataFromChild, setDataFromChild] = useState("");
 
@@ -92,6 +101,8 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   // 일괄처리 버튼 컨트롤
   const [procesStateBt, setProcesStateBt] = useState(0);
 
+  // 현재 선택된 iOrder 값을 보관하는 state
+  const [selectIorder, setSelectIorder] = useState(0);
   // ----------------------------------------------------------------------------
 
   const dataSource = orderData.map(item => ({
@@ -104,8 +115,10 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     totalAmount: item.totalAmount,
     payCategory: item.payCategory,
     refundFl: item.refundFl,
+    sampleData: [item.refundFl, item.iorder],
     // products 배열을 반복하면서 각 상품 정보를 키로 추가합니다.
     products: item.products.map((product, index) => ({
+      iproduct: product.iproduct,
       repPic: product.repPic,
       productNm: product.productNm,
       cnt: product.cnt,
@@ -256,7 +269,8 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    setUserSearchActive(true);
+    console.log("================= 버튼 클릭 ");
+    // setUserSearchActive(true);
     fetchData();
 
     console.log(
@@ -266,7 +280,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
       prdOp,
       paymentOp,
       stateOp,
-      userSearchActive,
+      // userSearchActive,
       searchText,
       selectedDate,
     );
@@ -286,7 +300,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     setSelectedDate([""]);
 
     // 사용자는 검색을 했다.
-    setUserSearchActive(true);
+    // setUserSearchActive(true);
     fetchData();
 
     console.log(
@@ -296,40 +310,41 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
       prdOp,
       paymentOp,
       stateOp,
-      userSearchActive,
+      // userSearchActive,
       searchText,
       selectedDate,
     );
   };
 
   useEffect(() => {
+    console.log("================= 전체 최초 검색");
     fetchData(); // 페이지가 처음 렌더링될 때 데이터를 호출합니다.
   }, []);
   // 서버연동
   const fetchData = () => {
     // 검색 버튼 클릭시만 API 날리기
-    if (userSearchActive) {
-      // 결과가 오기 전까지는 무효화
-      setUserSearchActive(false);
-      getOrderAll({
-        orderParam: {
-          processState: stateOp,
-          dateCategory: prdOp,
-          searchCategory: searchOp,
-          keyword: searchText,
-          startDate: selectedDate[0] !== undefined ? selectedDate[0] : "",
-          endDate: selectedDate[1] !== undefined ? selectedDate[1] : "",
-          dateFl: periodBt,
-          payCategory: paymentOp,
-          sort: 0,
-          page: 0,
-          size: 1,
-        },
-        successFn: successFn_AllOrder,
-        failFn: failFn_AllOrder,
-        errorFn: errorFn_AllOrder,
-      });
-    }
+    // if (userSearchActive) {
+    // 결과가 오기 전까지는 무효화
+    // setUserSearchActive(false);
+    getOrderAll({
+      orderParam: {
+        processState: stateOp,
+        dateCategory: prdOp,
+        searchCategory: searchOp,
+        keyword: searchText,
+        startDate: selectedDate[0] !== undefined ? selectedDate[0] : "",
+        endDate: selectedDate[1] !== undefined ? selectedDate[1] : "",
+        dateFl: periodBt,
+        payCategory: paymentOp,
+        sort: 0,
+        page: 0,
+        // size: 1,
+      },
+      successFn: successFn_AllOrder,
+      failFn: failFn_AllOrder,
+      errorFn: errorFn_AllOrder,
+    });
+    // }
   };
 
   const handleProcessBtApi = (iorder: number[], processNum: number) => {
@@ -359,7 +374,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   const successFn_AllOrder = (data: any) => {
     // console.log("반품신청 successFn : ", data);
 
-    setUserSearchActive(false);
+    // setUserSearchActive(false);
     setOrderData(data);
   };
 
@@ -375,7 +390,10 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   };
 
   // ResultModal을 보여주는 함수
-  const handleShowModal = () => {
+  const handleShowModal = (_iorder: number) => {
+    console.log("받은값 : ", _iorder);
+    // 선택된 제품의 iOrder 값을 기록을 해둠.
+    setSelectIorder(_iorder);
     setShowModal(true);
   };
 
@@ -409,9 +427,9 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     },
     {
       title: "주문목록",
-      dataIndex: "refundFl",
+      dataIndex: "sampleData",
       key: "refundFl",
-      render: (refundFl: number) => (
+      render: (items: any[]) => (
         <div
           style={{
             width: "100%",
@@ -423,15 +441,22 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
           <div>
             <SearchButton
               style={{ marginBottom: "12px" }}
-              onClick={handleShowModal}
+              onClick={() => handleShowModal(items[1])}
             >
               주문목록
             </SearchButton>
-            {refundFl === 0 && (
+
+            {items[0] === 0 && (
               <SearchButton style={{ background: "rgb(244, 67, 54)" }}>
                 주문취소
               </SearchButton>
             )}
+
+            {/* <button
+              onClick={() => iorderNavi(`/order/details/${record.iorder}`)}
+            >
+              주문상세보기
+            </button> */}
           </div>
         </div>
       ),
@@ -452,14 +477,14 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
           {items.map((item, index) => (
             <div>
               <img
+                src={`${API_SERVER_HOST}/pic/product/${item.iproduct}/${item.repPic}`}
+                alt=""
                 style={{
                   marginBottom: "10px",
                   marginTop: "10px",
                   width: "50px",
                   height: "50px",
-                  // objectFit: "cover",
                 }}
-                // key={index}
               />
             </div>
           ))}
@@ -787,7 +812,9 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
             // dataSource={orderData}
             pagination={false}
           />
-          {showModal && <TestMd onClose={handleCloseModal} />}
+          {showModal && (
+            <TestMd onClose={handleCloseModal} iOrder={selectIorder} />
+          )}
         </ConfigProvider>
         <Wrap>
           <SubTitle style={{ marginTop: "100px" }}>주문일괄처리</SubTitle>
@@ -815,7 +842,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
                 onClick={() =>
                   handleProcessBtApi(
                     selectedRowKeys as number[], // 명시적인 타입 단언을 사용하여 배열임을 알림
-                    2,
+                    3,
                   )
                 }
               >
@@ -826,7 +853,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
                 onClick={() =>
                   handleProcessBtApi(
                     selectedRowKeys as number[], // 명시적인 타입 단언을 사용하여 배열임을 알림
-                    2,
+                    4,
                   )
                 }
               >

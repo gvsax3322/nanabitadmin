@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { motion } from "framer-motion";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BigCard,
   BigInput,
@@ -19,9 +19,12 @@ import {
 } from "../../styles/AdminBasic";
 import { ConfigProvider, Flex, Radio, Table } from "antd";
 import { CardFont, DeBigCard, DeMiddleCard, FontSize } from "./DetaileStyle";
+import { detailsParam, getDetails } from "../../api/order/orderAllApi";
+import { number } from "yup";
 
 interface ResultModalProps {
   onClose: () => void;
+  iOrder: number;
 }
 
 const ModalOverlay = styled.div`
@@ -92,78 +95,136 @@ const Aaa = styled(Table)`
     }
   }
 `;
-const TestMd: React.FC<ResultModalProps> = ({ onClose }) => {
-  interface IDataItem {
-    key: number;
-    img: JSX.Element;
-    pname: string;
-    state: string;
-    count: number;
-    price: number;
-    rprice: number;
-  }
+export interface products {
+  iproduct: number;
+  repPic: string;
+  productNm: string;
+  cnt: number;
+  processState: number;
+  amount: number;
+  refundFl: number;
+}
+
+const initState = {
+  products: [
+    {
+      iproduct: number,
+      repPic: "e31bdfe9-6cfc-48e6-842e-0f9d36bc14a5.jpg",
+      productNm: "휴대용 멀티 소독 ",
+      cnt: 2,
+      processState: 4,
+      amount: 75000,
+      refundFl: 0,
+    },
+  ],
+  productAmount: 150000,
+  deleteAmount: 0,
+  refundAmount: 0,
+  totalAmount: 150000,
+  iorder: 102148,
+  orderedAt: "2022-03-10T00:00",
+  payCategory: 3,
+  processState: 4,
+  ordered: "김재완",
+  orderedEmail: "jaewan@gmail.com",
+  orderedPhoneNumber: "010-2215-1234",
+  recipient: "김재완",
+  recipientPhoneNumber: "010-2215-1234",
+  address: "서울특별시 관악구 관악로 145",
+  adminMemo: null,
+};
+
+const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
+  const [detailSource, setDetailSource] = useState([initState]);
+  const dataSource = detailSource.map(item => ({
+    products: item.products.map((product, index) => ({
+      iproduct: product.iproduct,
+      repPic: product.repPic,
+      productNm: product.productNm,
+      cnt: product.cnt,
+      processState: product.processState,
+      amount: product.amount,
+      refundFl: product.refundFl,
+      key: `${item.iorder}_${index}`, // 상품마다 고유한 key 생성
+    })),
+    productAmount: item.productAmount, // iorder를 key로 사용
+    deleteAmount: item.deleteAmount,
+    refundAmount: item.refundAmount,
+    totalAmount: item.totalAmount,
+    iorder: item.iorder,
+    orderedAt: item.orderedAt,
+    payCategory: item.payCategory,
+    processState: item.processState,
+    ordered: item.ordered,
+    orderedEmail: item.orderedEmail,
+    orderedPhoneNumber: item.orderedPhoneNumber,
+    recipient: item.recipient,
+    recipientPhoneNumber: item.recipientPhoneNumber,
+    address: item.address,
+    adminMemo: item.adminMemo,
+    // sampleData: [item.refundFl, item.iorder],
+    // products 배열을 반복하면서 각 상품 정보를 키로 추가합니다.
+  }));
+  // --
+  useEffect(() => {
+    // console.log("===================== TestMd : iOrder : ", iOrder);
+    // `http://192.168.0.144:5223/api/admin/order/details/${iOrder}`
+    getDetails({ orderParam: iOrder, successFn, failFn, errorFn });
+  }, [iOrder]);
+
+  const successFn = (result: any) => {
+    console.log(result);
+  };
+  const failFn = (result: string) => {
+    console.log(result);
+  };
+  const errorFn = (result: string) => {
+    console.log(result);
+  };
+
   const columns = [
     {
       title: "번호",
-      dataIndex: "key",
-      width: "50px",
+      dataIndex: "iproduct",
+      key: "iproduct",
     },
-    {
-      title: "이미지",
-      dataIndex: "img",
-      width: "100px",
-    },
+    // {
+    //   title: "이미지",
+    //   dataIndex: "repPic",
+    //   key: "repPic",
+    //   render: (record: products) => (
+    //     <img src={record.repPic} alt="Product" style={{ width: "50px" }} />
+    //   ),
+    // },
     {
       title: "주문상품",
-      dataIndex: "pname",
+      dataIndex: "productNm",
+      key: "productNm",
     },
     {
       title: "처리상태",
-      dataIndex: "state",
+      dataIndex: "processState",
+      key: "processState",
     },
     {
       title: "수량",
-      dataIndex: "count",
+      dataIndex: "cnt",
+      key: "cnt",
     },
-    {
-      title: "상품금액",
-      dataIndex: "price",
-      render: (price: number) => <span>{price.toLocaleString()}</span>,
-    },
+    // {
+    //   title: "상품금액",
+    //   dataIndex: "amount",
+    //   key: "amount",
+    //   render: (record: products) => (
+    //     <span>{record.amount.toLocaleString()}</span>
+    //   ),
+    // },
     {
       title: "실결제액",
-      dataIndex: "price",
-      render: (price: number) => <span>{price.toLocaleString()}</span>,
+      dataIndex: "totalAmount",
+      key: "totalAmount",
     },
   ];
-
-  // 이미지 설정 설정
-  const defaultImgUrl = `${process.env.PUBLIC_URL}/assets/images/defaultitemimg.svg`;
-
-  const [data, setData] = useState<IDataItem[]>(() => {
-    const initialData: IDataItem[] = [];
-    for (let i = 0; i < 2; i++) {
-      initialData.push({
-        key: i + 1,
-        img: (
-          <img
-            style={{ width: "66px", height: "66px", objectFit: "cover" }}
-            src={defaultImgUrl}
-            alt=""
-            className="diaryadd-img-before"
-          />
-        ),
-
-        pname: "아기용품인데요 아 그렇다구요",
-        state: "배송중",
-        count: 2,
-        price: 100000,
-        rprice: 100000,
-      });
-    }
-    return initialData;
-  });
-
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent
@@ -176,7 +237,7 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose }) => {
         <div className="flex" style={{ display: "flex" }}>
           <div style={{ width: "80%" }}>
             <MainTitle>주문상세페이지</MainTitle>
-            <SubTitle>주문상품 {data.length}개</SubTitle>
+            <SubTitle>주문상품 개</SubTitle>
             <ConfigProvider
               theme={{
                 token: {
@@ -193,7 +254,7 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose }) => {
             >
               <Aaa
                 columns={columns}
-                dataSource={data}
+                dataSource={dataSource}
                 pagination={false}
                 bordered
                 style={{ marginBottom: "50px" }}

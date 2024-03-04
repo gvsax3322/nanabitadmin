@@ -305,7 +305,7 @@ const CancelTable: React.FC<ISubTableProps> = ({ tableNum }) => {
         dataSource={data}
         pagination={false}
       />
-      {showModal && <TestMd onClose={handleCloseModal} />}
+      {showModal && <TestMd onClose={handleCloseModal} iOrder={0} />}
     </ConfigProvider>
   );
 };
