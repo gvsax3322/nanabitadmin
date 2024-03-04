@@ -467,12 +467,8 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({ onClose, memberId }) => {
         </MiddleButton>
       </ModifyButton>
       <StyledTable dataSource={dataSource} columns={columns} />
-      <Pagination
-        current={currentPage}
-        total={total}
-        onChange={handlePageChange}
-      />
-      {showModal && <TestMd onClose={handleCloseModal} />}
+      <Pagination current={currentPage} onChange={handlePageChange} />
+      {/* {showModal && <TestMd onClose={handleCloseModal} />} */}
     </>
   );
 };
