@@ -22,3 +22,30 @@ export const getAnswer = async (a: number) => {
     console.log("목록 호출 서버 에러에요");
   }
 };
+
+export const postDabbyeon = async (n: number, board: any) => {
+  try {
+    const res = await jwtAxios.post(`${host}/${n}`, board);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const DeldelDabbyeon = async (n: number, board: number) => {
+  try {
+    const res = await jwtAxios.delete(`${host}/${n}?icomment=${board}`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const DeldelBoard = async (board: any) => {
+  try {
+    const res = await jwtAxios.delete(`${host}?iboard=${board}`);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
