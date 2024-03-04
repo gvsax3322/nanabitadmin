@@ -11,7 +11,7 @@ import {
 import MyBaby from "./MyBaby";
 import { ModifyButton } from "../../../styles/member/memberstyle";
 import { MemberData } from "./MemberModifyMD";
-import { modifyMember } from "../../../api/member/memberApi";
+import { deleteMember, modifyMember } from "../../../api/member/memberApi";
 
 interface MemberInfoSectionProps {
   memberInfo: MemberData[];
@@ -51,6 +51,27 @@ const MemberInfoSection: FC<MemberInfoSectionProps> = ({
       };
 
       await modifyMember(successFn, failFn, errorFn, memberId, password, memo);
+    } catch (error) {
+      console.error("에러:", error);
+    }
+    onClose();
+  };
+
+  const handleClickDelete = async () => {
+    try {
+      const successFn = (data: any) => {
+        console.log("데이터:", data);
+      };
+
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+
+      await deleteMember(successFn, failFn, errorFn, memberId);
     } catch (error) {
       console.error("에러:", error);
     }
@@ -171,7 +192,7 @@ const MemberInfoSection: FC<MemberInfoSectionProps> = ({
           />
         </div>
       </BigKeyword>
-      <DeleteButton>회원 삭제</DeleteButton>
+      <DeleteButton onClick={handleClickDelete}>회원 삭제</DeleteButton>
       <ModifyButton>
         <MiddleButton
           style={{ background: " #575757" }}

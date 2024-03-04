@@ -141,7 +141,7 @@ export const deleteMember = async (
   successFn: (data: MemberData[]) => void,
   failFn: (error: string) => void,
   errorFn: (error: string) => void,
-  iuser: number | undefined,
+  iuser: number | null,
 ) => {
   try {
     const res = await jwtAxios.delete<PersonApiResponse>(`${host}/${iuser}`);
