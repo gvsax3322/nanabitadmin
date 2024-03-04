@@ -13,7 +13,7 @@ import {
   SmallButton,
   SubTitle,
 } from "../../styles/AdminBasic";
-import { getAnswer, getBoard } from "../../api/ commun/commun";
+import { getAnswer, getBoard } from "../../api/commun/commun";
 import ModalComm from "./ModalComm";
 
 interface BoardData {
@@ -44,37 +44,41 @@ const Community = () => {
   useEffect(() => {
     const fetchData = async () => {
       const res = await getBoard();
-      setBoard(
-        res.map((row: BoardData) => ({
-          key: row?.iboard,
-          title: row?.title,
-          responseFl: row?.responseFl === 0 ? "미답변" : "답변완료",
-          bt: (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 10,
-              }}
-            >
-              <SearchButton
-                type="button"
-                onClick={() => handleClickBord(row.iboard)}
+      if (res) {
+        setBoard(
+          res.map((row: BoardData) => ({
+            key: row?.iboard,
+            title: row?.title,
+            responseFl: row?.responseFl === 0 ? "미답변" : "답변완료",
+            bt: (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                }}
               >
-                답변
-              </SearchButton>
-              <SearchButton
-                type="button"
-                style={{ background: "red" }}
-                onClick={() => handleDeleteBord(row.iboard)}
-              >
-                삭제
-              </SearchButton>
-            </div>
-          ),
-        })),
-      );
+                <SearchButton
+                  type="button"
+                  onClick={() => handleClickBord(row.iboard)}
+                >
+                  답변
+                </SearchButton>
+                <SearchButton
+                  type="button"
+                  style={{ background: "red" }}
+                  onClick={() => handleDeleteBord(row.iboard)}
+                >
+                  삭제
+                </SearchButton>
+              </div>
+            ),
+          })),
+        );
+      } else {
+        setBoard([]);
+      }
     };
     fetchData();
   }, []);
@@ -189,8 +193,6 @@ const Community = () => {
       }
     });
   };
-
-  console.log("리랜더링");
 
   const rowSelection = {
     selectedRowKeys,
