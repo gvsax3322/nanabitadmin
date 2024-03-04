@@ -6,11 +6,7 @@ import {
   getMainProNew,
   putMainProRc,
 } from "../../api/usermain/mainProductSetApi";
-import {
-  MainTitle,
-  SearchButton,
-  SubTitle
-} from "../../styles/AdminBasic";
+import { MainTitle, SearchButton, SubTitle } from "../../styles/AdminBasic";
 import { API_SERVER_HOST } from "../../util/util";
 
 // type InputRef = GetRef<typeof Input>;
@@ -83,7 +79,7 @@ const NewProduct: React.FC = () => {
 
     // 컴포넌트가 마운트될 때 데이터를 불러오도록 호출
     fetchData();
-  }, []);
+  }, [refresh]);
 
   const handleDelete = (iproduct: number) => {
     if (data.length === 1) {

@@ -138,6 +138,7 @@ const AdminHeader: React.FC = () => {
               stiffness: 600,
               damping: 20,
             }}
+            onClick={() => handleClickMove("/admin/review/search")}
           >
             리뷰관리
           </motion.li>

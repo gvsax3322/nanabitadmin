@@ -84,7 +84,7 @@ const PopProduct: React.FC = () => {
 
     // 컴포넌트가 마운트될 때 데이터를 불러오도록 호출
     fetchData();
-  }, []);
+  }, [refresh]);
 
   const handleDelete = (iproduct: number) => {
     if (data.length === 1) {
