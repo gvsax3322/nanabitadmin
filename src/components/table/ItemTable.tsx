@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { GetProduct } from "../../pages/admin/item/ItemAll";
 import { Common, SearchButton } from "../../styles/AdminBasic";
 import ModifyModal from "../common/ModifyModal";
+import { Category, mainCategories, subCategories } from "../common/SearchCt";
 
 export interface IDataItem {
   key: number;
@@ -19,6 +20,14 @@ interface ItemTableModify {
   tableNum: (data: any) => void;
   productList: GetProduct[]; // 이 부분 수정
 }
+
+const findCategoryName = (
+  categoryId: number,
+  categories: Category[],
+): string => {
+  const category = categories.find(cat => cat.id === categoryId);
+  return category ? category.name : "";
+};
 
 const ItemTable: React.FC<ItemTableModify> = ({ tableNum, productList }) => {
   console.log(productList);
@@ -77,6 +86,14 @@ const ItemTable: React.FC<ItemTableModify> = ({ tableNum, productList }) => {
     {
       title: "이미지",
       dataIndex: "repPic",
+      render: (repPic: string): any => (
+        <img
+          style={{ width: "190px", height: "66px", objectFit: "cover" }}
+          src={repPic}
+          alt=""
+          className="diaryadd-img-before"
+        />
+      ),
     },
     {
       title: "상품명",
@@ -84,7 +101,11 @@ const ItemTable: React.FC<ItemTableModify> = ({ tableNum, productList }) => {
     },
     {
       title: "카테고리",
-      render: (record: GetProduct) => `${record.imain} > ${record.imiddle}`,
+      render: (record: GetProduct) =>
+        `${findCategoryName(record.imain, mainCategories)} > ${findCategoryName(
+          record.imiddle,
+          subCategories,
+        )}`,
     },
     {
       title: "재고",

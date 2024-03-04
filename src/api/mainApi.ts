@@ -8,11 +8,14 @@ const host = `${API_SERVER_HOST}/api/admin/product`;
 // 상품삭제
 export const getDeldel = async (iproductList: number[]) => {
   try {
-    const res = await jwtAxios.get(`${host}/deldel?iproduct=${iproductList}`, {
-      data: {
-        iproductList: iproductList,
+    const res = await jwtAxios.delete(
+      `${host}/product?iproduct=${iproductList}`,
+      {
+        data: {
+          iproductList: iproductList,
+        },
       },
-    });
+    );
     const status = res.status.toString();
     const httpSt = status.charAt(0);
     if (httpSt === "2") {
@@ -27,9 +30,18 @@ export const getDeldel = async (iproductList: number[]) => {
 };
 
 // 상품수정
-export const productPatch = async (iproduct: number) => {
+export const productPatch = async ({
+  product,
+  abc,
+}: any): Promise<Product[] | string> => {
+  console.log("product", product);
   try {
-    const res = await jwtAxios.patch(`${host}/product?iproduct=${iproduct}`);
+    const header = { headers: { "Content-Type": "multipart/form-data" } };
+    const res = await jwtAxios.patch<Product[]>(
+      `${host}/product?iproduct=${abc[0].iproduct}`,
+      product,
+      header,
+    );
     const status = res.status.toString();
     const httpSt = status.charAt(0);
     if (httpSt === "2") {
@@ -81,9 +93,9 @@ export const getProductlist = async (
   minPrice: number = 0,
   maxPrice: number = 0,
   dateFl: number = 0,
-  searchStartDate: string = "",
-  searchEndDate: string = "",
-  page: number = 1,
+  searchStartDate: string = "2023-03-02",
+  searchEndDate: string = "2024-03-02",
+  page: number = 0,
 ) => {
   try {
     const res = await jwtAxios.get<ProductGetList>(
@@ -110,16 +122,20 @@ export interface StatisticsData {
   // 다른 통계 데이터 필드들을 여기에 추가
 }
 export interface ReturnType {
+  length: number;
+  datasets: any;
+  labels: any;
+  map(arg0: (item: any) => any): unknown[] | undefined;
   data: any;
-  date: string;
-  registerCnt: number;
-  registerRate: string;
-  totalRegisterCnt: number;
+  //날짜
+  registerCnt: number; //반품수
+  registerRate: string; //반품비율
+  totalRegisterCnt: number; // 총 반품수
 }
 
 export const getProductReturn = async (
-  year: number,
-  month: number,
+  year: number = 2024,
+  month: number = 0,
   successFn: (data: ReturnType) => void,
   failFn: (error: string) => void,
   errorFn: (error: string) => void,
@@ -143,6 +159,9 @@ export const getProductReturn = async (
 // 취소통계
 
 export interface CancelChartData {
+  datasets: any;
+  labels: any;
+  map(arg0: (item: any) => any): unknown[] | undefined;
   data: any;
   //날짜
   registerCnt: number; //반품수
@@ -166,8 +185,8 @@ export interface CancelChartData {
 // };
 
 export const getProductCancel = async (
-  year: number,
-  month: number,
+  year: number = 2024,
+  month: number = 0,
   successFn: (data: CancelChartData) => void,
   failFn: (error: string) => void,
   errorFn: (error: string) => void,

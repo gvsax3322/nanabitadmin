@@ -48,6 +48,7 @@ export interface Product {
   pics: string[];
   productDetails: string;
   dto: DTO;
+  iproduct: number;
 }
 
 
