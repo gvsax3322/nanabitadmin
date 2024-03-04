@@ -13,7 +13,7 @@ import {
   SmallButton,
   SubTitle,
 } from "../../styles/AdminBasic";
-import { getAnswer, getBoard } from "../../api/commun/commun";
+import { DeldelBoard, getAnswer, getBoard } from "../../api/commun/commun";
 import ModalComm from "./ModalComm";
 
 interface BoardData {
@@ -28,6 +28,13 @@ const Community = () => {
   //api 연동
   const [board, setBoard] = useState<BoardData[]>([]);
   const [answer, setAnswer] = useState();
+  //테이블
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const onSelectChange = (selectedRowKeys: React.Key[], record: any[]) => {
+    console.log("selectedRowKeys changed: ", selectedRowKeys);
+
+    setSelectedRowKeys(selectedRowKeys);
+  };
 
   const handleClickBord = (iboard: number) => {
     console.log("답변", iboard);
@@ -38,7 +45,13 @@ const Community = () => {
   };
 
   const handleDeleteBord = (iboard: number) => {
+    DeldelBoard(iboard);
     console.log("삭제", iboard);
+  };
+
+  const handleDeleteBords = () => {
+    console.log("선택삭제", selectedRowKeys);
+    selectedRowKeys.map(item => DeldelBoard(item));
   };
 
   useEffect(() => {
@@ -83,14 +96,6 @@ const Community = () => {
     fetchData();
   }, []);
 
-  //테이블
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const onSelectChange = (selectedRowKeys: React.Key[], record: any[]) => {
-    console.log("selectedRowKeys changed: ", selectedRowKeys);
-
-    setSelectedRowKeys(selectedRowKeys);
-    console.log(record);
-  };
   const CenteredHeaderTable = styled(Table)`
     &&& {
       .ant-table-thead > tr > th,
@@ -239,6 +244,8 @@ const Community = () => {
             justifyContent: "center",
             gap: "5px",
             marginBottom: "20px",
+            borderBottom: `2px solid ${Common.color.primary}`,
+            padding: 20,
           }}
         >
           <SearchButton type="submit">검색</SearchButton>
@@ -252,7 +259,9 @@ const Community = () => {
           </SearchButton>
         </div>
       </form>
-      <SmallButton>선택 삭제</SmallButton>
+      <SmallButton onClick={handleDeleteBords} style={{ marginBottom: 10 }}>
+        선택 삭제
+      </SmallButton>
       <ConfigProvider
         theme={{
           token: {
@@ -268,6 +277,7 @@ const Community = () => {
       >
         <CenteredHeaderTable
           rowSelection={rowSelection}
+          locale={{ emptyText: "비어있음" }}
           columns={columns}
           dataSource={board}
           pagination={false}
