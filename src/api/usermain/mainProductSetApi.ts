@@ -10,7 +10,22 @@ export interface MainProRc {
   iproduct: number;
 }
 
-// 진열관리_MD 추천상품 조회
+export interface SearchPsend {
+  keyword: string;
+  iproduct: number;
+  imain: number;
+  imiddle: number;
+  page: number;
+}
+export interface SearchProduct {
+  productNm: string;
+  iproduct: number;
+  price: number;
+  repPic: string;
+  status: number;
+}
+
+// MD 추천상품 조회
 //http://192.168.0.144:5223/api/admin/product/productRc
 export const getMainProRc = async (
   successFn: (data: MainProRc[]) => void,
@@ -31,20 +46,54 @@ export const getMainProRc = async (
   }
 };
 
-// 진열관리_MD 추천상품 등록해제
-// http://192.168.0.144:5223/api/admin/product/productRcDel?iproduct=50
+// MD 추천상품 등록해제
+// http://192.168.0.144:5223/api/admin/product/toggleRcProduct?iproduct=52
+// http://192.168.0.144:5223/api/admin/product/togglePopProduct?iproduct=54
+// http://192.168.0.144:5223/api/admin/product/toggleNewProduct?iproduct=54
 export const putMainProRc = async (
+  toggleType:string="",
   iproduct: number,
-  successFn: (data: any) => void,
-  failFn: (error: string) => void,
-  errorFn: (error: string) => void,
+  putSuccessFn: (data: any) => void,
+  putFailFn: (error: string) => void,
+  putErrorFn: (error: string) => void,
 ) => {
   try {
-    const res = await jwtAxios.put(`${host}/productRcDel?iproduct=${iproduct}`);
+    const res = await jwtAxios.put(
+      `${host}/${toggleType}?iproduct=${iproduct}`,
+    );
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
       // console.log(res.data);
-      successFn(res);
+      putSuccessFn(res);
+    } else {
+      putFailFn("목록 호출 오류입니다.");
+    }
+  } catch (error) {
+    putErrorFn("목록 호출 서버 에러에요");
+  }
+};
+
+// MD 추천 상품검색
+// http://192.168.0.144:5223/api/admin/product/searchRcProduct?keyword=&iproduct=0&imain=0&imiddle=0&page=0
+export const getMdSearch = async (
+  successFn: (data: SearchProduct[]) => void,
+  failFn: (error: string) => void,
+  errorFn: (error: string) => void,
+  searchType: string = "",
+  keyword: string = "",
+  iproduct: number = 0,
+  imain: number = 0,
+  imiddle: number = 0,
+  page: number = 0,
+) => {
+  try {
+    const res = await jwtAxios.get<SearchProduct[]>(
+      `${host}/${searchType}?keyword=${keyword}&iproduct=${iproduct}&imain=${imain}&imiddle=${imiddle}&page=${page}`,
+    );
+    const status = res.status.toString();
+    if (status.charAt(0) === "2") {
+      // console.log(res.data);
+      successFn(res.data);
     } else {
       failFn("목록 호출 오류입니다.");
     }
@@ -52,8 +101,9 @@ export const putMainProRc = async (
     errorFn("목록 호출 서버 에러에요");
   }
 };
+//=====================================================================================================
 
-// 진열관리_인기상품 조회
+// 인기상품 조회
 //http://192.168.0.144:5223/api/admin/product/productPop
 export const getMainProPop = async (
   successFn: (data: MainProRc[]) => void,
@@ -74,7 +124,7 @@ export const getMainProPop = async (
   }
 };
 
-//진열관리_신상품 조회
+//신상품 조회
 //http://192.168.0.144:5223/api/admin/product/productNew
 export const getMainProNew = async (
   successFn: (data: MainProRc[]) => void,

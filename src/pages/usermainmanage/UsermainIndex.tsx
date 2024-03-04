@@ -1,20 +1,24 @@
+import {
+  FireOutlined,
+  HeartOutlined,
+  PicCenterOutlined,
+  PieChartOutlined,
+  TagsOutlined,
+} from "@ant-design/icons";
 import React from "react"; // React를 임포트합니다.
-import { MailOutlined, PieChartOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
 type MenuItem = {
-  key: string;
+  key: React.Key;
   icon?: React.ReactNode;
-  label: React.ReactNode;
-  path: string; // 경로 추가
   children?: MenuItem[];
+  label: React.ReactNode;
   type?: "group";
 };
 
 function getItem(
   label: React.ReactNode,
-  key: string,
-  path: string, // 경로 추가
+  key: React.Key,
   icon?: React.ReactNode,
   children?: MenuItem[],
   type?: "group",
@@ -24,7 +28,6 @@ function getItem(
     icon,
     children,
     label,
-    path,
     type,
   };
 }
@@ -32,25 +35,19 @@ function getItem(
 export const UsermainIndex: MenuItem[] = [
   getItem(
     <Link to={"/admin/usermain/banner"}>메인 배너</Link>,
-    "banner",
-    "/admin/usermain/banner", // 경로 추가
-    <PieChartOutlined />,
+    "1",
+    <PicCenterOutlined />,
   ),
-  getItem("메인상품 진열관리", "sub1", "/admin/usermain", <MailOutlined />, [
-    getItem(
-      <Link to={"/admin/usermain/md"}>MD 추천상품</Link>,
-      "md",
-      "/admin/usermain/md",
-    ), // 경로 추가
-    getItem(
-      <Link to={"/admin/usermain/popular"}>인기상품</Link>,
-      "popular",
-      "/admin/usermain/popular",
-    ), // 경로 추가
-    getItem(
-      <Link to={"/admin/usermain/new"}>신상품</Link>,
-      "new",
-      "/admin/usermain/new",
-    ), // 경로 추가
+  getItem("MD추천상품 진열관리", "sub1", <HeartOutlined />, [
+    getItem(<Link to={"/admin/usermain/md"}>조회</Link>, "2"), // 경로 추가
+    getItem(<Link to={"/admin/usermain/mdregist"}>등록하기</Link>, "3"), // 경로 추가
+  ]),
+  getItem("인기상품 진열관리", "sub2", <FireOutlined />, [
+    getItem(<Link to={"/admin/usermain/pop"}>조회</Link>, "4"), // 경로 추가
+    getItem(<Link to={"/admin/usermain/popregist"}>등록하기</Link>, "5"), // 경로 추가
+  ]),
+  getItem("신상품 진열관리", "sub3", <TagsOutlined />, [
+    getItem(<Link to={"/admin/usermain/new"}>조회</Link>, "6"), // 경로 추가
+    getItem(<Link to={"/admin/usermain/newregist"}>등록하기</Link>, "7"), // 경로 추가
   ]),
 ];

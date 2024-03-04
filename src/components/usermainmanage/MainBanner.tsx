@@ -1,16 +1,15 @@
 import { Checkbox, ConfigProvider, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { getBanner } from "../../api/usermain/mainbannerApi";
+import { getBanner, postBanner } from "../../api/usermain/mainbannerApi";
 import {
-  DeleteButton,
   MainTitle,
   MiddleButton,
   MiddleInput,
   SearchButton,
   SelectStyle,
   SmallButton,
-  SubTitle,
+  SubTitle
 } from "../../styles/AdminBasic";
 import { API_SERVER_HOST } from "../../util/util";
 // 테이블 스타일 관리
@@ -24,6 +23,16 @@ export interface BannerData {
   bannerPic: string;
   bannerNew: number;
 }
+
+export interface PostBannerData {
+  pic: string,
+  dto: {
+    bannerUrl: string,
+    target: number,
+    status: number
+  }
+}
+
 
 const CenteredHeaderTable = styled(Table)`
   &&& {
@@ -54,7 +63,6 @@ const MainBanner: React.FC = () => {
   };
 
   const successFn = (data: BannerData[]) => {
-    console.log("성공이요");
     const arr = data.map(item => {
       item.bannerNew = 0;
       return item;
@@ -125,7 +133,7 @@ const MainBanner: React.FC = () => {
   };
 
   // 상태관리 버튼
-  const handleState = (action: string, ibanner: number) => {
+  const handleState = (action: string, ibanner: any) => {
     if (action === "editbanner") {
       // 수정 버튼이 클릭된 경우
 
@@ -136,11 +144,54 @@ const MainBanner: React.FC = () => {
       console.log("삭제 버튼", "ibanner:", ibanner);
     } else if (action === "uploadbanner") {
       // 업로드 버튼이 클릭된 경우
-      console.log("업로드 버튼", "ibanner: ", ibanner);
+      function convertToPostBannerData(data: any): PostBannerData {
+        const postBannerData: PostBannerData = {
+          pic: data.bannerPic || "", // 기본값은 빈 문자열로 설정
+          dto: {
+            bannerUrl: data.bannerUrl || "", // 기본값은 빈 문자열로 설정
+            target: data.target || 0, // 기본값은 0으로 설정
+            status: data.status || 0, // 기본값은 0으로 설정
+          },
+        };
+        return postBannerData;
+      }
+      // 예시
+      const ibannerData = {
+        bannerNew: ibanner.bannerNew,
+        bannerPic: ibanner.bannerPic,
+        bannerUrl: ibanner.bannerUrl,
+        ibanner: ibanner.ibanner,
+        key: ibanner.key,
+        status: ibanner.status,
+        target: ibanner.target,
+      };
+      
+      const letsPostBanner: PostBannerData = convertToPostBannerData(ibannerData);
+      console.log(letsPostBanner);
+      postBanner(letsPostBanner)
     }
   };
 
   //  =================배너 값 관리 함수 =================
+
+  const handleFileChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    dataIndex: string,
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const newBannerPic = e.target?.result as string;
+        // 선택한 파일의 Data URL을 가져왔으니, 이미지 태그에 설정해줍니다.
+        const imageElement =bannerInfo ? document.getElementById(`input-file-before-${dataSource[0].ibanner}`) as HTMLImageElement : null;
+        if (imageElement) {
+          imageElement.src = newBannerPic;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const columns: any = [
     {
@@ -166,11 +217,12 @@ const MainBanner: React.FC = () => {
       title: "미리보기",
       dataIndex: "bannerPic",
       key: "bannerPic",
-      render: (bannerPic: string): any => (
+      render: (bannerPic: string,ibanner: any): any => (
         <img
           style={{ width: "190px", height: "66px", objectFit: "cover" }}
           src={bannerPic}
           alt=""
+          id={`input-file-before-${ibanner}`}
           className="diaryadd-img-before"
         />
       ),
@@ -203,7 +255,7 @@ const MainBanner: React.FC = () => {
             accept="image/png, image/gif, image/jpeg"
             id={`input-file-before-${ibanner}`}
             style={{ display: "none" }}
-            onChange={handleFileUpload}
+            onChange={event => handleFileChange(event, "bannerPic")}
           />
         </>
       ),
@@ -255,7 +307,7 @@ const MainBanner: React.FC = () => {
           <>
             {record.bannerNew === 1 ? (
               <SearchButton
-                onClick={() => handleState("uploadbanner", record.ibanner)}
+                onClick={() => handleState("uploadbanner", record)}
               >
                 업로드
               </SearchButton>

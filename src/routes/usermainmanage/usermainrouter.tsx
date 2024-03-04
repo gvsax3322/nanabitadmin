@@ -1,10 +1,12 @@
 import { ReactElement } from "react";
-import UsermainManage from "../../pages/usermainmanage/UsermainManage";
-import { Navigate } from "react-router";
+import MainBanner from "../../components/usermainmanage/MainBanner";
+import MdRecommend from "../../components/usermainmanage/MdRecommend";
 import NewProduct from "../../components/usermainmanage/NewProduct";
 import PopProduct from "../../components/usermainmanage/PopProduct";
-import MdRecommend from "../../components/usermainmanage/MdRecommend";
-import MainBanner from "../../components/usermainmanage/MainBanner";
+import PutMd from "../../components/usermainmanage/PutMd";
+import PutNew from "../../components/usermainmanage/PutNew";
+import PutPop from "../../components/usermainmanage/PutPop";
+import UsermainManage from "../../pages/usermainmanage/UsermainManage";
 
 interface UsermainAdmin {
   path: string;
@@ -19,11 +21,13 @@ const UsermainRouter: UsermainAdmin = {
   path: "usermain/",
   element: <UsermainManage />,
   children: [
-    { path: "", element: <Navigate to="all" /> },
     { path: "banner", element: <MainBanner /> },
     { path: "md", element: <MdRecommend /> },
-    { path: "popular", element: <PopProduct /> },
+    { path: "mdregist", element: <PutMd /> },
+    { path: "pop", element: <PopProduct /> },
+    { path: "popregist", element: <PutPop /> },
     { path: "new", element: <NewProduct /> },
+    { path: "newregist", element: <PutNew /> },
   ],
 };
 export default UsermainRouter;
