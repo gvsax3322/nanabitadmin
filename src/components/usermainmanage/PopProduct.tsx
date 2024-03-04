@@ -1,4 +1,4 @@
-import { ConfigProvider, Table } from "antd";
+import { ConfigProvider, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
@@ -8,7 +8,11 @@ import {
   SubTitle,
 } from "../../styles/AdminBasic";
 import MainUsermodal from "./MainUsermodal";
-import { MainProRc, getMainProPop } from "../../api/usermain/mainProductSetApi";
+import {
+  MainProRc,
+  getMainProPop,
+  putMainProRc,
+} from "../../api/usermain/mainProductSetApi";
 import { API_SERVER_HOST } from "../../util/util";
 
 // type InputRef = GetRef<typeof Input>;
@@ -32,8 +36,31 @@ const CenteredHeaderTable = styled(Table)`
 `;
 
 const PopProduct: React.FC = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [data, setData] = useState<MainProRc[]>([]);
+  const [messageApi, contextHolder] = message.useMessage();
+  const [refresh, setRefresh] = useState(0);
+  const toggleType = "togglePopProduct";
+
+  const success = (txt: string) => {
+    messageApi.open({
+      type: "success",
+      content: txt,
+    });
+  };
+
+  const error = () => {
+    messageApi.open({
+      type: "error",
+      content: "글 넣으삼",
+    });
+  };
+
+  const warning = (txt: string) => {
+    messageApi.open({
+      type: "warning",
+      content: txt,
+    });
+  };
 
   useEffect(() => {
     // 데이터를 불러오는 비동기 함수
@@ -59,16 +86,27 @@ const PopProduct: React.FC = () => {
     fetchData();
   }, []);
 
-  const handleProductAdd = () => {
-    setIsOpen(true);
+  const handleDelete = (iproduct: number) => {
+    if (data.length === 1) {
+      warning("최소 1개의 상품이 존재하여야 합니다.");
+      setRefresh(refresh + 1);
+    } else if (data.length > 1) {
+      putMainProRc(toggleType, iproduct, putSuccessFn, putFailFn, putErrorFn);
+    }
   };
 
-  const handleCloseModal = () => {
-    setIsOpen(false);
+  const putSuccessFn = () => {
+    console.log("성공!");
+    success("삭제 완료하였습니다.");
+    setRefresh(refresh + 1);
+    console.log("리프레시값", refresh);
+  };
+  const putFailFn = () => {
+    console.log("실패!");
   };
 
-  const handleDelete = () => {
-    console.log("삭제할거라능");
+  const putErrorFn = () => {
+    console.log("에러!");
   };
 
   const columns: any[] = [
@@ -110,19 +148,19 @@ const PopProduct: React.FC = () => {
       render: (price: number) => <span>{price.toLocaleString()} 원</span>,
     },
     {
-      title: "삭제",
-      dataIndex: "deletebt",
-      key: "key",
+      title: "등록해제",
+      dataIndex: "iproduct",
+      key: "iproduct",
       width: "80px",
-      render: () => (
+      render: (record: any) => (
         <>
           <SearchButton
             style={{
               background: "rgb(244, 67, 54)",
             }}
-            onClick={handleDelete}
+            onClick={() => handleDelete(record)}
           >
-            삭제
+            해제
           </SearchButton>
         </>
       ),
@@ -138,7 +176,7 @@ const PopProduct: React.FC = () => {
 
   return (
     <>
-      {isOpen && <MainUsermodal onClose={handleCloseModal} />}
+      {contextHolder}
       <MainTitle>인기상품</MainTitle>
       <div
         style={{
@@ -151,12 +189,6 @@ const PopProduct: React.FC = () => {
           노출될 상품 <span style={{ color: "rgb(244, 67, 54)" }}>4</span> 건 |{" "}
           <span style={{ fontSize: "12px" }}>* 최소 1개 , 최대 8개 </span>
         </SubTitle>
-        <MiddleButton
-          onClick={handleProductAdd}
-          style={{ marginBottom: 16, fontSize: "12px" }}
-        >
-          상품 등록
-        </MiddleButton>
       </div>
       <ConfigProvider
         theme={{

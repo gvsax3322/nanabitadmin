@@ -2,13 +2,15 @@ import { ConfigProvider, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
+  MainProRc,
+  getMainProRc,
+  putMainProRc,
+} from "../../api/usermain/mainProductSetApi";
+import {
   MainTitle,
-  MiddleButton,
   SearchButton,
-  SubTitle,
+  SubTitle
 } from "../../styles/AdminBasic";
-import MainUsermodal from "./MainUsermodal";
-import { MainProRc, getMainProRc } from "../../api/usermain/mainProductSetApi";
 import { API_SERVER_HOST } from "../../util/util";
 
 const CenteredHeaderTable = styled(Table)`
@@ -23,15 +25,15 @@ const CenteredHeaderTable = styled(Table)`
 `;
 
 const MdRecommend: React.FC = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [data, setData] = useState<MainProRc[]>([]);
-
   const [messageApi, contextHolder] = message.useMessage();
+  const [refresh, setRefresh] = useState(0);
+  const toggleType = "toggleRcProduct";
 
-  const success = () => {
+  const success = (txt: string) => {
     messageApi.open({
       type: "success",
-      content: "글 넣으삼",
+      content: txt,
     });
   };
 
@@ -42,10 +44,10 @@ const MdRecommend: React.FC = () => {
     });
   };
 
-  const warning = () => {
+  const warning = (txt: string) => {
     messageApi.open({
       type: "warning",
-      content: "등록된 상품이 8개를 넘을 수 없습니다.",
+      content: txt,
     });
   };
 
@@ -71,23 +73,29 @@ const MdRecommend: React.FC = () => {
 
     // 컴포넌트가 마운트될 때 데이터를 불러오도록 호출
     fetchData();
-  }, []);
+  }, [refresh]);
 
-  const handleProductAdd = () => {
-    console.log("data.length :", data.length);
-    if (data.length > 9) {
-      warning();
-    } else if (data.length < 9) {
-      setIsOpen(true);
+  const handleDelete = (iproduct: number) => {
+    if (data.length === 1) {
+      warning("최소 1개의 상품이 존재하여야 합니다.");
+      setRefresh(refresh + 1);
+    } else if (data.length > 1) {
+      putMainProRc(toggleType, iproduct, putSuccessFn, putFailFn, putErrorFn);
     }
   };
 
-  const handleCloseModal = () => {
-    setIsOpen(false);
+  const putSuccessFn = () => {
+    console.log("성공!");
+    success("삭제 완료하였습니다.");
+    setRefresh(refresh + 1);
+    console.log("리프레시값", refresh);
+  };
+  const putFailFn = () => {
+    console.log("실패!");
   };
 
-  const handleDelete = () => {
-    console.log("삭제할거라능");
+  const putErrorFn = () => {
+    console.log("에러!");
   };
 
   const columns: any[] = [
@@ -128,19 +136,20 @@ const MdRecommend: React.FC = () => {
       render: (price: number) => <span>{price.toLocaleString()} 원</span>,
     },
     {
-      title: "삭제",
-      dataIndex: "deletebt",
-      key: "key",
+      title: "등록해제",
+      dataIndex: "iproduct",
+      key: "iproduct",
       width: "80px",
-      render: () => (
+      render: (record: any) => (
         <>
+          {/* {console.log(record)} */}
           <SearchButton
             style={{
               background: "rgb(244, 67, 54)",
             }}
-            onClick={handleDelete}
+            onClick={() => handleDelete(record)}
           >
-            삭제
+            해제
           </SearchButton>
         </>
       ),
@@ -158,7 +167,6 @@ const MdRecommend: React.FC = () => {
   return (
     <>
       {contextHolder}
-      {isOpen && <MainUsermodal onClose={handleCloseModal} />}
       <MainTitle>MD 추천상품</MainTitle>
       <div
         style={{
@@ -171,12 +179,6 @@ const MdRecommend: React.FC = () => {
           노출될 상품 <span style={{ color: "rgb(244, 67, 54)" }}>4</span> 건 |{" "}
           <span style={{ fontSize: "12px" }}>* 최소 1개 , 최대 8개 </span>
         </SubTitle>
-        <MiddleButton
-          onClick={handleProductAdd}
-          style={{ marginBottom: 16, fontSize: "12px" }}
-        >
-          상품 등록
-        </MiddleButton>
       </div>
       <ConfigProvider
         theme={{
