@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 import { Radio } from "antd";
 import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
-import { deleteMember, getMember } from "../../../api/member/memberApi";
+import { FC, useEffect, useState } from "react";
+import { getMember } from "../../../api/member/memberApi";
 import { MemberList } from "../../../pages/admin/member/MemberModify";
 import { MainTitle, SubTitle } from "../../../styles/AdminBasic";
 import MemberInfoSection from "./MemberInfoSection";
@@ -11,12 +11,6 @@ import OrderInfoSection from "./OrderInfoSection";
 interface ResultModalProps {
   selectedMember: MemberList | null;
   onClose: () => void;
-}
-
-interface DeleteRes {
-  code: string;
-  message: string;
-  data: any[];
 }
 
 const ModalOverlay = styled.div`
@@ -80,10 +74,7 @@ export interface PersonApiResponse {
   data: MemberData;
 }
 
-const MemberModifyMD: React.FC<ResultModalProps> = ({
-  selectedMember,
-  onClose,
-}) => {
+const MemberModifyMD: FC<ResultModalProps> = ({ selectedMember, onClose }) => {
   // 데이터 관련
   const [selectedValue, setSelectedValue] = useState(1);
   const [memberInfo, setMemberInfo] = useState<MemberData[]>([]);
@@ -119,8 +110,6 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({
     setSelectedValue(e.target.value);
   };
 
-
-
   return (
     <ModalOverlay>
       <ModalContent
@@ -137,7 +126,6 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({
             value={selectedValue}
             onChange={handleRadioChange}
             style={{ marginRight: "10px" }}
-            
           >
             <Radio.Button
               value={1}
@@ -171,7 +159,10 @@ const MemberModifyMD: React.FC<ResultModalProps> = ({
             memberId={selectedMember && selectedMember.iuser}
           />
         ) : (
-          <OrderInfoSection onClose={onClose} />
+          <OrderInfoSection
+            onClose={onClose}
+            memberId={selectedMember && selectedMember.iuser}
+          />
         )}
       </ModalContent>
     </ModalOverlay>
