@@ -29,7 +29,7 @@ const CenteredHeaderTable = styled(Table)`
   }
 `;
 
-interface CategoryOptions {
+export interface CategoryOptions {
   [key: string]: string[];
 }
 
@@ -184,9 +184,6 @@ const PutMd: React.FC = () => {
               해제
             </SearchButton>
           )}
-          {/* <SearchButton onClick={() => handleregist(item.iproduct)}>
-            등록
-          </SearchButton> */}
         </>
       ),
     },
@@ -272,7 +269,7 @@ const PutMd: React.FC = () => {
         },
       }}
     >
-      <MainTitle>MD 추천상품</MainTitle>
+      <MainTitle>MD추천상품 진열관리</MainTitle>
       <SubTitle>상품 검색</SubTitle>
       <div>
         <div style={{ marginBottom: "20px" }}>

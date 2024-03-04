@@ -11,20 +11,22 @@ import PreparingPage from "../pages/order/sub/PreparingPage";
 
 import OrderCancel from "../pages/order/sub/OrderCancel";
 
-import OrderReturn from "../pages/order/sub/OrderReturn";
+import useCustomLogin from "../hooks/useCustomLogin";
+import TestPage from "../pages/TestPage";
 import MemberMain from "../pages/admin/member/MemberMain";
 import ChartsPage from "../pages/charts/ChartsPage";
+import CommunPage from "../pages/community/CommunPage";
+import DComPage from "../pages/order/sub/DComPage";
 import OrderAllPage from "../pages/order/sub/OrderAllPage";
+import OrderReturn from "../pages/order/sub/OrderReturn";
+import ShippingPage from "../pages/order/sub/ShippingPage";
+import ReviewManage from "../pages/review/ReviewManage";
 import UsermainManage from "../pages/usermainmanage/UsermainManage";
 import ChartsRouter from "./charts/ChartsRouter";
 import MemberRouter from "./member/MemberRouter";
 import productAdmin from "./product";
+import ReviewRouter from "./review/reviewrouter";
 import UsermainRouter from "./usermainmanage/usermainrouter";
-import useCustomLogin from "../hooks/useCustomLogin";
-import CommunPage from "../pages/community/CommunPage";
-import DComPage from "../pages/order/sub/DComPage";
-import ShippingPage from "../pages/order/sub/ShippingPage";
-import TestPage from "../pages/TestPage";
 
 const RouteComponent = () => {
   const { isLogin } = useCustomLogin();
@@ -90,6 +92,11 @@ export const routerAdmin = createBrowserRouter([
         path: "charts/",
         element: <ChartsPage />,
         children: ChartsRouter.children,
+      },
+      {
+        path: "review/",
+        element: <ReviewManage />,
+        children: ReviewRouter.children,
       },
       {
         path: "community",

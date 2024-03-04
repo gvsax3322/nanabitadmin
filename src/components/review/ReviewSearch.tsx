@@ -1,11 +1,7 @@
-import { ConfigProvider, Table } from "antd";
+import { ConfigProvider, Rate } from "antd";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  SearchProduct,
-  getMdSearch,
-  putMainProRc,
-} from "../../api/usermain/mainProductSetApi";
+import { getReview } from "../../api/review/reviewApi";
 import {
   BigKeyword,
   Common,
@@ -17,31 +13,30 @@ import {
 } from "../../styles/AdminBasic";
 import { API_SERVER_HOST } from "../../util/util";
 import OrderAllSelect from "../order/orderSlect/OrderAllSelect";
+import { CategoryOptions } from "../usermainmanage/PutMd";
+import { CenteredHeaderTable } from "../usermainmanage/PutPop";
+import ReviewModal from "./ReviewModal";
 
-export const CenteredHeaderTable = styled(Table)`
-  &&& {
-    .ant-table-thead > tr > th {
-      text-align: center;
-    }
-    .ant-table-tbody > tr > td {
-      text-align: center;
-    }
+const ChangeRate = styled.div`
+  span {
+    font-size: 10px;
   }
 `;
 
-interface CategoryOptions {
-  [key: string]: string[];
+export interface SearchReview {
+  ireview: number;
+  nm: string;
+  reqReviewPic: string;
+  iproduct: number;
+  productNm: string;
+  contents: string;
+  productScore: number;
+  delFl: number;
 }
 
-interface Keyword {
-  keyword: string;
-  iproduct: number;
-}
-const PutPop: React.FC = () => {
-  const searchType = "searchPopProduct";
-  const toggleType = "togglePopProduct";
+const ReviewSearch = () => {
   const [refresh, setRefresh] = useState(0);
-  const [sdata, setSdata] = useState<SearchProduct[]>();
+  const [sdata, setSdata] = useState<SearchReview[]>();
   // 선택된 옵션과 입력 필드 값을 저장할 상태
   const [selectedOption, setSelectedOption] = useState<number>(0);
   const [inputValue, setInputValue] = useState<string | number>("");
@@ -53,6 +48,14 @@ const PutPop: React.FC = () => {
   const [subCategory, setSubCategory] = useState("");
   const [sendMainCate, setSendMainCate] = useState<number>(0);
   const [sendSubCate, setSendSubCate] = useState<number>(0);
+
+  //모달
+  const [showModal, setShowModal] = useState(false);
+  const [modalData, setModalData] = useState<SearchReview>();
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   const subCategories: CategoryOptions = {
     이유식: ["임신/출산", "신생아", "베이비", "키즈"],
@@ -117,10 +120,12 @@ const PutPop: React.FC = () => {
     }
   };
 
-  // 상품 등록하기
-  const handleregist = (iproduct: number) => {
-    // console.log("등록", iproduct);
-    putMainProRc(toggleType, iproduct, putSuccessFn, putFailFn, putErrorFn);
+  // 상품 숨기기
+  const handleHidden = (item: SearchReview) => {
+    console.log("숨기기", item);
+    setShowModal(true);
+    setModalData(item);
+    // putMainProRc(toggleType, iproduct, putSuccessFn, putFailFn, putErrorFn);
   };
 
   const putSuccessFn = () => {
@@ -136,14 +141,19 @@ const PutPop: React.FC = () => {
 
   const columns = [
     {
-      title: "미리보기",
-      dataIndex: "repPic",
+      title: "유저명",
+      dataIndex: "nm",
       width: "100px",
-      key: "repPic",
-      render: (repPic: string) => (
+      key: "key",
+    },
+    {
+      title: "리뷰사진",
+      dataIndex: "reqReviewPic",
+      key: "key",
+      render: (reqReviewPic: string) => (
         <img
           style={{ width: "66px", height: "66px", objectFit: "cover" }}
-          src={repPic}
+          src={reqReviewPic}
           alt=""
         />
       ),
@@ -151,7 +161,7 @@ const PutPop: React.FC = () => {
     {
       title: "상품코드",
       dataIndex: "iproduct",
-      key: "iproduct",
+      key: "key",
     },
     {
       title: "상품명",
@@ -159,51 +169,71 @@ const PutPop: React.FC = () => {
       key: "productNm",
     },
     {
-      title: "가격",
-      dataIndex: "price",
-      key: "price",
-      render: (price: number) => <span>{price.toLocaleString()}</span>,
+      title: "리뷰",
+      dataIndex: "contents",
+      key: "contents",
     },
     {
-      title: "삭제",
+      title: "별점",
+      dataIndex: "productScore",
+      key: "productScore",
+      render: (productScore: number) => (
+        <div style={{ width: "80px" }}>
+          <ConfigProvider
+            theme={{
+              components: {
+                Rate: {
+                  marginXS: 3,
+                },
+              },
+            }}
+          >
+            <ChangeRate>
+              <Rate disabled defaultValue={productScore} />
+            </ChangeRate>
+          </ConfigProvider>
+        </div>
+      ),
+    },
+    {
+      title: "숨김",
       dataIndex: "item",
       width: "80px",
       key: "iproduct",
       render: (item: any) => (
         <>
-          {item.status === 0 ? (
-            <SearchButton onClick={() => handleregist(item.iproduct)}>
-              등록
-            </SearchButton>
-          ) : (
-            <SearchButton
-              style={{
-                background: "rgb(244, 67, 54)",
-              }}
-              onClick={() => handleregist(item.iproduct)}
-            >
-              해제
-            </SearchButton>
-          )}
+          <SearchButton
+            onClick={() => handleHidden(item)}
+            style={{
+              background: " #f44336",
+              fontSize: "12px",
+              lineHeight: "12px",
+            }}
+          >
+            숨김
+          </SearchButton>
         </>
       ),
     },
   ];
 
-  const dataSource = sdata?.map(item => ({
+  const dataSource = sdata?.map((item, index) => ({
     item: item,
-    key: item.productNm,
-    productNm: item.productNm,
+    key: (index + 1).toString(),
+    nm: item.nm,
+    reqReviewPic: `${API_SERVER_HOST}/pic/review/${item.ireview}/${item.reqReviewPic}`,
     iproduct: item.iproduct,
-    price: item.price,
-    repPic: `${API_SERVER_HOST}/pic/product/${item.iproduct}/${item.repPic}`,
-    status: item.iproduct,
+    productNm: item.productNm,
+    contents: item.contents,
+    productScore: item.productScore,
+    delFl: item.delFl,
   }));
 
   const fetchData = async () => {
     try {
-      const successFn = (data: SearchProduct[] | undefined) => {
+      const successFn = (data: SearchReview[] | undefined) => {
         setSdata(data);
+        console.log("성공이라규", data);
       };
       const failFn = (error: string) => {
         console.error("목록 호출 오류:", error);
@@ -211,11 +241,10 @@ const PutPop: React.FC = () => {
       const errorFn = (error: string) => {
         console.error("목록 호출 서버 에러:", error);
       };
-      await getMdSearch(
+      await getReview(
         successFn,
         failFn,
         errorFn,
-        searchType,
         keyword,
         iproduct,
         sendMainCate,
@@ -226,6 +255,7 @@ const PutPop: React.FC = () => {
       console.error("Error fetching data:", error);
     }
   };
+
   const handleSearch = async () => {
     await fetchData();
     setRefresh(refresh + 1);
@@ -249,29 +279,24 @@ const PutPop: React.FC = () => {
   }, [refresh]);
 
   return (
-    <ConfigProvider
-      theme={{
-        components: {
-          Radio: {
-            colorText: "#d9d9d9",
-            colorPrimary: "#7f7f7f",
-            colorLink: "#7f7f7f",
-            colorLinkActive: "#7f7f7f",
-            colorPrimaryActive: "#7f7f7f",
-            colorPrimaryBorder: "#7f7f7f",
-            colorPrimaryHover: "#7f7f7f",
+    <>
+      {showModal && (
+        <ReviewModal onClose={handleCloseModal} modalData={modalData} />
+      )}
 
-            /* here is your component tokens */
-          },
-          Table: {
-            headerBg: "#535353",
-            headerColor: "#fff",
-          },
-        },
-      }}
-    >
-      <MainTitle>인기상품 진열관리</MainTitle>
-      <SubTitle>상품 검색</SubTitle>
+      <MainTitle>리뷰 관리</MainTitle>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <SubTitle style={{ textAlign: "center", lineHeight: "15px" }}>
+          리뷰 검색
+        </SubTitle>
+      </div>
+
       <div>
         <div style={{ marginBottom: "20px" }}>
           <BigKeyword
@@ -349,30 +374,30 @@ const PutPop: React.FC = () => {
             초기화
           </SearchButton>
         </div>
-      </div>
-      {/* 결과 테이블 */}
-      <ConfigProvider
-        theme={{
-          token: {
-            colorPrimary: "#a5a5a5",
-          },
-          components: {
-            Table: {
-              headerBg: "#535353",
-              headerColor: "#fff",
+
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: "#a5a5a5",
             },
-          },
-        }}
-      >
-        <CenteredHeaderTable
-          columns={columns}
-          dataSource={dataSource}
-          pagination={false}
-          bordered
-        />
-      </ConfigProvider>
-    </ConfigProvider>
+            components: {
+              Table: {
+                headerBg: "#535353",
+                headerColor: "#fff",
+              },
+            },
+          }}
+        >
+          <CenteredHeaderTable
+            columns={columns}
+            dataSource={dataSource}
+            pagination={false}
+            bordered
+          />
+        </ConfigProvider>
+      </div>
+    </>
   );
 };
 
-export default PutPop;
+export default ReviewSearch;

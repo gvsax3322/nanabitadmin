@@ -38,8 +38,8 @@ interface Keyword {
   iproduct: number;
 }
 const PutNew: React.FC = () => {
-  const searchType = "searchPopProduct";
-  const toggleType = "togglePopProduct";
+  const searchType = "searchNewProduct";
+  const toggleType = "toggleNewProduct";
   const [refresh, setRefresh] = useState(0);
   const [sdata, setSdata] = useState<SearchProduct[]>();
   // 선택된 옵션과 입력 필드 값을 저장할 상태
@@ -171,7 +171,6 @@ const PutNew: React.FC = () => {
       key: "iproduct",
       render: (item: any) => (
         <>
-          {item.status}
           {item.status === 0 ? (
             <SearchButton onClick={() => handleregist(item.iproduct)}>
               등록
@@ -274,7 +273,7 @@ const PutNew: React.FC = () => {
         },
       }}
     >
-      <MainTitle>MD 추천상품</MainTitle>
+      <MainTitle>신상품 진열관리</MainTitle>
       <SubTitle>상품 검색</SubTitle>
       <div>
         <div style={{ marginBottom: "20px" }}>
