@@ -16,7 +16,7 @@ import {
 import { DeldelBoard, getAnswer, getBoard } from "../../api/commun/commun";
 import ModalComm from "./ModalComm";
 
-interface BoardData {
+export interface BoardData {
   iboard: number;
   title: string;
   contents?: string;
@@ -45,13 +45,96 @@ const Community = () => {
   };
 
   const handleDeleteBord = (iboard: number) => {
-    DeldelBoard(iboard);
+    DeldelBoard(iboard).then(() => {
+      const fetchData = async () => {
+        const res = await getBoard();
+        if (res) {
+          setBoard(
+            res.map((row: BoardData) => ({
+              key: row?.iboard,
+              title: row?.title,
+              responseFl: row?.responseFl === 0 ? "미답변" : "답변완료",
+              bt: (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 10,
+                  }}
+                >
+                  <SearchButton
+                    type="button"
+                    onClick={() => handleClickBord(row.iboard)}
+                  >
+                    답변
+                  </SearchButton>
+                  <SearchButton
+                    type="button"
+                    style={{ background: "red" }}
+                    onClick={() => handleDeleteBord(row.iboard)}
+                  >
+                    삭제
+                  </SearchButton>
+                </div>
+              ),
+            })),
+          );
+        } else {
+          setBoard([]);
+        }
+      };
+      fetchData();
+    });
+
     console.log("삭제", iboard);
   };
 
   const handleDeleteBords = () => {
     console.log("선택삭제", selectedRowKeys);
-    selectedRowKeys.map(item => DeldelBoard(item));
+    selectedRowKeys.map(item =>
+      DeldelBoard(item).then(() => {
+        const fetchData = async () => {
+          const res = await getBoard();
+          if (res) {
+            setBoard(
+              res.map((row: BoardData) => ({
+                key: row?.iboard,
+                title: row?.title,
+                responseFl: row?.responseFl === 0 ? "미답변" : "답변완료",
+                bt: (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 10,
+                    }}
+                  >
+                    <SearchButton
+                      type="button"
+                      onClick={() => handleClickBord(row.iboard)}
+                    >
+                      답변
+                    </SearchButton>
+                    <SearchButton
+                      type="button"
+                      style={{ background: "red" }}
+                      onClick={() => handleDeleteBord(row.iboard)}
+                    >
+                      삭제
+                    </SearchButton>
+                  </div>
+                ),
+              })),
+            );
+          } else {
+            setBoard([]);
+          }
+        };
+        fetchData();
+      }),
+    );
   };
 
   useEffect(() => {
@@ -213,7 +296,16 @@ const Community = () => {
 
   return (
     <>
-      {showModal && <ModalComm onClose={handleCloseModal} answer={answer} />}
+      {showModal && (
+        <ModalComm
+          onClose={handleCloseModal}
+          answer={answer}
+          setBoard={setBoard}
+          handleClickBord={handleClickBord}
+          handleDeleteBord={handleDeleteBord}
+          setAnswer={setAnswer}
+        />
+      )}
       <MainTitle>Q&A</MainTitle>
       <SubTitle>기본검색</SubTitle>
       <form onSubmit={handleSubmit(handleSubmitMy)}>
@@ -280,7 +372,6 @@ const Community = () => {
           locale={{ emptyText: "비어있음" }}
           columns={columns}
           dataSource={board}
-          pagination={false}
           bordered
         />
       </ConfigProvider>

@@ -8,22 +8,44 @@ import {
   TextareaStyle,
 } from "../../styles/AdminBasic";
 import { ModalContent, ModalOverlay } from "../../styles/main/main";
-import { DeldelDabbyeon, postDabbyeon } from "../../api/commun/commun";
+import {
+  DeldelDabbyeon,
+  getAnswer,
+  getBoard,
+  postDabbyeon,
+} from "../../api/commun/commun";
 import { motion } from "framer-motion";
+import { BoardData } from "./Community";
 
 interface ResultModalProps {
   onClose: () => void;
   answer: any;
+  setBoard: React.Dispatch<React.SetStateAction<BoardData[]>>;
+  handleClickBord: (iboard: number) => void;
+  handleDeleteBord: (iboard: number) => void;
+  setAnswer: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const ModalComm: React.FC<ResultModalProps> = ({ onClose, answer }) => {
+const ModalComm: React.FC<ResultModalProps> = ({
+  onClose,
+  answer,
+  setBoard,
+  handleClickBord,
+  handleDeleteBord,
+  setAnswer,
+}) => {
   const [aaa, setAaa] = useState();
   const handlechage = (e: any) => {
     setAaa(e.target.value);
   };
-
   const handleDeleteComment = (n: number) => {
-    DeldelDabbyeon(answer.iboard, n);
+    DeldelDabbyeon(answer.iboard, n)
+      .then(() => {
+        return getAnswer(answer.iboard);
+      })
+      .then(res => {
+        setAnswer(res);
+      });
   };
 
   const handleClikCancel = () => {
@@ -35,12 +57,49 @@ const ModalComm: React.FC<ResultModalProps> = ({ onClose, answer }) => {
       iboard: answer.iboard,
       comment: aaa,
     };
-    console.log(asd);
-    postDabbyeon(answer.iboard, asd);
+    postDabbyeon(answer.iboard, asd).then(() => {
+      const fetchData = async () => {
+        const res = await getBoard();
+        if (res) {
+          setBoard(
+            res.map((row: BoardData) => ({
+              key: row?.iboard,
+              title: row?.title,
+              responseFl: row?.responseFl === 0 ? "미답변" : "답변완료",
+              bt: (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 10,
+                  }}
+                >
+                  <SearchButton
+                    type="button"
+                    onClick={() => handleClickBord(row.iboard)}
+                  >
+                    답변
+                  </SearchButton>
+                  <SearchButton
+                    type="button"
+                    style={{ background: "red" }}
+                    onClick={() => handleDeleteBord(row.iboard)}
+                  >
+                    삭제
+                  </SearchButton>
+                </div>
+              ),
+            })),
+          );
+        } else {
+          setBoard([]);
+        }
+      };
+      fetchData();
+    });
     onClose();
   };
-
-  console.log(answer.commentList);
 
   return (
     <ModalOverlay onClick={onClose}>
