@@ -24,13 +24,15 @@ const MyBaby: FC<MyBabyProps> = ({ childData, childIndex }) => {
             height: "auto",
           }}
         >
-          <div className="left" style={{ width: "130px" }}>
+          <div className="left" style={{ width: "133px" }}>
             아이 {childIndex}
           </div>
           <div
             className="right"
             style={{
               gap: "10px",
+              paddingTop: "10px",
+              paddingBottom: "10px",
               height: "auto",
               display: "flex",
               flexDirection: "column",

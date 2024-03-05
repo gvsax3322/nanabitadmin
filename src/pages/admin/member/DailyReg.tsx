@@ -1,6 +1,7 @@
 import { Bar } from "@nivo/bar";
-import { Table } from "antd";
+import { ConfigProvider, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
+import { getRegister } from "../../../api/member/memberApi";
 import {
   BigKeyword,
   Common,
@@ -9,7 +10,7 @@ import {
   SelectStyle,
   SubTitle,
 } from "../../../styles/AdminBasic";
-import { getRegister } from "../../../api/member/memberApi";
+import styled from "styled-components";
 
 export interface RegisterChartData {
   date: string;
@@ -87,11 +88,14 @@ const columns = [
 ];
 
 const DailyReg: React.FC = () => {
+  // 검색관련
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState<number>(currentYear);
   const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
   const [yearData, setYearData] = useState<number>();
   const [resMonth, setResMonth] = useState<ResRegister | null>(null);
+  // 모달관련
+  const [messageApi, contextHolder] = message.useMessage();
 
   // 년도 변경 핸들러
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -103,9 +107,31 @@ const DailyReg: React.FC = () => {
     setMonth(Number(e.target.value));
   };
 
-  const onSearchYear = () => {
-    setYearData(year); // 검색 버튼을 클릭할 때만 yearData를 설정합니다.
-    fetchData();
+  const handleClickSearch = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    try {
+      await fetchData();
+      successAl("검색완료");
+    } catch (error) {
+      console.error("검색 오류:", error);
+      errorAl("검색실패");
+    }
+  };
+
+  const successAl = (txt: string) => {
+    messageApi.open({
+      type: "success",
+      content: txt,
+    });
+  };
+
+  const errorAl = (txt: string) => {
+    messageApi.open({
+      type: "error",
+      content: txt,
+    });
   };
 
   useEffect(() => {
@@ -116,7 +142,6 @@ const DailyReg: React.FC = () => {
     try {
       const successFn = (data: ResRegister) => {
         setResMonth(data);
-        // console.log("데이터:", resMonth);
       };
       const failFn = (error: string) => {
         console.error("목록 호출 오류:", error);
@@ -132,6 +157,7 @@ const DailyReg: React.FC = () => {
 
   return (
     <>
+      {contextHolder}
       <MainTitle>일별 가입통계분석</MainTitle>
       <SubTitle>통계분석</SubTitle>
       <BigKeyword
@@ -157,16 +183,32 @@ const DailyReg: React.FC = () => {
               </option>
             ))}
           </SelectStyle>
-          <SearchButton onClick={onSearchYear}>검색</SearchButton>
+          <SearchButton onClick={handleClickSearch}>검색</SearchButton>
         </div>
       </BigKeyword>
-      {resMonth && (
-        <Table<RegisterChartData>
-          dataSource={resMonth.data}
-          columns={columns}
-          pagination={false}
-        />
-      )}
+
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: "#A5A5A5",
+          },
+          components: {
+            Table: {
+              headerBg: "#535353",
+              headerColor: "#fff",
+            },
+          },
+        }}
+      >
+        {resMonth && (
+          <Table
+            style={{ textAlign: "center" }}
+            dataSource={resMonth.data}
+            columns={columns}
+            pagination={false}
+          />
+        )}
+      </ConfigProvider>
     </>
   );
 };

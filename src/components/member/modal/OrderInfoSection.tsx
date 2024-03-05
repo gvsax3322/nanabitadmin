@@ -1,22 +1,29 @@
-import { Pagination, Radio, RadioChangeEvent, Table } from "antd";
-import React, { FC, useEffect, useState } from "react";
+import {
+  ConfigProvider,
+  Pagination,
+  Radio,
+  RadioChangeEvent,
+  Segmented,
+} from "antd";
+import { FC, useEffect, useState } from "react";
 
-import styled from "styled-components";
 import { getMemberOl } from "../../../api/member/memberApi";
 import {
   BigKeyword,
   Common,
   MiddleButton,
-  SearchButton,
   SmallButton,
 } from "../../../styles/AdminBasic";
 import { BtList, ModifyButton } from "../../../styles/member/memberstyle";
-import TestMd from "../../order/TestMd";
+import { API_SERVER_HOST } from "../../../util/util";
+import { CenteredHeaderTable } from "../../usermainmanage/PutPop";
 import DatePick from "../DatePick";
 
 interface OrderInfoSectionProps {
   onClose: () => void;
   memberId: number | null;
+  successAl: (txt: string) => void;
+  errorAl: (txt: string) => void;
 }
 
 export interface OrderList {
@@ -28,6 +35,7 @@ export interface OrderList {
   totalAmount: number;
   payCategory: number;
   refundFl: number;
+  totalCount: number;
 }
 
 export interface Product {
@@ -37,36 +45,39 @@ export interface Product {
   processState: number;
   amount: number;
   refundFl: number;
+  iproduct: number;
 }
 
-const OrderInfoSection: FC<OrderInfoSectionProps> = ({ onClose, memberId }) => {
+const OrderInfoSection: FC<OrderInfoSectionProps> = ({
+  onClose,
+  memberId,
+  successAl,
+  errorAl,
+}) => {
+  // 회원정보
   const [orderList, setOrderList] = useState<OrderList[]>([]);
+  // 페이지네이션
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(1);
   // 검색관련
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [ratioNm, setRatioNm] = useState(0);
-  const [showModal, setShowModal] = useState(false);
+  const [sortBy, setSortBy] = useState<number>(0);
 
   const handleDateChange = (dateRange: string[]) => {
     setStartDate(dateRange[0]);
     setEndDate(dateRange[1]);
   };
 
-  const handleShowModal = () => {
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-
-  const fetchData = async () => {
+  const fetchData = async (page: number) => {
     try {
+      const pageSize = 3;
+
       const successFn = (data: OrderList[]) => {
         console.log("데이터:", data);
         setOrderList(data);
+        setTotalPages(Math.ceil(data[0].totalCount / pageSize));
       };
 
       const failFn = (error: string) => {
@@ -78,7 +89,17 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({ onClose, memberId }) => {
       };
 
       console.log("데이터를 가져오는 중...");
-      await getMemberOl(successFn, failFn, errorFn, memberId);
+      await getMemberOl(
+        successFn,
+        failFn,
+        errorFn,
+        memberId,
+        startDate,
+        endDate,
+        ratioNm,
+        page,
+        sortBy,
+      );
       console.log("데이터 가져오기 완료");
     } catch (error) {
       console.error("에러:", error);
@@ -87,17 +108,21 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({ onClose, memberId }) => {
 
   const handleClickSearch = async () => {
     try {
+      setCurrentPage(1);
       const successFn = (data: OrderList[]) => {
         console.log("데이터:", data);
+        successAl("검색성공");
         setOrderList(data);
       };
 
       const failFn = (error: string) => {
         console.error("목록 호출 오류:", error);
+        errorAl("검색실패");
       };
 
       const errorFn = (error: string) => {
         console.error("목록 호출 서버 에러:", error);
+        errorAl("검색실패");
       };
 
       await getMemberOl(
@@ -115,42 +140,21 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({ onClose, memberId }) => {
   };
 
   const handlePageChange = async (page: number) => {
-    try {
-      // API 호출하여 페이지에 해당하는 데이터 요청
-      const successFn = (data: OrderList[]) => {
-        console.log("데이터:", data);
-        setOrderList(data); // 받아온 데이터로 상태 업데이트
-        setCurrentPage(page); // 현재 페이지 업데이트
-      };
+    setCurrentPage(page);
+    fetchData(page);
+  };
 
-      const failFn = (error: string) => {
-        console.error("목록 호출 오류:", error);
-      };
-
-      const errorFn = (error: string) => {
-        console.error("목록 호출 서버 에러:", error);
-      };
-
-      console.log(`페이지 ${page}의 데이터를 가져오는 중...`);
-      await getMemberOl(
-        successFn,
-        failFn,
-        errorFn,
-        memberId,
-        startDate,
-        endDate,
-        ratioNm,
-        page, // 페이지 번호 전달
-      );
-      console.log(`페이지 ${page}의 데이터 가져오기 완료`);
-    } catch (error) {
-      console.error("에러:", error);
+  const changeSortby = (value: string) => {
+    if (value === "주문일 역순") {
+      setSortBy(0);
+    } else if (value === "주문일 순") {
+      setSortBy(1);
     }
   };
 
   useEffect(() => {
-    fetchData();
-  }, [currentPage]);
+    fetchData(currentPage);
+  }, [sortBy]);
 
   // 테이블 관련
   const dataSource = orderList
@@ -170,50 +174,29 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({ onClose, memberId }) => {
           processState: product.processState,
           amount: product.amount,
           refundFl: product.refundFl,
+          iproduct: product.iproduct,
           key: `${item.iorder}_${index}`,
         })),
       }))
     : [];
+
+  const formatDate = (dateString: string) => {
+    return dateString.slice(0, 10);
+  };
 
   const columns: any[] = [
     {
       title: "주문일시",
       dataIndex: "orderedAt",
       key: "orderedAt",
-    },
-    {
-      title: "주문목록",
-      dataIndex: "refundFl",
-      key: "refundFl",
-      render: (refundFl: number) => (
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <div>
-            <SearchButton
-              style={{ marginBottom: "12px" }}
-              onClick={handleShowModal}
-            >
-              주문목록
-            </SearchButton>
-            {refundFl === 0 && (
-              <SearchButton style={{ background: "rgb(244, 67, 54)" }}>
-                주문취소
-              </SearchButton>
-            )}
-          </div>
-        </div>
-      ),
+      width: "8%",
+      render: (text: string) => formatDate(text),
     },
     {
       title: "이미지",
       dataIndex: "products",
       key: "repPic",
+      width: "10%",
       render: (items: any[]) => (
         <div
           style={{
@@ -226,16 +209,14 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({ onClose, memberId }) => {
           {items.map((item, index) => (
             <div>
               <img
+                src={`${API_SERVER_HOST}/pic/product/${item.iproduct}/${item.repPic}`}
                 alt=""
                 style={{
                   marginBottom: "10px",
                   marginTop: "10px",
-                  width: "50px",
-                  height: "50px",
-
-                  // objectFit: "cover",
+                  width: "70px",
+                  height: "70px",
                 }}
-                // key={index}
               />
             </div>
           ))}
@@ -260,6 +241,7 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({ onClose, memberId }) => {
       title: "수량",
       dataIndex: "products",
       key: "cnt",
+      width: "7%",
       render: (items: any[]) => (
         <ul>
           {items.map((item, index) => (
@@ -274,6 +256,7 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({ onClose, memberId }) => {
       title: "상품금액",
       dataIndex: "products",
       key: "amount",
+      width: "7%",
       render: (items: any[]) => (
         <ul>
           {items.map((item, index) => (
@@ -288,6 +271,7 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({ onClose, memberId }) => {
       title: "처리상태",
       dataIndex: "products",
       key: "processState",
+      width: "7%",
       render: (items: any[]) => (
         <ul>
           {items.map((item, index) => (
@@ -302,53 +286,28 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({ onClose, memberId }) => {
       ),
     },
     {
-      title: "반품신청",
-      dataIndex: "products",
-      key: "refundFlProduct",
-      render: (products: any[]) => (
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <div>
-            {products.map((product, index) => (
-              <React.Fragment key={index}>
-                {product.refundFl === 0 && (
-                  <SearchButton
-                    style={{ marginBottom: "30px", marginTop: "30px" }}
-                  >
-                    반품신청
-                  </SearchButton>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-      ),
-    },
-    {
       title: "주문자",
       dataIndex: "ordered",
       key: "ordered",
+      width: "7%",
     },
     {
       title: "수령자",
       dataIndex: "recipient",
       key: "recipient",
+      width: "7%",
     },
     {
       title: "총주문액",
       dataIndex: "totalAmount",
       key: "totalAmount",
+      width: "5%",
     },
     {
       title: "결제수단",
       dataIndex: "payCategory",
       key: "payCategory",
+      width: "5%",
       render: (payCategory: number) => (
         <ul>
           <li
@@ -364,45 +323,11 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({ onClose, memberId }) => {
     },
   ];
 
-  const StyledTable = styled(Table)`
-    :where(.css-dev-only-do-not-override-1xg9z9n).ant-table-wrapper
-      .ant-table-tbody
-      .ant-table-row.ant-table-row-selected
-      > .ant-table-cell {
-      background-color: ${Common.color.p800};
-    }
-    .ant-checkbox-checked .ant-checkbox-inner {
-      background-color: ${Common.color.p600};
-      border-color: ${Common.color.p800};
-    }
-    .ant-checkbox-wrapper-checked:hover .ant-checkbox-inner,
-    .ant-checkbox-checked:hover .ant-checkbox-inner {
-      border-color: rgba(40, 40, 40, 0.8) !important;
-    }
-
-    .ant-checkbox-wrapper:hover .ant-checkbox-inner,
-    .ant-checkbox:hover .ant-checkbox-inner,
-    .ant-checkbox-input:focus + .ant-checkbox-inner {
-      border-color: #d9d9d9 !important;
-    }
-    :where(.css-dev-only-do-not-override-1xg9z9n).ant-checkbox-indeterminate
-      .ant-checkbox-inner:after {
-      background-color: ${Common.color.p800};
-    }
-    &&& {
-      .ant-table-thead > tr > th {
-        text-align: center;
-      }
-      .ant-table-tbody > tr > td {
-        text-align: center;
-      }
-    }
-  `;
   // 테이블 끝
 
   return (
     <>
-      <BigKeyword>
+      <BigKeyword style={{ border: `1px solid ${Common.color.primary}` }}>
         <div className="left">기간검색</div>
         <div className="right" style={{ gap: "5x" }}>
           <DatePick
@@ -417,6 +342,7 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({ onClose, memberId }) => {
       </BigKeyword>
       <BigKeyword
         style={{
+          borderTop: "none",
           borderLeft: `1px solid ${Common.color.primary}`,
           borderRight: `1px solid ${Common.color.primary}`,
           borderBottom: `1px solid ${Common.color.primary}`,
@@ -447,6 +373,28 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({ onClose, memberId }) => {
       </BigKeyword>
       <BtList>
         <SmallButton>엑셀 저장</SmallButton>
+        <ConfigProvider
+          theme={{
+            components: {
+              Segmented: {
+                itemActiveBg: "#616161",
+                itemColor: "#616161",
+                itemHoverBg: "#616161",
+                itemHoverColor: "#fff",
+                itemSelectedBg: "#616161",
+                itemSelectedColor: "#fff",
+                trackBg: "none",
+              },
+            },
+          }}
+        >
+          <Segmented<string>
+            options={["주문일 역순", "주문일 순"]}
+            onChange={value => {
+              changeSortby(value);
+            }}
+          />
+        </ConfigProvider>
       </BtList>
       <ModifyButton>
         <MiddleButton
@@ -466,9 +414,34 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({ onClose, memberId }) => {
           닫기
         </MiddleButton>
       </ModifyButton>
-      <StyledTable dataSource={dataSource} columns={columns} />
-      <Pagination current={currentPage} onChange={handlePageChange} />
-      {/* {showModal && <TestMd onClose={handleCloseModal} />} */}
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: "#A5A5A5",
+          },
+          components: {
+            Table: {
+              headerBg: "#535353",
+              headerColor: "#fff",
+            },
+          },
+        }}
+      >
+        <CenteredHeaderTable
+          style={{ marginBottom: "20px" }}
+          columns={columns}
+          dataSource={dataSource}
+          pagination={false}
+          bordered
+        />
+
+        <Pagination
+          style={{ textAlign: "center" }}
+          current={currentPage}
+          total={totalPages}
+          onChange={handlePageChange}
+        />
+      </ConfigProvider>
     </>
   );
 };

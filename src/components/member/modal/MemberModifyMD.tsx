@@ -11,6 +11,8 @@ import OrderInfoSection from "./OrderInfoSection";
 interface ResultModalProps {
   selectedMember: MemberList | null;
   onClose: () => void;
+  successAl: (txt: string) => void;
+  errorAl: (txt: string) => void;
 }
 
 const ModalOverlay = styled.div`
@@ -74,7 +76,12 @@ export interface PersonApiResponse {
   data: MemberData;
 }
 
-const MemberModifyMD: FC<ResultModalProps> = ({ selectedMember, onClose }) => {
+const MemberModifyMD: FC<ResultModalProps> = ({
+  selectedMember,
+  onClose,
+  successAl,
+  errorAl,
+}) => {
   // 데이터 관련
   const [selectedValue, setSelectedValue] = useState(1);
   const [memberInfo, setMemberInfo] = useState<MemberData[]>([]);
@@ -156,12 +163,16 @@ const MemberModifyMD: FC<ResultModalProps> = ({ selectedMember, onClose }) => {
           <MemberInfoSection
             memberInfo={memberInfo}
             onClose={onClose}
+            successAl={successAl}
+            errorAl={errorAl}
             memberId={selectedMember && selectedMember.iuser}
           />
         ) : (
           <OrderInfoSection
             onClose={onClose}
             memberId={selectedMember && selectedMember.iuser}
+            successAl={successAl}
+            errorAl={errorAl}
           />
         )}
       </ModalContent>

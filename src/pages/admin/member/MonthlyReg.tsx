@@ -1,5 +1,5 @@
 import { Bar } from "@nivo/bar";
-import { Table } from "antd";
+import { ConfigProvider, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { getRegister } from "../../../api/member/memberApi";
 import {
@@ -74,19 +74,45 @@ const columns = [
 ];
 
 const MonthlyReg: React.FC = () => {
+  // 검새관련
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState<number>(currentYear);
   const [yearData, setYearData] = useState<number>();
   const [resMonth, setResMonth] = useState<ResRegister | null>(null);
   const month = 0;
+  // 알람관련
+  const [messageApi, contextHolder] = message.useMessage();
+
   // 년도 변경 핸들러
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setYear(Number(e.target.value));
   };
 
-  const onSearchYear = () => {
-    setYearData(year); // 검색 버튼을 클릭할 때만 yearData를 설정합니다.
-    fetchData();
+  const handleClickSearch = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    try {
+      await fetchData();
+      successAl("검색완료");
+    } catch (error) {
+      console.error("검색 오류:", error);
+      errorAl("검색실패");
+    }
+  };
+
+  const successAl = (txt: string) => {
+    messageApi.open({
+      type: "success",
+      content: txt,
+    });
+  };
+
+  const errorAl = (txt: string) => {
+    messageApi.open({
+      type: "error",
+      content: txt,
+    });
   };
 
   useEffect(() => {
@@ -113,6 +139,7 @@ const MonthlyReg: React.FC = () => {
 
   return (
     <>
+      {contextHolder}
       <MainTitle>일별 가입통계분석</MainTitle>
       <SubTitle>통계분석</SubTitle>
       <BigKeyword
@@ -131,16 +158,30 @@ const MonthlyReg: React.FC = () => {
             ))}
           </SelectStyle>
           {/* 월 선택 */}
-          <SearchButton onClick={onSearchYear}>검색</SearchButton>
+          <SearchButton onClick={handleClickSearch}>검색</SearchButton>
         </div>
       </BigKeyword>
-      {resMonth && (
-        <Table<RegisterChartData>
-          dataSource={resMonth.data}
-          columns={columns}
-          pagination={false}
-        />
-      )}
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: "#A5A5A5",
+          },
+          components: {
+            Table: {
+              headerBg: "#535353",
+              headerColor: "#fff",
+            },
+          },
+        }}
+      >
+        {resMonth && (
+          <Table
+            dataSource={resMonth.data}
+            columns={columns}
+            pagination={false}
+          />
+        )}
+      </ConfigProvider>
     </>
   );
 };
