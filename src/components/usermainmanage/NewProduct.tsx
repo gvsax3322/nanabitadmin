@@ -35,6 +35,7 @@ const NewProduct: React.FC = () => {
 
   const [data, setData] = useState<MainProRc[]>([]);
   const [refresh, setRefresh] = useState(0);
+  
 
   const success = (txt: string) => {
     messageApi.open({

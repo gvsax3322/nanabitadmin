@@ -1,4 +1,4 @@
-import { ConfigProvider, Table } from "antd";
+import { ConfigProvider, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
@@ -29,7 +29,7 @@ const CenteredHeaderTable = styled(Table)`
   }
 `;
 
-interface CategoryOptions {
+export interface CategoryOptions {
   [key: string]: string[];
 }
 
@@ -41,7 +41,7 @@ const PutNew: React.FC = () => {
   const searchType = "searchNewProduct";
   const toggleType = "toggleNewProduct";
   const [refresh, setRefresh] = useState(0);
-  const [sdata, setSdata] = useState<SearchProduct[]>();
+  const [sdata, setSdata] = useState<SearchProduct[] | undefined>();
   // 선택된 옵션과 입력 필드 값을 저장할 상태
   const [selectedOption, setSelectedOption] = useState<number>(0);
   const [inputValue, setInputValue] = useState<string | number>("");
@@ -53,6 +53,20 @@ const PutNew: React.FC = () => {
   const [subCategory, setSubCategory] = useState("");
   const [sendMainCate, setSendMainCate] = useState<number>(0);
   const [sendSubCate, setSendSubCate] = useState<number>(0);
+
+  const [messageApi, contextHolder] = message.useMessage();
+  const successEvent = (txt: string) => {
+    messageApi.open({
+      type: "success",
+      content: txt,
+    });
+  };
+  const warningEvent = (txt: string) => {
+    messageApi.open({
+      type: "warning",
+      content: txt,
+    });
+  };
 
   const subCategories: CategoryOptions = {
     이유식: ["임신/출산", "신생아", "베이비", "키즈"],
@@ -116,22 +130,44 @@ const PutNew: React.FC = () => {
       setIproduct(value);
     }
   };
-
   // 상품 등록하기
-  const handleregist = (iproduct: number) => {
-    // console.log("등록", iproduct);
-    putMainProRc(toggleType, iproduct, putSuccessFn, putFailFn, putErrorFn);
-  };
+  const handleregist = (item: any) => {
+    const putSuccessFn = () => {
+      successEvent(`${item.productNm}의 상태가 변경되었습니다.`);
+      setRefresh(refresh + 1);
+    };
+    const putFailFn = () => {
+      console.log("등록 실패");
+    };
+    const putErrorFn = () => {
+      console.log("등록 에러");
+    };
+    const filteredProducts: any = sdata?.filter(sdata => sdata.status === 1);
 
-  const putSuccessFn = () => {
-    // console.log("등록 성공");
-    setRefresh(refresh + 1);
-  };
-  const putFailFn = () => {
-    console.log("등록 실패");
-  };
-  const putErrorFn = () => {
-    console.log("등록 에러");
+    if (filteredProducts.length >= 8) {
+      // item.status가 1이면서 등록된 제품이 8개 이상인 경우에도 putMainProRc를 실행
+      if (item.status === 1) {
+        putMainProRc(
+          toggleType,
+          item.iproduct,
+          putSuccessFn,
+          putFailFn,
+          putErrorFn,
+        );
+      } else {
+        // 등록된 제품이 8개 이상이지만, 현재 item의 status가 1이 아닌 경우 경고만 보냄
+        warningEvent(`등록된 제품이 8개 이상입니다.`);
+      }
+    } else {
+      // 등록된 제품이 8개 미만인 경우, 정상적으로 putMainProRc 실행
+      putMainProRc(
+        toggleType,
+        item.iproduct,
+        putSuccessFn,
+        putFailFn,
+        putErrorFn,
+      );
+    }
   };
 
   const columns = [
@@ -172,22 +208,17 @@ const PutNew: React.FC = () => {
       render: (item: any) => (
         <>
           {item.status === 0 ? (
-            <SearchButton onClick={() => handleregist(item.iproduct)}>
-              등록
-            </SearchButton>
+            <SearchButton onClick={() => handleregist(item)}>등록</SearchButton>
           ) : (
             <SearchButton
               style={{
                 background: "rgb(244, 67, 54)",
               }}
-              onClick={() => handleregist(item.iproduct)}
+              onClick={() => handleregist(item)}
             >
               해제
             </SearchButton>
           )}
-          {/* <SearchButton onClick={() => handleregist(item.iproduct)}>
-            등록
-          </SearchButton> */}
         </>
       ),
     },
@@ -273,6 +304,7 @@ const PutNew: React.FC = () => {
         },
       }}
     >
+      {contextHolder}
       <MainTitle>신상품 진열관리</MainTitle>
       <SubTitle>상품 검색</SubTitle>
       <div>

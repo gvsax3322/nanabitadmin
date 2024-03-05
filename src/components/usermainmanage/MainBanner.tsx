@@ -1,7 +1,12 @@
 import { Checkbox, ConfigProvider, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { getBanner, postBanner } from "../../api/usermain/mainbannerApi";
+import {
+  deletBanner,
+  getBanner,
+  patchBanner,
+  postBanner,
+} from "../../api/usermain/mainbannerApi";
 import {
   MainTitle,
   MiddleButton,
@@ -9,7 +14,7 @@ import {
   SearchButton,
   SelectStyle,
   SmallButton,
-  SubTitle
+  SubTitle,
 } from "../../styles/AdminBasic";
 import { API_SERVER_HOST } from "../../util/util";
 // 테이블 스타일 관리
@@ -22,17 +27,17 @@ export interface BannerData {
   bannerUrl: string;
   bannerPic: string;
   bannerNew: number;
+  bannerlength: number;
 }
 
 export interface PostBannerData {
-  pic: string,
+  pic: string;
   dto: {
-    bannerUrl: string,
-    target: number,
-    status: number
-  }
+    bannerUrl: string;
+    target: number;
+    status: number;
+  };
 }
-
 
 const CenteredHeaderTable = styled(Table)`
   &&& {
@@ -47,14 +52,13 @@ const CenteredHeaderTable = styled(Table)`
 const MainBanner: React.FC = () => {
   const [bannerInfo, setBannerInfo] = useState<BannerData[] | null>(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [refresh, setRefresh] = useState<number>(0);
 
-  const handleFileUpload = (event: any) => {
-    const file = event.target.files[0];
-    setSelectedFile(file);
-
-    // 파일을 선택할 때마다 콘솔에 선택된 파일 정보를 출력합니다.
-    console.log("선택된 파일:", file);
-  };
+  // 보낼 데이터
+  const [bannerImg, setBannerImg] = useState<string>();
+  const [bannerUrl, setBannerUrl] = useState<string>("");
+  const [bannerTarget, setBannerTarget] = useState<number>(0);
+  const [bannerState, setBanenrState] = useState<number>(0);
 
   const fetchData = async () => {
     try {
@@ -63,8 +67,9 @@ const MainBanner: React.FC = () => {
   };
 
   const successFn = (data: BannerData[]) => {
-    const arr = data.map(item => {
+    const arr = data.map((item, index) => {
       item.bannerNew = 0;
+      item.bannerlength = index;
       return item;
     });
     setBannerInfo(arr);
@@ -78,79 +83,92 @@ const MainBanner: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-    // console.log("잘 나오고 있나요 ?", bannerInfo);
-  }, []);
+  }, [refresh]);
 
   const dataSource = bannerInfo
-    ? bannerInfo.map(item => ({
-        key: item.ibanner,
+    ? bannerInfo.map((item, index) => ({
+        item: item,
+        key: index + 1,
         ibanner: item.ibanner,
         target: item.target,
         status: item.status,
         bannerUrl: item.bannerUrl,
         bannerPic: `${API_SERVER_HOST}/pic/banner/${item.ibanner}/${item.bannerPic}`,
         bannerNew: item.bannerNew,
+        bannerlength: item.bannerlength,
       }))
     : [];
 
-  // 배너추가버튼!
+  // 배너 추가 함수
   const handleAdd = () => {
+    const newBannerInfo = bannerInfo || [];
+
+    // bannerlength가 999인 데이터가 있는지 확인
+    const hasBannerLength999 = newBannerInfo.some(
+      item => item.bannerlength === 999,
+    );
+    if (hasBannerLength999) {
+      return;
+    }
+
     let newIbanner;
-    if (bannerInfo && bannerInfo.length > 0) {
-      newIbanner = bannerInfo.length + 1;
+    if (newBannerInfo.length > 0) {
+      newIbanner = newBannerInfo.length + 1;
     } else {
       newIbanner = 1; // 만약 bannerInfo가 null이거나 길이가 0이면 1로 설정
     }
-    const newData: BannerData = {
+    const newData = {
       ibanner: newIbanner,
       target: 0,
       status: 0, // 노출여부
       bannerUrl: "",
       bannerPic: "",
       bannerNew: 1, // 새로운 이미지
+      bannerlength: 999,
     };
-    // bannerInfo가 null인 경우 빈 배열로 초기화
-    const newBannerInfo = bannerInfo || [];
 
     setBannerInfo([...newBannerInfo, newData]);
   };
-
   //  =================배너 값 관리 함수 =================
-
+  // 체크여부
   const handleCheckChange = (ibanner: number, isChecked: boolean) => {
     console.log(`ibanner: ${ibanner}, 변경된 체크 여부: ${isChecked}`);
-    // 변경된 체크 여부에 따라 원하는 작업 수행
+    if (isChecked === true) {
+      setBannerTarget(1);
+    } else if (isChecked === false) {
+      setBannerTarget(0);
+    }
   };
 
+  // url 입력창
   const handleInputChange = (value: string) => {
-    // 입력값을 사용하여 원하는 작업을 수행합니다.
-    console.log("입력값:", value);
-    // 여기에 원하는 작업 추가
+    // console.log("입력값:", value);
+    setBannerUrl(value);
   };
 
   const handleTargetChange = (value: number, ibanner: number) => {
     console.log("ibanner : ", ibanner, "타겟 :", value);
+    setBannerTarget(value);
   };
 
+  // 이미지
+  const logImageInfo = async (ibanner: any, imageData: string) => {
+    await setBannerImg(imageData);
+
+    // console.log(imageData);
+    // console.log("잘 나오고 있나요 ?", bannerImg);
+  };
   // 상태관리 버튼
-  const handleState = (action: string, ibanner: any) => {
+  const handleState = async (action: string, ibanner: any) => {
     if (action === "editbanner") {
       // 수정 버튼이 클릭된 경우
-
-      console.log("수정 버튼", "ibanner:", ibanner);
-    } else if (action === "deletebanner") {
-      // 삭제 버튼이 클릭된 경우
-
-      console.log("삭제 버튼", "ibanner:", ibanner);
-    } else if (action === "uploadbanner") {
-      // 업로드 버튼이 클릭된 경우
       function convertToPostBannerData(data: any): PostBannerData {
         const postBannerData: PostBannerData = {
-          pic: data.bannerPic || "", // 기본값은 빈 문자열로 설정
+          pic: bannerImg || "", // 기본값은 빈 문자열로 설정
           dto: {
-            bannerUrl: data.bannerUrl || "", // 기본값은 빈 문자열로 설정
-            target: data.target || 0, // 기본값은 0으로 설정
-            status: data.status || 0, // 기본값은 0으로 설정
+            bannerUrl: bannerUrl || "", // 기본값은 빈 문자열로 설정
+            target: bannerTarget || 0, // 기본값은 0으로 설정
+            status: bannerState || 0, // 기본값은 0으로 설정
           },
         };
         return postBannerData;
@@ -165,39 +183,53 @@ const MainBanner: React.FC = () => {
         status: ibanner.status,
         target: ibanner.target,
       };
-      
-      const letsPostBanner: PostBannerData = convertToPostBannerData(ibannerData);
+
+      const letsPostBanner: PostBannerData =
+        convertToPostBannerData(ibannerData);
       console.log(letsPostBanner);
-      postBanner(letsPostBanner)
+      patchBanner(ibanner, letsPostBanner);
+      await setRefresh(refresh + 1);
+      console.log("수정 버튼", "ibanner:", ibanner);
+      // ==============================================
+    } else if (action === "deletebanner") {
+      // 삭제 버튼이 클릭된 경우
+      deletBanner(ibanner);
+      setRefresh(refresh + 1);
+      // console.log("삭제 버튼", "ibanner:", ibanner);
+      // ==============================================
+    } else if (action === "uploadbanner") {
+      // 업로드 버튼이 클릭된 경우
+      function convertToPostBannerData(data: any): PostBannerData {
+        const postBannerData: PostBannerData = {
+          pic: bannerImg || "", // 기본값은 빈 문자열로 설정
+          dto: {
+            bannerUrl: bannerUrl || "", // 기본값은 빈 문자열로 설정
+            target: bannerTarget || 0, // 기본값은 0으로 설정
+            status: bannerState || 0, // 기본값은 0으로 설정
+          },
+        };
+        return postBannerData;
+      }
+      // 예시
+      const ibannerData = {
+        bannerNew: ibanner.bannerNew,
+        bannerPic: ibanner.bannerPic,
+        bannerUrl: ibanner.bannerUrl,
+        ibanner: ibanner.ibanner,
+        key: ibanner.key,
+        status: ibanner.status,
+        target: ibanner.target,
+      };
+
+      const letsPostBanner: PostBannerData =
+        convertToPostBannerData(ibannerData);
+      console.log(letsPostBanner);
+      postBanner(letsPostBanner);
+      await setRefresh(refresh + 1);
     }
   };
 
   //  =================배너 값 관리 함수 =================
-
-  const handleFileChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    dataIndex: string,
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const newBannerPic = e.target?.result as string;
-        // 선택한 파일의 Data URL을 가져왔으니, 이미지 태그에 설정해줍니다.
-        const imageElement =bannerInfo ? document.getElementById(`input-file-before-${dataSource[0].ibanner}`) as HTMLImageElement : null;
-        if (imageElement) {
-          imageElement.src = newBannerPic;
-// =======
-//         const imageElement = 1
-//         // bannerInfo ? document.getElementById(`input-file-before-${bannerInfo.ibanner}`) as HTMLImageElement : null;
-//         if (imageElement) {
-//           // imageElement.src = newBannerPic;
-// >>>>>>> f324dcc34c0fc739a4ad5de865843fe30e999729
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const columns: any = [
     {
@@ -216,36 +248,39 @@ const MainBanner: React.FC = () => {
     },
     {
       title: "순서",
-      dataIndex: "ibanner",
+      dataIndex: "key",
       key: "ibanner",
+      render: (key: number) => <p>{key}</p>,
     },
     {
       title: "미리보기",
-      dataIndex: "bannerPic",
-      key: "bannerPic",
-      render: (bannerPic: string,ibanner: any): any => (
-        <img
-          style={{ width: "190px", height: "66px", objectFit: "cover" }}
-          src={bannerPic}
-          alt=""
-          id={`input-file-before-${ibanner}`}
-          className="diaryadd-img-before"
-        />
+      dataIndex: "item",
+      key: "item",
+      render: (item: any): any => (
+        <>
+          <img
+            style={{ width: "190px", height: "66px", objectFit: "cover" }}
+            src={`${API_SERVER_HOST}/pic/banner/${item.ibanner}/${item.bannerPic}`}
+            alt="upload"
+            id={`image-${item.ibanner}`}
+            className="diaryadd-img-before"
+          />
+        </>
       ),
     },
     {
       title: "사진업로드",
-      dataIndex: "ibanner",
+      dataIndex: "item",
       key: "ibanner",
-      render: (ibanner: any) => (
+      render: (item: any) => (
         <>
-          <label htmlFor={`input-file-before-${ibanner}`}>
+          <label htmlFor={`input-file-before-${item.ibanner}`}>
             <SmallButton
               style={{ width: "100px", height: "30px" }}
               type="button"
               onClick={() => {
                 const inputFile = document.getElementById(
-                  `input-file-before-${ibanner}`,
+                  `input-file-before-${item.ibanner}`,
                 ) as HTMLInputElement;
                 if (inputFile) {
                   inputFile.click();
@@ -259,9 +294,26 @@ const MainBanner: React.FC = () => {
           <input
             type="file"
             accept="image/png, image/gif, image/jpeg"
-            id={`input-file-before-${ibanner}`}
+            id={`input-file-before-${item.ibanner}`}
             style={{ display: "none" }}
-            onChange={event => handleFileChange(event, "bannerPic")}
+            onChange={event => {
+              const input = event.target as HTMLInputElement;
+              const file = input.files?.[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                  const imgElement = document.getElementById(
+                    `image-${item.ibanner}`,
+                  ) as HTMLImageElement;
+                  if (imgElement) {
+                    imgElement.src = reader.result as string;
+                    logImageInfo(item.ibanner, reader.result as string); // 이미지 정보를 콘솔에 출력하는 함수 호출
+                  }
+                };
+                reader.readAsDataURL(file);
+                console.log(file);
+              }
+            }}
           />
         </>
       ),
@@ -312,9 +364,7 @@ const MainBanner: React.FC = () => {
         >
           <>
             {record.bannerNew === 1 ? (
-              <SearchButton
-                onClick={() => handleState("uploadbanner", record)}
-              >
+              <SearchButton onClick={() => handleState("uploadbanner", record)}>
                 업로드
               </SearchButton>
             ) : (
