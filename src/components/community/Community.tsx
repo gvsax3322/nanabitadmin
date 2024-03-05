@@ -249,7 +249,7 @@ const Community = () => {
           res.map((row: BoardData) => ({
             key: row?.iboard,
             title: row?.title,
-            responseStatus: row?.responseFl === 0 ? "미답변" : "답변완료",
+            responseFl: row?.responseFl === 0 ? "미답변" : "답변완료",
             bt: (
               <div
                 style={{
