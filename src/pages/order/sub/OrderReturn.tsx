@@ -10,8 +10,10 @@ const OrderReturn = () => {
   return (
     <div>
       OrderReturn
-      <OrReturnHeader />
-      <ReturnTable tableNum={handleClickTableuum} />
+      <OrReturnHeader
+        fetchData={handleClickTableuum}
+        tableNum={handleClickTableuum}
+      />
     </div>
   );
 };

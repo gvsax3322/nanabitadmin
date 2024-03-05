@@ -650,7 +650,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   return (
     <>
       <Wrap>
-        <MainTitle>배송준비중</MainTitle>
+        <MainTitle>전체리스트</MainTitle>
         <SubTitle>기본검색</SubTitle>
         <div style={{ marginBottom: "20px" }}>
           <BigKeyword
@@ -863,7 +863,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
                 onClick={() =>
                   handleProcessBtApi(
                     selectedRowKeys as number[], // 명시적인 타입 단언을 사용하여 배열임을 알림
-                    2,
+                    5,
                   )
                 }
               >
