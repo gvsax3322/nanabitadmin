@@ -6,23 +6,9 @@ import {
   getMainProRc,
   putMainProRc,
 } from "../../api/usermain/mainProductSetApi";
-import {
-  MainTitle,
-  SearchButton,
-  SubTitle
-} from "../../styles/AdminBasic";
+import { MainTitle, SearchButton, SubTitle } from "../../styles/AdminBasic";
 import { API_SERVER_HOST } from "../../util/util";
-
-const CenteredHeaderTable = styled(Table)`
-  &&& {
-    .ant-table-thead > tr > th {
-      text-align: center;
-    }
-    .ant-table-tbody > tr > td {
-      text-align: center;
-    }
-  }
-`;
+import { CenteredHeaderTable } from "./PutPop";
 
 const MdRecommend: React.FC = () => {
   const [data, setData] = useState<MainProRc[]>([]);

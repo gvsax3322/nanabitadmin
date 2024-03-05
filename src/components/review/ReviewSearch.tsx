@@ -1,6 +1,5 @@
-import { ConfigProvider, Rate } from "antd";
+import { ConfigProvider, Pagination, Rate, Segmented } from "antd";
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
 import { getReview } from "../../api/review/reviewApi";
 import {
   BigKeyword,
@@ -16,12 +15,7 @@ import OrderAllSelect from "../order/orderSlect/OrderAllSelect";
 import { CategoryOptions } from "../usermainmanage/PutMd";
 import { CenteredHeaderTable } from "../usermainmanage/PutPop";
 import ReviewModal from "./ReviewModal";
-
-const ChangeRate = styled.div`
-  span {
-    font-size: 10px;
-  }
-`;
+import { ChangeRate, FlexJADiv } from "../../styles/review/reviewstyle";
 
 export interface SearchReview {
   ireview: number;
@@ -32,29 +26,45 @@ export interface SearchReview {
   contents: string;
   productScore: number;
   delFl: number;
+  totalCount: number;
 }
 
 const ReviewSearch = () => {
   const [refresh, setRefresh] = useState(0);
   const [sdata, setSdata] = useState<SearchReview[]>();
+
+  const searchType = "searchReview";
   // 선택된 옵션과 입력 필드 값을 저장할 상태
   const [selectedOption, setSelectedOption] = useState<number>(0);
   const [inputValue, setInputValue] = useState<string | number>("");
   const [keyword, setKeyword] = useState("");
   const [iproduct, setIproduct] = useState<number>();
+  const [sortBy, setSortBy] = useState<number>(0);
+  const [totalCount, setTotalCount] = useState<number>(0);
 
   // 셀렉트바 상태변경
   const [mainCategory, setMainCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
   const [sendMainCate, setSendMainCate] = useState<number>(0);
-  const [sendSubCate, setSendSubCate] = useState<number>(0);
+  const [sendSubCate, setSendSubCate] = useState<number>();
 
   //모달
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState<SearchReview>();
 
+  const changePage = () => {};
+
+  const changeSortby = (value: string) => {
+    if (value === "별점 높은 순") {
+      setSortBy(0);
+    } else if (value === "별점 낮은 순") {
+      setSortBy(1);
+    }
+  };
+
   const handleCloseModal = () => {
     setShowModal(false);
+    setRefresh(refresh + 1);
   };
 
   const subCategories: CategoryOptions = {
@@ -122,34 +132,23 @@ const ReviewSearch = () => {
 
   // 상품 숨기기
   const handleHidden = (item: SearchReview) => {
-    console.log("숨기기", item);
+    // console.log("숨기기", item);
     setShowModal(true);
     setModalData(item);
-    // putMainProRc(toggleType, iproduct, putSuccessFn, putFailFn, putErrorFn);
-  };
-
-  const putSuccessFn = () => {
-    // console.log("등록 성공");
-    setRefresh(refresh + 1);
-  };
-  const putFailFn = () => {
-    console.log("등록 실패");
-  };
-  const putErrorFn = () => {
-    console.log("등록 에러");
   };
 
   const columns = [
     {
       title: "유저명",
       dataIndex: "nm",
-      width: "100px",
+      width: "8%",
       key: "key",
     },
     {
       title: "리뷰사진",
       dataIndex: "reqReviewPic",
       key: "key",
+      width: "9%",
       render: (reqReviewPic: string) => (
         <img
           style={{ width: "66px", height: "66px", objectFit: "cover" }}
@@ -162,11 +161,13 @@ const ReviewSearch = () => {
       title: "상품코드",
       dataIndex: "iproduct",
       key: "key",
+      width: "8%",
     },
     {
       title: "상품명",
       dataIndex: "productNm",
       key: "productNm",
+      width: "13%",
     },
     {
       title: "리뷰",
@@ -177,8 +178,9 @@ const ReviewSearch = () => {
       title: "별점",
       dataIndex: "productScore",
       key: "productScore",
+      width: "10%",
       render: (productScore: number) => (
-        <div style={{ width: "80px" }}>
+        <FlexJADiv>
           <ConfigProvider
             theme={{
               components: {
@@ -189,30 +191,34 @@ const ReviewSearch = () => {
             }}
           >
             <ChangeRate>
-              <Rate disabled defaultValue={productScore} />
+              <Rate disabled value={productScore} />
             </ChangeRate>
           </ConfigProvider>
-        </div>
+        </FlexJADiv>
       ),
     },
     {
       title: "숨김",
       dataIndex: "item",
-      width: "80px",
+      width: "8%",
       key: "iproduct",
       render: (item: any) => (
-        <>
-          <SearchButton
-            onClick={() => handleHidden(item)}
-            style={{
-              background: " #f44336",
-              fontSize: "12px",
-              lineHeight: "12px",
-            }}
-          >
-            숨김
-          </SearchButton>
-        </>
+        <FlexJADiv>
+          {item.delFl !== 0 ? (
+            ""
+          ) : (
+            <SearchButton
+              onClick={() => handleHidden(item)}
+              style={{
+                background: " #f44336",
+                fontSize: "12px",
+                lineHeight: "12px",
+              }}
+            >
+              숨김
+            </SearchButton>
+          )}
+        </FlexJADiv>
       ),
     },
   ];
@@ -229,11 +235,11 @@ const ReviewSearch = () => {
     delFl: item.delFl,
   }));
 
-  const fetchData = async () => {
+  const fetchData: any = async () => {
     try {
       const successFn = (data: SearchReview[] | undefined) => {
         setSdata(data);
-        console.log("성공이라규", data);
+        // console.log("성공이라규", data);
       };
       const failFn = (error: string) => {
         console.error("목록 호출 오류:", error);
@@ -245,10 +251,12 @@ const ReviewSearch = () => {
         successFn,
         failFn,
         errorFn,
+        searchType,
         keyword,
         iproduct,
         sendMainCate,
         sendSubCate,
+        sortBy,
         0,
       );
     } catch (error) {
@@ -257,8 +265,7 @@ const ReviewSearch = () => {
   };
 
   const handleSearch = async () => {
-    await fetchData();
-    setRefresh(refresh + 1);
+    fetchData();
   };
   const handleReset = async () => {
     setSelectedOption(1);
@@ -269,14 +276,15 @@ const ReviewSearch = () => {
     setIproduct(0);
     setSendMainCate(0);
     setSendSubCate(0);
-    await fetchData();
-    setRefresh(refresh + 1);
+    setSortBy(0);
+    fetchData();
+    await setRefresh(refresh + 1);
   };
 
   useEffect(() => {
     // console.log("데이터:", sdata);
     fetchData();
-  }, [refresh]);
+  }, [refresh, sortBy]);
 
   return (
     <>
@@ -349,6 +357,7 @@ const ReviewSearch = () => {
             </div>
           </BigKeyword>
         </div>
+
         <div
           style={{
             display: "flex",
@@ -378,22 +387,48 @@ const ReviewSearch = () => {
         <ConfigProvider
           theme={{
             token: {
-              colorPrimary: "#a5a5a5",
+              // colorPrimary: "#a5a5a5",
             },
             components: {
               Table: {
                 headerBg: "#535353",
                 headerColor: "#fff",
               },
+              Segmented: {
+                itemActiveBg: "#616161",
+                itemColor: "#616161",
+                itemHoverBg: "#616161",
+                itemHoverColor: "#fff",
+                itemSelectedBg: "#616161",
+                itemSelectedColor: "#fff",
+                trackBg: "none",
+              },
             },
           }}
         >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "end",
+              marginBottom: "10px",
+            }}
+          >
+            <Segmented<string>
+              options={["별점 높은 순", "별점 낮은 순"]}
+              onChange={value => {
+                changeSortby(value);
+              }}
+            />
+          </div>
           <CenteredHeaderTable
             columns={columns}
             dataSource={dataSource}
             pagination={false}
             bordered
           />
+          <FlexJADiv style={{ marginTop: "20px" }}>
+            <Pagination defaultCurrent={1} total={totalCount} />
+          </FlexJADiv>
         </ConfigProvider>
       </div>
     </>

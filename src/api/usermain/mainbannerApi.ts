@@ -1,4 +1,7 @@
-import { BannerData, PostBannerData } from "../../components/usermainmanage/MainBanner";
+import {
+  BannerData,
+  PostBannerData,
+} from "../../components/usermainmanage/MainBanner";
 import jwtAxios from "../../util/jwtUtil";
 import { API_SERVER_HOST } from "../../util/util";
 
@@ -25,11 +28,11 @@ export const getBanner = async (
   }
 };
 
-// 배너 삭제 (ibanner 키값을 보내서 삭제 요청으로 수정해야함)
-//
-export const deletBanner = async (): Promise<BannerData[] | string> => {
+// 배너 삭제
+// http://192.168.0.144:5223/api/admin/product/0/
+export const deletBanner = async (ibanner: number) => {
   try {
-    const res = await jwtAxios.delete<BannerData[]>(`${host}/product/banner`);
+    const res = await jwtAxios.delete(`${host}/product/banner/${ibanner}`);
     const status = res.status.toString();
     const httpSt = status.charAt(0);
     if (httpSt === "2") {
@@ -43,29 +46,39 @@ export const deletBanner = async (): Promise<BannerData[] | string> => {
   }
 };
 
-// 배너 등록 (수정해야함) 에러남 ㅠㅠ
+// 배너 등록
 // http://112.222.157.156:5223/api/admin/product/banner
-export const postBanner = async (bannerData: PostBannerData)=>{
+export const postBanner = async (bannerData: PostBannerData) => {
   try {
-    const res = await jwtAxios.post(`${host}/product/banner`,bannerData);
-    const status = res.status.toString();
-    const httpSt = status.charAt(0);
-    if (httpSt === "2") {
-      return res.data;
-    } else {
-      return "이거 아님";
-    }
-  } catch (error) {
-    console.log(error);
-    return "500임";
-  }
-}
+    // 이미지 데이터를 Blob으로 만들어 FormData에 추가
+    const formData = new FormData();
+    const response = await fetch(bannerData.pic);
+    const blob = await response.blob();
+    const currentDate = new Date();
+    const seconds = Math.floor(currentDate.getTime() / 1000);
+    const file = new File([blob], `image${seconds}.jpg`, {
+      type: "image/jpeg",
+    });
+    formData.append("pic", file);
+    formData.append(
+      "dto",
+      new Blob(
+        [
+          JSON.stringify({
+            bannerUrl: bannerData.dto.bannerUrl,
+            target: bannerData.dto.target,
+            status: bannerData.dto.status,
+          }),
+        ],
+        {
+          type: "application/json",
+        },
+      ),
+    );
+    const header = { headers: { "Content-Type": "multipart/form-data" } };
 
-// 배너 수정 (수정해야함) 에러남
-// http://112.222.157.156:5223/api/admin/product/banner?ibanner=1
-export const patchBanner = async (ibanner:number)=>{
-  try {
-    const res = await jwtAxios.patch(`${host}/product/banner?ibanner=${ibanner}`);
+    const res = await jwtAxios.post(`${host}/product/banner`, formData, header);
+
     const status = res.status.toString();
     const httpSt = status.charAt(0);
     if (httpSt === "2") {
@@ -77,4 +90,53 @@ export const patchBanner = async (ibanner:number)=>{
     console.log(error);
     return "500임";
   }
-}
+};
+// 배너 수정 (수정해야함)
+// http://112.222.157.156:5223/api/admin/product/banner?ibanner=1
+export const patchBanner = async (
+  ibanner: number,
+  bannerData: PostBannerData,
+) => {
+  try {
+    const formData = new FormData();
+    const response = await fetch(bannerData.pic);
+    const blob = await response.blob();
+    const currentDate = new Date();
+    const seconds = Math.floor(currentDate.getTime() / 1000);
+    const file = new File([blob], `image${seconds}.jpg`, {
+      type: "image/jpeg",
+    });
+    formData.append("pic", file);
+    formData.append(
+      "dto",
+      new Blob(
+        [
+          JSON.stringify({
+            bannerUrl: bannerData.dto.bannerUrl,
+            target: bannerData.dto.target,
+            status: bannerData.dto.status,
+          }),
+        ],
+        {
+          type: "application/json",
+        },
+      ),
+    );
+    const header = { headers: { "Content-Type": "multipart/form-data" } };
+    const res = await jwtAxios.patch(
+      `${host}/product/banner?ibanner=${ibanner}`,
+      formData,
+      header,
+    );
+    const status = res.status.toString();
+    const httpSt = status.charAt(0);
+    if (httpSt === "2") {
+      return res.data;
+    } else {
+      return "이거 아님";
+    }
+  } catch (error) {
+    console.log(error);
+    return "500임";
+  }
+};
