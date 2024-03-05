@@ -10,8 +10,10 @@ const DComPage = () => {
   return (
     <div>
       DCom
-      <DComHeader />
-      <DComTable tableNum={handleClickTableuum} />
+      <DComHeader
+        fetchData={handleClickTableuum}
+        tableNum={handleClickTableuum}
+      />
     </div>
   );
 };

@@ -11,9 +11,10 @@ const DpstPage = () => {
   return (
     <div>
       Dpst입금대기
-      <DpstHeader />
-      <DpstTable tableNum={handleClickTableuum} />
-      <DpstFooter />
+      <DpstHeader
+        fetchData={handleClickTableuum}
+        tableNum={handleClickTableuum}
+      />
     </div>
   );
 };

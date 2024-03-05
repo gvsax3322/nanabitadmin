@@ -22,9 +22,7 @@ interface OrderItem {
   itemcount: number;
   price: number;
   process: string;
-  //   returnbt: JSX.Element;
   img: JSX.Element;
-  //   bt?: JSX.Element;
 }
 
 interface ISubTableProps {

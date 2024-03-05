@@ -11,9 +11,10 @@ const ShippingPage = () => {
   return (
     <div>
       Shipping
-      <ShipHeader />
-      <ShippingTable tableNum={handleClickTableuum} />
-      <ShippingFooter />
+      <ShipHeader
+        fetchData={handleClickTableuum}
+        tableNum={handleClickTableuum}
+      />
     </div>
   );
 };

@@ -19,8 +19,13 @@ import {
 } from "../../styles/AdminBasic";
 import { ConfigProvider, Flex, Radio, Table } from "antd";
 import { CardFont, DeBigCard, DeMiddleCard, FontSize } from "./DetaileStyle";
-import { detailsParam, getDetails } from "../../api/order/orderAllApi";
+import {
+  detailsParam,
+  getDetails,
+  patchMemoState,
+} from "../../api/order/orderAllApi";
 import { number } from "yup";
+import { API_SERVER_HOST } from "../../util/util";
 
 interface ResultModalProps {
   onClose: () => void;
@@ -108,34 +113,42 @@ export interface products {
 const initState = {
   products: [
     {
-      iproduct: number,
-      repPic: "e31bdfe9-6cfc-48e6-842e-0f9d36bc14a5.jpg",
-      productNm: "휴대용 멀티 소독 ",
-      cnt: 2,
-      processState: 4,
-      amount: 75000,
+      iproduct: 0,
+      repPic: "",
+      productNm: "",
+      cnt: 0,
+      processState: 0,
+      amount: 0,
       refundFl: 0,
     },
   ],
-  productAmount: 150000,
+  iproduct: 0,
+  repPic: "",
+  productNm: "",
+  cnt: 0,
+  processState: 0,
+  amount: 0,
+  refundFl: 0,
+  productAmount: 0,
   deleteAmount: 0,
   refundAmount: 0,
-  totalAmount: 150000,
-  iorder: 102148,
-  orderedAt: "2022-03-10T00:00",
-  payCategory: 3,
-  processState: 4,
-  ordered: "김재완",
-  orderedEmail: "jaewan@gmail.com",
-  orderedPhoneNumber: "010-2215-1234",
-  recipient: "김재완",
-  recipientPhoneNumber: "010-2215-1234",
-  address: "서울특별시 관악구 관악로 145",
-  adminMemo: null,
+  totalAmount: 0,
+  iorder: 0,
+  orderedAt: "",
+  payCategory: 0,
+  // processState: 0,
+  ordered: "0",
+  orderedEmail: "",
+  orderedPhoneNumber: "",
+  recipient: "",
+  recipientPhoneNumber: "",
+  address: "",
+  adminMemo: "",
 };
 
 const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
   const [detailSource, setDetailSource] = useState([initState]);
+  const [putMemo, setPutMemo] = useState("");
   const dataSource = detailSource.map(item => ({
     products: item.products.map((product, index) => ({
       iproduct: product.iproduct,
@@ -147,6 +160,7 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
       refundFl: product.refundFl,
       key: `${item.iorder}_${index}`, // 상품마다 고유한 key 생성
     })),
+
     productAmount: item.productAmount, // iorder를 key로 사용
     deleteAmount: item.deleteAmount,
     refundAmount: item.refundAmount,
@@ -166,14 +180,65 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
     // products 배열을 반복하면서 각 상품 정보를 키로 추가합니다.
   }));
   // --
+
+  // 메모 작성
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setPutMemo(e.target.value);
+  };
+
+  const handleMemoApi = (iorder: number, adminMemo?: string | null) => {
+    console.log(
+      "일괄처리 API 호출, 주문번호:",
+      iorder,
+      "메모적어용:",
+      adminMemo,
+    );
+
+    // memo가 undefined나 null일 경우 빈 문자열로 처리
+    setPutMemo(adminMemo || "");
+
+    if (adminMemo === undefined || adminMemo === null) {
+      alert("메모를 작성해주세요");
+      return; // 메모가 없으면 함수 종료
+    }
+
+    // 주문 상태 변경을 위한 데이터를 준비합니다.
+    const requestData = {
+      iorder: iorder, // 주문 번호를 배열에 담음
+      adminMemo: putMemo, // 상태 번호
+    };
+
+    // API를 호출하여 주문 상태를 변경합니다.
+    patchMemoState({
+      detailsParam: requestData,
+      successFn: () => {
+        // 성공적으로 메모가 업데이트된 후에 데이터를 다시 불러와서 화면을 업데이트합니다.
+        getDetails({
+          orderParam: iOrder,
+          successFn: updateDetails,
+          failFn,
+          errorFn,
+        });
+      },
+      failFn,
+      errorFn,
+    });
+  };
+  const updateDetails = (result: any) => {
+    // 성공적으로 데이터를 불러온 후에 상태를 업데이트합니다.
+    setDetailSource(result);
+  };
+
   useEffect(() => {
     // console.log("===================== TestMd : iOrder : ", iOrder);
     // `http://192.168.0.144:5223/api/admin/order/details/${iOrder}`
     getDetails({ orderParam: iOrder, successFn, failFn, errorFn });
+    console.log("detailSource", detailSource[0].products);
   }, [iOrder]);
 
   const successFn = (result: any) => {
     console.log(result);
+    setDetailSource(result);
   };
   const failFn = (result: string) => {
     console.log(result);
@@ -183,47 +248,112 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
   };
 
   const columns = [
-    {
-      title: "번호",
-      dataIndex: "iproduct",
-      key: "iproduct",
-    },
     // {
-    //   title: "이미지",
-    //   dataIndex: "repPic",
-    //   key: "repPic",
-    //   render: (record: products) => (
-    //     <img src={record.repPic} alt="Product" style={{ width: "50px" }} />
-    //   ),
+    //   title: "상품 번호",
+    //   dataIndex: "iproduct",
+    //   key: "iproduct",
     // },
     {
-      title: "주문상품",
-      dataIndex: "productNm",
+      title: "이미지",
+      dataIndex: "products",
+      key: "repPic",
+      render: (items: any[]) => (
+        <div
+          style={{
+            width: "100%",
+            // display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {items.map((item, index) => (
+            <div>
+              <img
+                src={`${API_SERVER_HOST}/pic/product/${item.iproduct}/${item.repPic}`}
+                alt=""
+                style={{
+                  marginBottom: "10px",
+                  marginTop: "10px",
+                  width: "50px",
+                  height: "50px",
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: "상품명",
+      dataIndex: "products",
       key: "productNm",
+      render: (items: any[]) => (
+        <ul>
+          {items.map((item, index) => (
+            <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
+              {item.productNm}
+            </li>
+          ))}
+        </ul>
+      ),
     },
     {
       title: "처리상태",
-      dataIndex: "processState",
+      dataIndex: "products",
       key: "processState",
+      render: (items: any[]) => (
+        <ul>
+          {items.map((item, index) => (
+            <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
+              {item.processState === 1 && "입금대기"}
+              {item.processState === 2 && "배송준비중"}
+              {item.processState === 3 && "배송중"}
+              {item.processState === 4 && "배송완료"}
+            </li>
+          ))}
+        </ul>
+      ),
     },
+
     {
       title: "수량",
-      dataIndex: "cnt",
+      dataIndex: "products",
       key: "cnt",
+      render: (items: any[]) => (
+        <ul>
+          {items.map((item, index) => (
+            <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
+              {item.cnt}
+            </li>
+          ))}
+        </ul>
+      ),
     },
     // {
-    //   title: "상품금액",
-    //   dataIndex: "amount",
-    //   key: "amount",
-    //   render: (record: products) => (
-    //     <span>{record.amount.toLocaleString()}</span>
-    //   ),
+    //   title: "처리 상태",
+    //   dataIndex: "processState",
+    //   key: "processState",
     // },
     {
-      title: "실결제액",
-      dataIndex: "totalAmount",
-      key: "totalAmount",
+      title: "상품금액",
+      dataIndex: "products",
+      key: "amount",
+      render: (items: any[]) => (
+        <ul>
+          {items.map((item, index) => (
+            <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
+              {item.amount}
+            </li>
+          ))}
+        </ul>
+      ),
     },
+
+    // {
+    //   title: "키",
+    //   dataIndex: "key",
+    //   key: "key",
+    // },
   ];
   return (
     <ModalOverlay onClick={onClose}>
@@ -267,11 +397,12 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
             >
               <div className="left">주문번호</div>
               <div className="right">
-                <h2>2024-02-23234234</h2>
+                <h2>{detailSource[0].iorder}</h2>
               </div>
+
               <div className="left">주문일시</div>
               <div className="right">
-                <h2>2024-02-23</h2>
+                <h2>{detailSource[0].orderedAt}</h2>
               </div>
             </DetailBigKeyword>
             <DetailBigKeyword
@@ -282,21 +413,32 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
             >
               <div className="left">결제수단</div>
               <div className="right">
-                <h2>카드</h2>
+                <h2>
+                  {/* {detailSource[0].payCategory} */}
+                  {detailSource[0].payCategory === 0 && "전체"}
+                  {detailSource[0].payCategory === 2 && "무통장"}
+                  {detailSource[0].payCategory === 3 && "카드"}
+                </h2>
               </div>
               <div className="left">결제상태</div>
               <div className="right">
-                <h2>결제완료</h2>
+                <h2>
+                  {detailSource[0].processState}
+                  {detailSource[0].processState === 0 ? "결제완료" : "미결제"}
+                  {/* {detailSource[0].payCategory === 3 && "카드"} */}
+                </h2>
               </div>
             </DetailBigKeyword>
 
             <SubTitle>주문자/ 수령자 정보</SubTitle>
             <DetailBigKeyword
-              style={{ borderTop: `1px solid ${Common.color.primary}` }}
+              style={{
+                borderTop: `1px solid ${Common.color.primary}`,
+              }}
             >
               <div className="left">주문자명</div>
               <div className="right">
-                <h2>죽겟따</h2>
+                <h2>{detailSource[0].ordered}</h2>
               </div>
               <div className="left" style={{ background: "none" }}></div>
               <div className="right"></div>
@@ -306,11 +448,11 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
             >
               <div className="left">주문자 이메일</div>
               <div className="right">
-                <h2>aaa@naver.com</h2>
+                <h2>{detailSource[0].orderedEmail}</h2>
               </div>
               <div className="left">주문자 연락처</div>
               <div className="right">
-                <h2>010-4444-4444</h2>
+                <h2>{detailSource[0].orderedPhoneNumber}</h2>
               </div>
             </DetailBigKeyword>
             <DetailBigKeyword
@@ -318,42 +460,71 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
             >
               <div className="left">수령자명</div>
               <div className="right">
-                <h2>김옥찌</h2>
+                <h2>{detailSource[0].recipient}</h2>
               </div>
               <div className="left">수령자 연락처</div>
               <div className="right">
-                <h2>010-4444-4444</h2>
+                <h2>{detailSource[0].recipientPhoneNumber}</h2>
               </div>
             </DetailBigKeyword>
-            <TextBigKeyword
+            <DetailBigKeyword
               style={{
                 borderTop: `1px solid ${Common.color.primary}`,
-                marginBottom: "20px",
+                marginBottom: "50px",
               }}
             >
               <div className="left">배송지</div>
               <div className="right">
-                <TextareaStyle name="notes" id="notes"></TextareaStyle>
+                <h2>{detailSource[0].address}</h2>
+              </div>
+              <div className="left" style={{ background: "none" }}></div>
+              <div className="right">
+                <h2></h2>
+              </div>
+            </DetailBigKeyword>
+            {/* <TextBigKeyword
+              style={{
+                borderTop: `1px solid ${Common.color.primary}`,
+                // marginBottom: "20px",
+              }}
+            >
+              <div className="left">배송지</div>
+              <div className="right">
+                <h2>{detailSource[0].address}</h2>
+
+                <TextareaStyle name="notes" id="notes">
+                  {detailSource[0].address}
+                </TextareaStyle>
+
                 <SearchButton
                   style={{ marginLeft: "10px", marginBottom: "10px" }}
                 >
                   수정
                 </SearchButton>
               </div>
-            </TextBigKeyword>
-            {/* <MenuList></MenuList> */}
+            </TextBigKeyword> */}
             <SubTitle>관리자 메모</SubTitle>
             <TextBigKeyword
               style={{
                 borderTop: `1px solid ${Common.color.primary}`,
-                marginBottom: "20px",
+                // marginBottom: "20px",
+                marginBottom: "50px",
               }}
             >
               <div className="left">관리자 메모</div>
               <div className="right">
-                <TextareaStyle name="notes" id="notes"></TextareaStyle>
+                <h2>{detailSource[0].adminMemo}</h2>
+                <TextareaStyle
+                  name="notes"
+                  id="notes"
+                  value={putMemo}
+                  onChange={handleInputChange}
+                >
+                  {detailSource[0].adminMemo}
+                </TextareaStyle>
                 <SearchButton
                   style={{ marginLeft: "10px", marginBottom: "10px" }}
+                  onClick={() => handleMemoApi(detailSource[0].iorder, putMemo)}
                 >
                   수정
                 </SearchButton>
@@ -372,21 +543,21 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
                 <CardFont>
                   <li>
                     <p>상품금액</p>
-                    <b>200,000 원</b>
+                    <b>{detailSource[0].productAmount}원</b>
                   </li>
                   <li>
                     <p>취소금액</p>
-                    <b>0 원</b>
+                    <b>{detailSource[0].deleteAmount}원</b>
                   </li>
                   <li>
                     <p>반품금액</p>
-                    <b>0 원</b>
+                    <b>{detailSource[0].refundAmount}원</b>
                   </li>
                 </CardFont>
               </DeMiddleCard>
               <FontSize>
                 <p>총 주문금액</p>
-                <b>200,000원</b>
+                <b>{detailSource[0].totalAmount}원</b>
               </FontSize>
             </DeBigCard>
           </div>
