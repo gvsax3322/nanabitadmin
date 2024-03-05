@@ -10,10 +10,12 @@ import {
 } from "../../../styles/AdminBasic";
 import { ModifyButton } from "../../../styles/member/memberstyle";
 import { MemberList } from "../../../pages/admin/member/MemberModify";
-import { postMail } from "../../../api/mail/mailApi";
+import { postMail, postMailTest } from "../../../api/mail/mailApi";
 
 interface ResultModalProps {
   onClose: () => void;
+  successAl: (txt: string) => void;
+  errorAl: (txt: string) => void;
   selectedMember: MemberList | null;
 }
 
@@ -48,7 +50,12 @@ const ModalContent = styled(motion.div)`
   padding: 20px;
 `;
 
-const PostModal: FC<ResultModalProps> = ({ onClose, selectedMember }) => {
+const PostModal: FC<ResultModalProps> = ({
+  onClose,
+  selectedMember,
+  successAl,
+  errorAl,
+}) => {
   const [title, setTitle] = useState<string>();
   const [message, setMessage] = useState<string>();
 
@@ -56,17 +63,20 @@ const PostModal: FC<ResultModalProps> = ({ onClose, selectedMember }) => {
     try {
       const successFn = (data: PostRes) => {
         console.log("데이터:", data);
+        successAl("메일보내기에 성공했습니다.");
       };
 
       const failFn = (error: string) => {
         console.error("목록 호출 오류:", error);
+        errorAl("메일 보내기에 실패했습니다");
       };
 
       const errorFn = (error: string) => {
         console.error("목록 호출 서버 에러:", error);
+        errorAl("메일 보내기에 실패했습니다");
       };
 
-      await postMail(
+      await postMailTest(
         successFn,
         failFn,
         errorFn,

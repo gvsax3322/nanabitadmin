@@ -1,4 +1,5 @@
-import React, { ChangeEvent, FC, useState } from "react";
+import { ChangeEvent, FC, useState } from "react";
+import { deleteMember, modifyMember } from "../../../api/member/memberApi";
 import {
   BigInput,
   BigKeyword,
@@ -8,15 +9,16 @@ import {
   MiddleInput,
   TextareaStyle,
 } from "../../../styles/AdminBasic";
-import MyBaby from "./MyBaby";
 import { ModifyButton } from "../../../styles/member/memberstyle";
 import { MemberData } from "./MemberModifyMD";
-import { deleteMember, modifyMember } from "../../../api/member/memberApi";
+import MyBaby from "./MyBaby";
 
 interface MemberInfoSectionProps {
   memberInfo: MemberData[];
   onClose: () => void;
   memberId: number | null;
+  successAl: (txt: string) => void;
+  errorAl: (txt: string) => void;
 }
 
 export interface ResModify {
@@ -28,6 +30,8 @@ const MemberInfoSection: FC<MemberInfoSectionProps> = ({
   memberInfo,
   onClose,
   memberId,
+  successAl,
+  errorAl,
 }) => {
   const addresses = memberInfo[0]?.addresses;
   const children = memberInfo[0]?.children;
@@ -39,21 +43,23 @@ const MemberInfoSection: FC<MemberInfoSectionProps> = ({
   const handleClickModify = async () => {
     try {
       const successFn = (data: ResModify) => {
-        console.log("데이터:", data);
+        // console.log("데이터:", data);
+        successAl("수정에 성공했습니다");
       };
 
       const failFn = (error: string) => {
-        console.error("목록 호출 오류:", error);
+        // console.error("목록 호출 오류:", error);
+        errorAl("수정에 실패했습니다");
       };
 
       const errorFn = (error: string) => {
-        console.error("목록 호출 서버 에러:", error);
+        // console.error("목록 호출 서버 에러:", error);
+        // console.error("에러:", error);
+        errorAl("수정에 실패했습니다");
       };
 
       await modifyMember(successFn, failFn, errorFn, memberId, password, memo);
-    } catch (error) {
-      console.error("에러:", error);
-    }
+    } catch (error) {}
     onClose();
   };
 
@@ -61,14 +67,17 @@ const MemberInfoSection: FC<MemberInfoSectionProps> = ({
     try {
       const successFn = (data: any) => {
         console.log("데이터:", data);
+        successAl("삭제에 성공했습니다");
       };
 
       const failFn = (error: string) => {
         console.error("목록 호출 오류:", error);
+        errorAl("삭제에 실패했습니다");
       };
 
       const errorFn = (error: string) => {
         console.error("목록 호출 서버 에러:", error);
+        errorAl("삭제에 실패했습니다");
       };
 
       await deleteMember(successFn, failFn, errorFn, memberId);
@@ -98,7 +107,7 @@ const MemberInfoSection: FC<MemberInfoSectionProps> = ({
           )}
         </div>
       </BigKeyword>
-      <BigKeyword style={{ borderTop: `1px solid ${Common.color.primary}` }}>
+      <BigKeyword style={{ borderTop: "none" }}>
         <div className="left" style={{ width: "130px" }}>
           아이디
         </div>
@@ -118,7 +127,7 @@ const MemberInfoSection: FC<MemberInfoSectionProps> = ({
           />
         </div>
       </BigKeyword>
-      <BigKeyword style={{ borderTop: `1px solid ${Common.color.primary}` }}>
+      <BigKeyword style={{ borderTop: "none" }}>
         <div className="left" style={{ width: "130px" }}>
           전화번호
         </div>
@@ -135,7 +144,7 @@ const MemberInfoSection: FC<MemberInfoSectionProps> = ({
 
       <BigKeyword
         style={{
-          borderTop: `1px solid ${Common.color.primary}`,
+          borderTop: "none",
           height: "auto",
         }}
       >
@@ -147,7 +156,12 @@ const MemberInfoSection: FC<MemberInfoSectionProps> = ({
             addresses.map((address, index) => (
               <div
                 key={index}
-                style={{ display: "flex", padding: "3px", marginLeft: "14px" }}
+                style={{
+                  display: "flex",
+                  padding: "3px",
+                  marginLeft: "14px",
+                  gap: "3px",
+                }}
               >
                 <BigInput
                   style={{

@@ -116,12 +116,12 @@ export const modifyMember = async (
   }
 };
 
-// 회원탈퇴버튼
+// 회원탈퇴 및 복구버튼
 export const deleteMember = async (
   successFn: (data: MemberData[]) => void,
   failFn: (error: string) => void,
   errorFn: (error: string) => void,
-  iuser: number | null,
+  iuser: number | null | undefined,
 ) => {
   try {
     const res = await jwtAxios.delete<PersonApiResponse>(`${host}/${iuser}`);
