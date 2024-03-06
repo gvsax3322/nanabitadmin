@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { ConfigProvider, Table } from "antd";
-import React, { useState } from "react";
+import { ConfigProvider, Pagination, Table } from "antd";
+import React, { useEffect, useState } from "react";
 import { GetProduct } from "../../pages/admin/item/ItemAll";
 import { Common, SearchButton } from "../../styles/AdminBasic";
 import ModifyModal from "../common/ModifyModal";
@@ -33,6 +33,7 @@ const findCategoryName = (
 const ItemTable: React.FC<ItemTableModify> = ({ tableNum, productList }) => {
   console.log(productList);
   const aaa = productList;
+
   console.log(aaa);
   const [showModal, setShowModal] = useState(false);
   const [modifyData, setModifyData] = useState<GetProduct[]>([]);
@@ -51,6 +52,15 @@ const ItemTable: React.FC<ItemTableModify> = ({ tableNum, productList }) => {
   };
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [getTableData, setGetTableData] = useState<GetProduct[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+
+  useEffect(() => {
+    if (productList.length > 0) {
+      let pageSize = 10;
+      setTotalPages(Math.ceil(productList[0].totalCount / pageSize) * 10);
+    }
+  }, [productList]);
 
   const onSelectChange = (selectedRowKeys: React.Key[], record: any[]) => {
     console.log("selectedRowKeys changed: ", selectedRowKeys);
@@ -223,6 +233,13 @@ const ItemTable: React.FC<ItemTableModify> = ({ tableNum, productList }) => {
         }
         pagination={false}
         bordered
+        locale={{ emptyText: "비어있음" }}
+      />
+      <Pagination
+        style={{ textAlign: "center" }}
+        total={totalPages}
+        current={currentPage}
+        showSizeChanger={false}
       />
       {showModal && (
         <ModifyModal onClose={handleCloseModal} patchData={modifyData} />
