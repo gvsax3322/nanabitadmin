@@ -1,42 +1,9 @@
 import jwtAxios from "../../util/jwtUtil";
 import { API_SERVER_HOST } from "../../util/util";
 
-export interface detailsListParam {
-  processState?: number;
-  searchCategory: number;
-  keyword: string;
-  startDate: string;
-  endDate: string;
-  dateFl: number;
-  payCategory: number;
-  page: number;
-  sort: number;
-  // size: number;
-}
-
-export interface imain {
-  imain: number;
-}
-
-export interface candidateKey {
-  candidateKey: number;
-}
-
-export interface mainAdd {
-  main_category: string;
-}
-
 const prefix = `${API_SERVER_HOST}/api/admin`;
 // const API_SERVER_HOST = "";
-export const getCategory = async ({
-  successFn,
-  failFn,
-  errorFn,
-}: {
-  successFn: (data: any) => void;
-  failFn: (message: string) => void;
-  errorFn: (error: string) => void;
-}) => {
+export const getCategory = async ({ successFn, failFn, errorFn }) => {
   try {
     const url = `${prefix}/category`;
     const res = await jwtAxios.get(url);
@@ -52,17 +19,7 @@ export const getCategory = async ({
   }
 };
 
-export const deleleCateMain = async ({
-  imain: imain,
-  successFn,
-  failFn,
-  errorFn,
-}: {
-  imain: number;
-  successFn: (data: any) => void;
-  failFn: (message: string) => void;
-  errorFn: (error: string) => void;
-}) => {
+export const deleleCateMain = async ({ imain, successFn, failFn, errorFn }) => {
   try {
     const url = `${prefix}/category/main/${imain}`;
     const res = await jwtAxios.delete(url);
@@ -79,15 +36,10 @@ export const deleleCateMain = async ({
 };
 
 export const deleleCateSub = async ({
-  candidateKey: candidateKey,
+  candidateKey,
   successFn,
   failFn,
   errorFn,
-}: {
-  candidateKey: number;
-  successFn: (data: any) => void;
-  failFn: (message: string) => void;
-  errorFn: (error: string) => void;
 }) => {
   try {
     const url = `${prefix}/category/middle/${candidateKey}`;
@@ -105,20 +57,10 @@ export const deleleCateSub = async ({
 };
 
 // ==============================추가
-export const postAddCate = async ({
-  mainAdd: mainAdd,
-  successFn,
-  failFn,
-  errorFn,
-}: {
-  mainAdd: mainAdd;
-  successFn: (data: any) => void;
-  failFn: (message: string) => void;
-  errorFn: (error: string) => void;
-}) => {
+export const postAddCate = async ({ mainAdd, successFn, failFn, errorFn }) => {
   try {
-    const url = `${prefix}/category/main`;
-    const res = await jwtAxios.post(url, mainAdd);
+    const url = `${prefix}/category/main?main_category=${mainAdd}`;
+    const res = await jwtAxios.post(url);
 
     const resStatus = res.status.toString();
     if (resStatus.charAt(0) === "2") {

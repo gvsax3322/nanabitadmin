@@ -1,3 +1,13 @@
+import styled from "@emotion/styled";
+import { Tree } from "antd";
+import React, { useEffect, useState } from "react";
+import {
+  deleleCateMain,
+  deleleCateSub,
+  getCategory,
+  postAddCate,
+} from "../../../api/category/categoryApi";
+import CateSelec from "../../../components/category/CateSelec";
 import {
   BigKeyword,
   Common,
@@ -7,18 +17,7 @@ import {
   SmallButton,
   SubTitle,
 } from "../../../styles/AdminBasic";
-import styled from "@emotion/styled";
-import React, { useEffect, useState } from "react";
-import { Select, Tree } from "antd";
-import {
-  deleleCateMain,
-  deleleCateSub,
-  getCategory,
-  postAddCate,
-} from "../../../api/category/categoryApi";
-import CateSelec from "../../../components/category/CateSelec";
 import { mainCateData } from "./Cate";
-import { Option } from "antd/es/mentions";
 
 // import OrAllFooter from "./footer/OrAllFooter";
 
@@ -39,32 +38,23 @@ const initState = {
   ],
 };
 
-interface OrAllHeaderProps {
-  fetchData: (data: any) => void;
-  tableNum: (selectedRowKeys: React.Key[]) => void;
-}
-
-const CateHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
+const CateHeader = ({ tableNum }) => {
   const [orderData, setOrderData] = useState([initState]);
   const [periodBt, setPeriodBt] = useState(0); // 선택된 기간 상태 버튼관리
   const [prdOp, setPrdOp] = useState(0);
   const [stateOp, setStateOp] = useState(0); //  주문상태 옵션관리
   const [searchOp, setSearchOp] = useState(0); // 검색어 상태 옵션관리
   const [paymentOp, setPaymentOp] = useState(0); //  결제수단 상태 옵션관리
-  const [selectedDate, setSelectedDate] = useState<string[]>([]); // Date picker 관리
+  const [selectedDate, setSelectedDate] = useState([]); // Date picker 관리
 
   // const [userSearchActive, setUserSearchActive] = useState(true); // 검색버튼 옵션관리
   const [searchText, setSearchText] = useState(""); //  검색어텍스트 관리
 
-  const [options, setOptions] = useState<
-    { label: string; value: number }[] | null
-  >(null);
+  const [options, setOptions] = useState(null);
 
-  const [selectedMainCategory, setSelectedMainCategory] = useState<number>();
-  const [selectedSubCategory, setSelectedSubCategory] = useState<number>();
-  const [subCategoryOptions, setSubCategoryOptions] = useState<
-    { label: string; value: number }[]
-  >([]);
+  const [selectedMainCategory, setSelectedMainCategory] = useState();
+  const [selectedSubCategory, setSelectedSubCategory] = useState();
+  const [subCategoryOptions, setSubCategoryOptions] = useState([]);
   const [mainCategory, setMainCategory] = useState();
 
   const dataSource = orderData.map(item => {
@@ -81,12 +71,37 @@ const CateHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     }));
 
     const titleNode = (
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <span>{item.mainCategory}</span> {/* 부모 카테고리명을 출력 */}
-        <SmallButton onClick={() => handleDelete(item.imain)}>
-          Delete
-        </SmallButton>
-      </div>
+      <>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "10px",
+            padding: "5px",
+            borderRadius: "10px",
+          }}
+        >
+          <div style={{ width: "400px" }}>
+            <span>{item.mainCategory}</span> {/* 부모 카테고리명을 출력 */}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <MiddleInput
+              type="text"
+              placeholder="서브 카테고리명을 입력하세요"
+              autoFocus
+              // value={mainCategory}
+              // onChange={handleInputChange}
+            />
+            <SmallButton onClick={() => handleDelete(item.imain)}>
+              Add
+            </SmallButton>
+            <SmallButton onClick={() => handleDelete(item.imain)}>
+              Delete
+            </SmallButton>
+          </div>
+        </div>
+      </>
     );
 
     return {
@@ -97,7 +112,7 @@ const CateHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   });
   // =====================================================
 
-  const handleDelete = (imain: number) => {
+  const handleDelete = imain => {
     console.log("1차카테 선택", imain);
     const cateImain = imain; // 주문 번호를 배열에 담음
     // API를 호출하여 주문 상태를 변경합니다.
@@ -111,7 +126,7 @@ const CateHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     });
   };
 
-  const handleSubDelete = (candidateKey: number) => {
+  const handleSubDelete = candidateKey => {
     console.log("2차카테 선택", candidateKey);
     // 선택한 일괄 처리 버튼의 상태를 업데이트합니다.
 
@@ -140,7 +155,7 @@ const CateHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
 
   // ========================================================
   // 부모 카테고리 변경 시 호출되는 함수
-  const handleMainChange = (value: number) => {
+  const handleMainChange = value => {
     setSelectedMainCategory(value);
 
     // 해당 부모 카테고리에 속하는 자식 카테고리 목록 설정
@@ -159,14 +174,8 @@ const CateHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   };
 
   // 자식 카테고리 변경 시 호출되는 함수
-  const handleSubCategoryChange = (value: number) => {
+  const handleSubCategoryChange = value => {
     setSelectedSubCategory(value);
-  };
-
-  // 검색어 입력 시 호출되는 함수
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-    setMainCategory(e.target.value);
   };
 
   // 저장 버튼 클릭 시 호출되는 함수
@@ -188,19 +197,23 @@ const CateHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     console.log("새로운 자식 카테고리 추가");
   };
 
-  const handleMainAddApi = (main_category: string) => {
-    if (!main_category) {
+  // 1차 카테고리 추가 입력 시 호출되는 함수
+  const handleInputChange = e => {
+    // setSearchText(e.target.value);
+    setMainCategory(e.target.value);
+  };
+
+  const handleMainAddApi = () => {
+    if (mainCategory === "") {
       alert("카테고리 이름을 입력하세요.");
       return;
     }
 
-    const requestData = {
-      main_category: main_category,
-    };
     postAddCate({
-      mainAdd: requestData,
+      mainAdd: mainCategory,
       successFn: () => {
         console.log("카테고리 추가 성공");
+        setMainCategory("");
         // 카테고리 추가에 성공하면 추가된 카테고리 목록을 다시 불러옵니다.
         fetchData(); // fetchData 함수를 호출하여 데이터를 다시 불러옴
       },
@@ -214,25 +227,6 @@ const CateHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
       },
     });
   };
-  const handleClickSave = () => {
-    handleMainAddApi(searchText);
-  };
-
-  const updateDetails = (result: any) => {
-    // 성공적으로 데이터를 불러온 후에 상태를 업데이트합니다.
-    setOrderData(result);
-  };
-
-  const successFn = (result: any) => {
-    console.log(result);
-    setOrderData(result);
-  };
-  const failFn = (result: string) => {
-    console.log(result);
-  };
-  const errorFn = (result: string) => {
-    console.log(result);
-  };
   // ====================================================================
 
   useEffect(() => {
@@ -241,7 +235,7 @@ const CateHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   }, []);
   // 서버연동
 
-  const successFn_AllOrder = (data: mainCateData[]) => {
+  const successFn_AllOrder = data => {
     // 변환된 옵션을 상태에 저장
     const options = data.map(item => ({
       label: item.mainCategory,
@@ -251,12 +245,12 @@ const CateHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     setOrderData(data);
   };
 
-  const failFn_AllOrder = (data: any) => {
+  const failFn_AllOrder = data => {
     // console.log("failFn : ", data);
     alert("failFn오더all : 데이터 호출에 실패하였습니다.");
   };
 
-  const errorFn_AllOrder = (data: any) => {
+  const errorFn_AllOrder = data => {
     // console.log("errorFn : ", data);
     alert("오더all!!! 서버상태 불안정 그래서, 데모테스트했음.");
     setOrderData(data);
@@ -265,61 +259,18 @@ const CateHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   return (
     <>
       <Wrap>
-        <MainTitle>전체리스트</MainTitle>
-        <SubTitle>기본검색</SubTitle>
+        <MainTitle>카테고리추가</MainTitle>
         <div style={{ marginBottom: "20px" }}>
           <BigKeyword
             style={{ borderTop: `1px solid ${Common.color.primary}` }}
           >
-            <div className="left">카테고리</div>
-            <div className="right">
-              {/* 부모 카테고리 셀렉트 박스 */}
-              <CateSelec
-                options={[
-                  ...orderData.map(category => ({
-                    label: category.mainCategory,
-                    value: category.imain,
-                  })),
-                  { label: "새로운 부모 카테고리 추가", value: -1 }, // 새로운 부모 카테고리 추가 항목
-                ]}
-                onChange={(value: number) => {
-                  if (value === -1) {
-                    handleAddMainCategory();
-                  } else {
-                    handleMainChange(value);
-                  }
-                }}
-                value={selectedMainCategory}
-              />
-
-              {/* 자식 카테고리 셀렉트 박스 */}
-              <CateSelec
-                options={[
-                  ...subCategoryOptions,
-                  { label: "새로운 자식 카테고리 추가", value: -1 }, // 새로운 자식 카테고리 추가 항목
-                ]}
-                onChange={(value: number) => {
-                  if (value === -1) {
-                    handleAddSubCategory();
-                  } else {
-                    handleSubCategoryChange(value);
-                  }
-                }}
-                value={selectedSubCategory}
-              />
-
-              {/* 검색어 창과 저장 버튼 */}
-              {/* 검색어 창과 저장 버튼을 여기에 추가 */}
-            </div>
-          </BigKeyword>
-          <BigKeyword>
-            <div className="left">카테고리 소속</div>
+            <div className="left">카테고리명</div>
             <div className="right">
               <MiddleInput
                 type="text"
-                placeholder="검색어를 입력하세요"
+                placeholder="카테고리명을 입력하세요"
                 autoFocus
-                value={searchText}
+                value={mainCategory}
                 onChange={handleInputChange}
               />
             </div>
@@ -333,29 +284,20 @@ const CateHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
             marginBottom: "20px",
           }}
         >
-          <SearchButton onClick={handleClickSave}>저장</SearchButton>
+          <SearchButton onClick={handleMainAddApi}>저장</SearchButton>
         </div>
       </Wrap>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "10px",
-        }}
-      >
-        <div>
-          <SmallButton style={{ marginRight: "5px" }}>
-            전체메일 발송
-          </SmallButton>
-          <SmallButton>엑셀 저장</SmallButton>
-        </div>
+
+      <div>
+        <MainTitle>카테고리 전체 리스트</MainTitle>
       </div>
+
       {/* <div> */}
       <Tree
         treeData={dataSource}
         // height={1000}
         defaultExpandAll
-        titleRender={(nodeData: any) => (
+        titleRender={nodeData => (
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <span>{nodeData.title}</span>
             {nodeData.deleteButton} {/* 추가된 삭제 버튼 렌더링 */}
@@ -363,7 +305,6 @@ const CateHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
         )}
       />
       {/* </div> */}
-      <Wrap>dddd</Wrap>
     </>
   );
 };
