@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import {
@@ -28,35 +28,58 @@ const LoginPage = () => {
   const { doLogin } = useCustomLogin();
   const navigate = useNavigate();
   const successFn = (result: LoginRes) => {
-    console.log(result);
+    // console.log(result);
+    successAl("로그인 성공");
     navigate("/admin");
   };
   const failFn = (err: string) => {
     console.log(err);
+    errorAl("로그인 실패");
   };
   const errorFn = (err: string) => {
     console.log(err);
+    errorAl("로그인 실패");
   };
   // 초기값
   const initState: LoginParam = {
-    uid: "ADMIN",
-    upw: "xptmxm12!@",
+    uid: "",
+    upw: "",
   };
   const [loginParam, setLoginParam] = useState(initState);
+  const [messageApi, contextHolder] = message.useMessage();
+
   // 커스텀 훅 사용하기
   const onFinish = () => {
     // console.log("Success:", values);
+    // successAl("로그인 성공");
     doLogin({ loginParam, successFn, failFn, errorFn });
   };
   const onFinishFailed = (errorInfo: ValidateErrorEntity<any>) => {
+    errorAl("로그인 실패");
     console.log("Failed:", errorInfo);
   };
   const onValuesChanged = (changedValues: any, allValues: any) => {
     setLoginParam({ ...allValues });
   };
+
+  // 알람 관련
+  const successAl = (txt: string) => {
+    messageApi.open({
+      type: "success",
+      content: txt,
+    });
+  };
+
+  const errorAl = (txt: string) => {
+    messageApi.open({
+      type: "error",
+      content: txt,
+    });
+  };
   return (
     <LoginPageWrap>
       <LoginHeader />
+      {contextHolder}
       <LoginMain>
         <LoginBox>
           <img

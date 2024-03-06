@@ -141,6 +141,8 @@ const MemberModifyMD: FC<ResultModalProps> = ({
                 borderRadius: "0px",
                 border: "1px solid #000",
                 background: "#d9d9d9",
+                boxShadow: "none",
+                color: selectedValue === 1 ? "#fff" : "#000",
               }}
             >
               회원정보수정
@@ -152,6 +154,8 @@ const MemberModifyMD: FC<ResultModalProps> = ({
                 borderRadius: "0px",
                 border: "1px solid #000",
                 background: "#d9d9d9",
+                boxShadow: "none",
+                color: selectedValue === 2 ? "#fff" : "#000",
               }}
             >
               주문내역

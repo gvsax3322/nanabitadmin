@@ -7,19 +7,19 @@ import {
   Table,
   message,
 } from "antd";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, Key, useEffect, useState } from "react";
 import { getMemberList } from "../../../api/member/memberApi";
 import DatePick from "../../../components/member/DatePick";
 import MemberModifyMD from "../../../components/member/modal/MemberModifyMD";
 import PostModal from "../../../components/member/modal/PostModal";
 import MemberSelect from "../../../components/select/MemberSelect";
+import ModifyExcel from "../../../exel/member/ModifyExcel";
 import {
   BigKeyword,
   Common,
   MainTitle,
   MiddleInput,
   SearchButton,
-  SmallButton,
   SubTitle,
 } from "../../../styles/AdminBasic";
 import {
@@ -52,8 +52,13 @@ const MemberModify = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [postModalVisible, setPostModalVisible] = useState(false);
   // 멤버관련
-  const [selectedMember, setSelectedMember] = useState<MemberList | null>(null);
   const [memberList, setMemberList] = useState<MemberList[]>([]);
+  const [selectedMember, setSelectedMember] = useState<MemberList | null>(null);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
+  const [selectedMembersArr, setSelectedMembersArr] = useState<MemberList[]>(
+    [],
+  );
+
   // 검색관련
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
@@ -66,10 +71,10 @@ const MemberModify = () => {
   // 화원정보 가져오기
 
   const fetchData = async (page: number) => {
-    let pageSize = 10;
+    const pageSize = 10;
     try {
       const successFn = (data: MemberList[] | undefined) => {
-        console.log("데이터:", data);
+        // console.log("데이터:", data);
         if (data !== undefined && data.length > 0) {
           setMemberList(data);
           setTotalPages(Math.ceil(data[0].totalCnt / pageSize) * 10);
@@ -111,13 +116,13 @@ const MemberModify = () => {
   // 회원정보수정 모달
   const handleMenuClick1 = (record: MemberList) => {
     setSelectedMember(record);
-    console.log(record);
+    // console.log(record);
     setEditModalVisible(true);
   };
   // 메일 보내기 모달
   const handleMenuClick2 = (record: MemberList) => {
     setSelectedMember(record);
-    console.log(record);
+    // console.log(record);
     setPostModalVisible(true);
   };
   // 옵션 선택
@@ -130,14 +135,13 @@ const MemberModify = () => {
         setSearchOp(2);
         break;
     }
-    console.log("검색어", optionIndex);
+    // console.log("검색어", optionIndex);
   };
   // 검색버튼
   const handleClickSearch = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-
     try {
       await fetchData(currentPage);
       setSearchText("");
@@ -147,14 +151,15 @@ const MemberModify = () => {
       errorAl("검색실패");
       return;
     }
-    if (memberList.length > 0) {
+    if ((memberList.length = 0)) {
+      successAl("검색성공");
     }
   };
   // 초기화 버튼
   const ResetData = async () => {
     try {
       const successFn = (data: MemberList[]) => {
-        console.log("데이터:", data);
+        // console.log("데이터:", data);
         setMemberList(data);
         successAl("초기화 성공");
       };
@@ -184,9 +189,17 @@ const MemberModify = () => {
     setCurrentPage(page);
     fetchData(page);
   };
-
+  // 날짜 자르기
   const formatDate = (dateString: string) => {
     return dateString.slice(0, 10);
+  };
+  // 테이블 전체선택
+  const onSelectChange = (
+    selectedRowKeys: React.Key[],
+    selectedRows: MemberList[],
+  ) => {
+    setSelectedRowKeys(selectedRowKeys);
+    setSelectedMembersArr(selectedRows);
   };
 
   useEffect(() => {
@@ -337,14 +350,14 @@ const MemberModify = () => {
         <SubTitle style={{ textAlign: "center", lineHeight: "15px" }}>
           총 회원 :{" "}
           <span style={{ color: "rgb(244, 67, 54)" }}>
-            {memberList[0] ? memberList[0].totalCnt : ""}
+            {memberList[0] ? memberList[0].totalCnt : "0"}
           </span>{" "}
           명
         </SubTitle>
       </div>
       <BtList>
         <div>
-          <SmallButton>엑셀 저장</SmallButton>
+          <ModifyExcel exceldata={selectedMembersArr} />
         </div>
       </BtList>
       <ListWrap>
@@ -362,6 +375,10 @@ const MemberModify = () => {
           }}
         >
           <Table
+            rowSelection={{
+              selectedRowKeys,
+              onChange: onSelectChange,
+            }}
             columns={columns}
             dataSource={
               memberList &&

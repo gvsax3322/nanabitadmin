@@ -3,8 +3,8 @@ import {
   MemberData,
   PersonApiResponse,
 } from "../../components/member/modal/MemberModifyMD";
-import { OrderList } from "../../components/member/modal/OrderInfoSection";
 import { ResRegister } from "../../pages/admin/member/DailyReg";
+import { ExMemberList } from "../../pages/admin/member/MemberDelete ";
 import {
   MemberApiResponse,
   MemberList,
@@ -45,17 +45,19 @@ export const getMemberList = async (
 
 // 탈퇴한 회원정보 가져오기
 export const getExMemberList = async (
-  successFn: (data: MemberList[]) => void,
+  successFn: (data: ExMemberList[]) => void,
   failFn: (error: string) => void,
   errorFn: (error: string) => void,
   keyword: string = "",
   keywordType: number = 0,
+  before: string = "",
+  after: string = "",
   page: number = 1,
   size: number = 10,
 ) => {
   try {
     const res = await jwtAxios.get<MemberApiResponse>(
-      `${host}?unregisteredFl=1&keyword=${keyword}&keywordType=${keywordType}&before=&after=&phoneNumber=&page=${page}&size=${size}&sort=string`,
+      `${host}?unregisteredFl=1&keyword=${keyword}&keywordType=${keywordType}&before=${before}&after=${after}&phoneNumber=&page=${page}&size=${size}&sort=string`,
     );
     const status = res.status.toString();
     if (status.charAt(0) === "2") {

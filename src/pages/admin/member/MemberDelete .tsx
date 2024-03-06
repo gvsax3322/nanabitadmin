@@ -7,7 +7,7 @@ import {
   Table,
   message,
 } from "antd";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, Key, useEffect, useMemo, useState } from "react";
 import { deleteMember, getExMemberList } from "../../../api/member/memberApi";
 import MemberSelect from "../../../components/select/MemberSelect";
 
@@ -20,27 +20,36 @@ import {
   SubTitle,
 } from "../../../styles/AdminBasic";
 import {
+  BtList,
   ListWrap,
   ModifyButton,
   ModifyInfo,
   ModifyWrap,
 } from "../../../styles/member/memberstyle";
+import DeleteExcel from "../../../exel/member/DeleteExcel";
+import DatePick from "../../../components/member/DatePick";
 
 export interface ExMemberList {
   iuser: number;
   nm: string;
   email: string;
   phoneNumber: string;
-  registeredAt: string;
+  unregisteredAt?: string;
   totalCnt: number;
 }
 
 const MemberDelete = () => {
   // 멤버관련
   const [memberList, setMemberList] = useState<ExMemberList[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
+  const [selectedMembersArr, setSelectedMembersArr] = useState<ExMemberList[]>(
+    [],
+  );
   //검색관련
   const [searchText, setSearchText] = useState<string>("");
   const [searchOp, setSearchOp] = useState(1);
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
   // 알람관련
   const [messageApi, contextHolder] = message.useMessage();
   const [refresh, setRefresh] = useState(0);
@@ -51,10 +60,14 @@ const MemberDelete = () => {
   const fetchData = async (page: number) => {
     const pageSize = 10;
     try {
-      const successFn = (data: ExMemberList[]) => {
-        console.log("데이터:", data);
-        setMemberList(data);
-        setTotalPages(Math.ceil(data[0].totalCnt / pageSize) * 10);
+      const successFn = (data: ExMemberList[] | undefined) => {
+        // console.log("데이터:", data);
+        if (data !== undefined && data.length > 0) {
+          setMemberList(data);
+          setTotalPages(Math.ceil(data[0].totalCnt / pageSize) * 10);
+        } else {
+          errorAl("검색 결과가 없습니다.");
+        }
       };
 
       const failFn = (error: string) => {
@@ -71,6 +84,8 @@ const MemberDelete = () => {
         errorFn,
         searchText,
         searchOp,
+        startDate,
+        endDate,
         page,
       );
     } catch (error) {
@@ -81,7 +96,7 @@ const MemberDelete = () => {
   const ResetData = async () => {
     try {
       const successFn = (data: ExMemberList[]) => {
-        console.log("데이터:", data);
+        // console.log("데이터:", data);
         setMemberList(data);
         setSearchText("");
         successAl("초기화 완료");
@@ -112,7 +127,7 @@ const MemberDelete = () => {
   const handleClickrestore = async (record: ExMemberList) => {
     try {
       const successFn = (data: any) => {
-        console.log("데이터:", data);
+        // console.log("데이터:", data);
         successAl("유저를 복구했습니다");
         setRefresh(refresh + 1);
       };
@@ -138,18 +153,31 @@ const MemberDelete = () => {
     setCurrentPage(page);
     fetchData(page);
   };
+  // 날짜 변경
+  const handleDateChange = (dateRange: string[]) => {
+    setStartDate(dateRange[0]);
+    setEndDate(dateRange[1]);
+  };
+  // 전체 회원선택
+  const onSelectChange = (
+    selectedRowKeys: React.Key[],
+    selectedRows: ExMemberList[],
+  ) => {
+    setSelectedRowKeys(selectedRowKeys);
+    setSelectedMembersArr(selectedRows);
+  };
 
   useEffect(() => {
     fetchData(currentPage);
   }, [refresh]);
-
+  // 성공 알람
   const successAl = (txt: string) => {
     messageApi.open({
       type: "success",
       content: txt,
     });
   };
-
+  // 실패알람
   const errorAl = (txt: string) => {
     messageApi.open({
       type: "error",
@@ -181,10 +209,14 @@ const MemberDelete = () => {
     e.preventDefault();
     try {
       await fetchData(currentPage);
-      successAl("검색완료");
+      setSearchText("");
     } catch (error) {
       console.error("검색 오류:", error);
       errorAl("검색실패");
+      return;
+    }
+    if ((memberList.length = 0)) {
+      successAl("검색성공");
     }
   };
   const columns = [
@@ -263,6 +295,19 @@ const MemberDelete = () => {
             />
           </div>
         </BigKeyword>
+        <BigKeyword style={{ borderTop: "none" }}>
+          <div className="left">기간검색</div>
+          <div className="right" style={{ gap: "5x" }}>
+            <DatePick
+              onChange={handleDateChange}
+              value={
+                startDate && endDate
+                  ? [startDate, endDate]
+                  : [undefined, undefined]
+              }
+            />
+          </div>
+        </BigKeyword>
       </ModifyInfo>
       <ModifyButton>
         <SearchButton onClick={handleClickSearch}>검색</SearchButton>
@@ -285,6 +330,9 @@ const MemberDelete = () => {
           명
         </SubTitle>
       </div>
+      <BtList>
+        <DeleteExcel exceldata={selectedMembersArr} />
+      </BtList>
       <ListWrap>
         <ConfigProvider
           theme={{
@@ -300,6 +348,10 @@ const MemberDelete = () => {
           }}
         >
           <Table
+            rowSelection={{
+              selectedRowKeys,
+              onChange: onSelectChange,
+            }}
             columns={columns}
             dataSource={
               memberList &&
