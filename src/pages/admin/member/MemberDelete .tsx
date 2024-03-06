@@ -361,6 +361,7 @@ const MemberDelete = () => {
               }))
             }
             pagination={false}
+            locale={{ emptyText: "데이터가 없습니다." }}
             bordered
           />
         </ConfigProvider>

@@ -178,6 +178,7 @@ const MonthlyReg: React.FC = () => {
           <Table
             dataSource={resMonth.data}
             columns={columns}
+            locale={{ emptyText: "데이터가 없습니다." }}
             pagination={false}
           />
         )}
