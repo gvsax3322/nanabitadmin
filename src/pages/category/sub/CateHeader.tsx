@@ -166,7 +166,7 @@ const CateHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   // 검색어 입력 시 호출되는 함수
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
-    setMainCategory(e.target.value);
+    // setMainCategory(e.target.value);
   };
 
   // 저장 버튼 클릭 시 호출되는 함수

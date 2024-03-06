@@ -42,8 +42,8 @@ const LoginPage = () => {
   };
   // 초기값
   const initState: LoginParam = {
-    uid: "",
-    upw: "",
+    uid: "ADMIN",
+    upw: "xptmxm12!@",
   };
   const [loginParam, setLoginParam] = useState(initState);
   const [messageApi, contextHolder] = message.useMessage();
