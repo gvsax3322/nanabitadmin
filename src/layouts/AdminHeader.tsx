@@ -67,6 +67,7 @@ const AdminHeader: React.FC = () => {
               stiffness: 600,
               damping: 20,
             }}
+            onClick={() => handleClickMove("/admin/category")}
           >
             카테고리 관리
           </motion.li>

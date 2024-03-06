@@ -5,21 +5,13 @@ import LoginPage from "../pages/admin/login/LoginPage";
 import MainAdmin from "../pages/admin/main/MainAdmin";
 import ErrorPage from "../pages/errorPage/ErrorPage";
 import { Ordermain } from "../pages/order/item/OrderMain";
-import AdminNote from "../pages/order/sub/AdminNote";
-import DpstPage from "../pages/order/sub/DpstPage";
-import PreparingPage from "../pages/order/sub/PreparingPage";
-
-import OrderCancel from "../pages/order/sub/OrderCancel";
 
 import useCustomLogin from "../hooks/useCustomLogin";
 import TestPage from "../pages/TestPage";
 import MemberMain from "../pages/admin/member/MemberMain";
 import ChartsPage from "../pages/charts/ChartsPage";
 import CommunPage from "../pages/community/CommunPage";
-import DComPage from "../pages/order/sub/DComPage";
-import OrderAllPage from "../pages/order/sub/OrderAllPage";
-import OrderReturn from "../pages/order/sub/OrderReturn";
-import ShippingPage from "../pages/order/sub/ShippingPage";
+
 import ReviewManage from "../pages/review/ReviewManage";
 import UsermainManage from "../pages/usermainmanage/UsermainManage";
 import ChartsRouter from "./charts/ChartsRouter";
@@ -27,6 +19,9 @@ import MemberRouter from "./member/MemberRouter";
 import productAdmin from "./product";
 import ReviewRouter from "./review/reviewrouter";
 import UsermainRouter from "./usermainmanage/usermainrouter";
+import OrderRouter from "./order/OrderRouter";
+import { Categorymain } from "../pages/category/Categorymain";
+import CateRouter from "./category/CateRouter";
 
 const RouteComponent = () => {
   const { isLogin } = useCustomLogin();
@@ -40,11 +35,6 @@ export const routerAdmin = createBrowserRouter([
   {
     path: "",
     element: <RouteComponent />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/test",
-    element: <TestPage />,
     errorElement: <ErrorPage />,
   },
   {
@@ -65,23 +55,16 @@ export const routerAdmin = createBrowserRouter([
         element: <MemberMain />,
         children: MemberRouter.children,
       },
+
       {
-        path: "order",
+        path: "category/",
+        element: <Categorymain />,
+        children: CateRouter.children,
+      },
+      {
+        path: "order/",
         element: <Ordermain />,
-        children: [
-          // 주문관리
-          { path: "", element: <Navigate to="all" /> },
-          { path: "all", element: <OrderAllPage /> },
-          { path: "deposit", element: <DpstPage /> },
-          { path: "preparing", element: <PreparingPage /> },
-          { path: "shipping", element: <ShippingPage /> },
-          { path: "completed", element: <DComPage /> },
-          // 취소/반품관리
-          { path: "cancel", element: <OrderCancel /> },
-          { path: "return", element: <OrderReturn /> },
-          // 관리자메모
-          { path: "memo", element: <AdminNote /> },
-        ],
+        children: OrderRouter.children,
       },
       {
         path: "usermain/",
