@@ -1,4 +1,4 @@
-import { Checkbox, ConfigProvider, Table } from "antd";
+import { Checkbox, ConfigProvider, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
@@ -51,14 +51,27 @@ const CenteredHeaderTable = styled(Table)`
 `;
 const MainBanner: React.FC = () => {
   const [bannerInfo, setBannerInfo] = useState<BannerData[] | null>(null);
-  const [selectedFile, setSelectedFile] = useState(null);
   const [refresh, setRefresh] = useState<number>(0);
 
   // 보낼 데이터
   const [bannerImg, setBannerImg] = useState<string>();
   const [bannerUrl, setBannerUrl] = useState<string>("");
   const [bannerTarget, setBannerTarget] = useState<number>(0);
-  const [bannerState, setBanenrState] = useState<number>(0);
+  const [bannerState, setBanenrState] = useState<number>(1);
+
+  const [messageApi, contextHolder] = message.useMessage();
+  const successEvent = (txt: string) => {
+    messageApi.open({
+      type: "success",
+      content: txt,
+    });
+  };
+  const warningEvent = (txt: string) => {
+    messageApi.open({
+      type: "warning",
+      content: txt,
+    });
+  };
 
   const fetchData = async () => {
     try {
@@ -108,6 +121,7 @@ const MainBanner: React.FC = () => {
       item => item.bannerlength === 999,
     );
     if (hasBannerLength999) {
+      warningEvent("배너는 하나씩 추가할 수 있습니다.");
       return;
     }
 
@@ -120,7 +134,7 @@ const MainBanner: React.FC = () => {
     const newData = {
       ibanner: newIbanner,
       target: 0,
-      status: 0, // 노출여부
+      status: 1, // 노출여부
       bannerUrl: "",
       bannerPic: "",
       bannerNew: 1, // 새로운 이미지
@@ -132,12 +146,13 @@ const MainBanner: React.FC = () => {
   //  =================배너 값 관리 함수 =================
   // 체크여부
   const handleCheckChange = (ibanner: number, isChecked: boolean) => {
-    console.log(`ibanner: ${ibanner}, 변경된 체크 여부: ${isChecked}`);
-    if (isChecked === true) {
-      setBannerTarget(1);
-    } else if (isChecked === false) {
-      setBannerTarget(0);
+    // console.log(`ibanner: ${ibanner}, 변경된 체크 여부: ${isChecked}`);
+    if (isChecked === false) {
+      setBanenrState(1);
+    } else if (isChecked === true) {
+      setBanenrState(0);
     }
+    console.log(bannerState);
   };
 
   // url 입력창
@@ -224,6 +239,7 @@ const MainBanner: React.FC = () => {
       const letsPostBanner: PostBannerData =
         convertToPostBannerData(ibannerData);
       console.log(letsPostBanner);
+      console.log("업로드 후!", bannerState);
       postBanner(letsPostBanner);
       await setRefresh(refresh + 1);
     }
@@ -234,13 +250,13 @@ const MainBanner: React.FC = () => {
   const columns: any = [
     {
       title: "노출",
-      dataIndex: "status",
+      dataIndex: "item",
       key: "status",
-      render: (status: number, record: any) => (
+      render: (item: any, record: any) => (
         <div>
           {/* status가 0일때 true 아니면 false를 ...? */}
           <Checkbox
-            defaultChecked={status === 0 ? true : false}
+            defaultChecked={item.status === 0 ? true : false}
             onChange={e => handleCheckChange(record.ibanner, e.target.checked)}
           />
         </div>
@@ -258,13 +274,22 @@ const MainBanner: React.FC = () => {
       key: "item",
       render: (item: any): any => (
         <>
-          <img
-            style={{ width: "190px", height: "66px", objectFit: "cover" }}
-            src={`${API_SERVER_HOST}/pic/banner/${item.ibanner}/${item.bannerPic}`}
-            alt="upload"
-            id={`image-${item.ibanner}`}
-            className="diaryadd-img-before"
-          />
+          {item.bannerPic === "" ? (
+            <img
+              style={{ width: "190px", height: "66px", objectFit: "cover" }}
+              src={process.env.PUBLIC_URL + "/assets/images/defaultitemimg.svg"}
+              id={`image-${item.ibanner}`}
+              alt="upload"
+            />
+          ) : (
+            <img
+              style={{ width: "190px", height: "66px", objectFit: "cover" }}
+              src={`${API_SERVER_HOST}/pic/banner/${item.ibanner}/${item.bannerPic}`}
+              alt="upload"
+              id={`image-${item.ibanner}`}
+              className="diaryadd-img-before"
+            />
+          )}
         </>
       ),
     },
@@ -390,6 +415,7 @@ const MainBanner: React.FC = () => {
 
   return (
     <>
+      {contextHolder}
       <MainTitle>메인 배너</MainTitle>
       <div
         style={{

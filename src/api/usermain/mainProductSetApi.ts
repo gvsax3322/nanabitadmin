@@ -23,6 +23,7 @@ export interface SearchProduct {
   price: number;
   repPic: string;
   status: number;
+  totalCount: number;
 }
 
 // MD 추천상품 조회
@@ -46,13 +47,12 @@ export const getMainProRc = async (
   }
 };
 
-
 // MD 추천상품 등록해제
 // http://192.168.0.144:5223/api/admin/product/toggleRcProduct?iproduct=52
 // http://192.168.0.144:5223/api/admin/product/togglePopProduct?iproduct=54
 // http://192.168.0.144:5223/api/admin/product/toggleNewProduct?iproduct=54
 export const putMainProRc = async (
-  toggleType:string="",
+  toggleType: string = "",
   iproduct: number,
   putSuccessFn: (data: any) => void,
   putFailFn: (error: string) => void,
@@ -60,9 +60,7 @@ export const putMainProRc = async (
 ) => {
   try {
     const res = await jwtAxios.put(
-
       `${host}/${toggleType}?iproduct=${iproduct}`,
-
     );
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
@@ -80,8 +78,8 @@ export const putMainProRc = async (
 // http://192.168.0.144:5223/api/admin/product/searchRcProduct?keyword=&iproduct=0&imain=0&imiddle=0&page=0
 export const getMdSearch = async (
   successFn: (data: SearchProduct[]) => void,
-  putFailFn: (error: string) => void,
-  putErrorFn: (error: string) => void,
+  FailFn: (error: string) => void,
+  ErrorFn: (error: string) => void,
   searchType: string = "",
   keyword: string = "",
   iproduct: number = 0,
@@ -97,12 +95,11 @@ export const getMdSearch = async (
     if (status.charAt(0) === "2") {
       // console.log(res.data);
       successFn(res.data);
-
     } else {
-      putFailFn("목록 호출 오류입니다.");
+      FailFn("목록 호출 오류입니다.");
     }
   } catch (error) {
-    putErrorFn("목록 호출 서버 에러에요");
+    ErrorFn("목록 호출 서버 에러에요");
   }
 };
 //=====================================================================================================
