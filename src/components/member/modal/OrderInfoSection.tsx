@@ -4,6 +4,7 @@ import {
   Radio,
   RadioChangeEvent,
   Segmented,
+  Table,
 } from "antd";
 import { FC, useEffect, useState } from "react";
 
@@ -71,13 +72,14 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({
   };
 
   const fetchData = async (page: number) => {
+    const pageSize = 3;
     try {
-      const pageSize = 3;
-
-      const successFn = (data: OrderList[]) => {
-        console.log("데이터:", data);
-        setOrderList(data);
-        setTotalPages(Math.ceil(data[0].totalCount / pageSize));
+      const successFn = (data: OrderList[] | undefined) => {
+        // console.log("데이터:", data);
+        if (data !== undefined && data.length > 0) {
+          setOrderList(data);
+          setTotalPages(Math.ceil(data[0].totalCount / pageSize) * 10);
+        }
       };
 
       const failFn = (error: string) => {
@@ -100,7 +102,6 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({
         page,
         sortBy,
       );
-      console.log("데이터 가져오기 완료");
     } catch (error) {
       console.error("에러:", error);
     }
@@ -110,9 +111,12 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({
     try {
       setCurrentPage(1);
       const successFn = (data: OrderList[]) => {
-        console.log("데이터:", data);
-        successAl("검색성공");
         setOrderList(data);
+        if (data.length !== 0) {
+          successAl("검색성공");
+        } else {
+          errorAl("검색 결과가 없습니다.");
+        }
       };
 
       const failFn = (error: string) => {
@@ -371,8 +375,7 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({
           </Radio.Group>
         </div>
       </BigKeyword>
-      <BtList>
-        <SmallButton>엑셀 저장</SmallButton>
+      <BtList style={{ justifyContent: "end" }}>
         <ConfigProvider
           theme={{
             components: {
@@ -427,7 +430,7 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({
           },
         }}
       >
-        <CenteredHeaderTable
+        <Table
           style={{ marginBottom: "20px" }}
           columns={columns}
           dataSource={dataSource}
@@ -440,6 +443,7 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({
           current={currentPage}
           total={totalPages}
           onChange={handlePageChange}
+          showSizeChanger={false}
         />
       </ConfigProvider>
     </>
