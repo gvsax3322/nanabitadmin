@@ -37,6 +37,7 @@ const initialSearchCriteria: SearchCriteria = {
 };
 
 export interface GetProduct {
+  totalCount: number;
   remainedCnt: any;
   productNm: string;
   iproduct: number;

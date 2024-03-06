@@ -212,14 +212,18 @@ const ModifyModal: React.FC<ResultModalProps> = ({ onClose, patchData }) => {
 
   // 이미지 파일을 삭제할 때 호출될 함수
   const handleRemove = (file: any) => {
-    console.log("file.uid", file.name);
-    console.log("file.uid", typeof file.uid);
+    console.log("file.uid", file);
+    console.log("file.uid", typeof file.url);
     // 이미지 파일 리스트의 길이가 2개 이상일 때만 삭제 처리
     if (fileList.length > 1) {
-      const newFileList = fileList.filter(item => item.uid !== file.uid);
+      const newFileList = fileList.filter(item => item.url !== file.url);
       setFileList(newFileList);
-      if (typeof file.uid === "number") {
-        setDeletedPics([...deletedPics, file.uid]);
+
+      // URL에서 파일 이름 추출
+      const fileName = file.url.split("/").pop();
+
+      if (!deletedPics.includes(fileName)) {
+        setDeletedPics([...deletedPics, fileName]);
       }
       return true; // 삭제 처리를 진행
     } else {
@@ -227,8 +231,9 @@ const ModifyModal: React.FC<ResultModalProps> = ({ onClose, patchData }) => {
       setIsMinimumWarningVisible(true);
       return false; // 삭제 처리를 중지
     }
-  };
+};
 
+  console.log("이게 담기니?", deletedPics);
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent
