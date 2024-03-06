@@ -14,4 +14,5 @@ export interface mainCateData {
 export interface middleCategoryList {
   imiddle: number;
   middleCategory: string;
+  candidateKey: number;
 }
