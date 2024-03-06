@@ -57,7 +57,7 @@ const MainBanner: React.FC = () => {
   const [bannerImg, setBannerImg] = useState<string>();
   const [bannerUrl, setBannerUrl] = useState<string>("");
   const [bannerTarget, setBannerTarget] = useState<number>(0);
-  const [bannerState, setBanenrState] = useState<number>(1);
+  const [bannerState, setBanenrState] = useState<number>(0);
 
   const [messageApi, contextHolder] = message.useMessage();
   const successEvent = (txt: string) => {
@@ -94,10 +94,6 @@ const MainBanner: React.FC = () => {
     console.error("목록 호출 서버 에러:", error);
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [refresh]);
-
   const dataSource = bannerInfo
     ? bannerInfo.map((item, index) => ({
         item: item,
@@ -106,7 +102,9 @@ const MainBanner: React.FC = () => {
         target: item.target,
         status: item.status,
         bannerUrl: item.bannerUrl,
-        bannerPic: `${API_SERVER_HOST}/pic/banner/${item.ibanner}/${item.bannerPic}`,
+        bannerPic: item.bannerPic
+          ? `${API_SERVER_HOST}/pic/banner/${item.ibanner}/${item.bannerPic}`
+          : process.env.PUBLIC_URL + "/assets/images/defaultitemimg.svg",
         bannerNew: item.bannerNew,
         bannerlength: item.bannerlength,
       }))
@@ -128,6 +126,7 @@ const MainBanner: React.FC = () => {
     let newIbanner;
     if (newBannerInfo.length > 0) {
       newIbanner = newBannerInfo.length + 1;
+      successEvent("배너 정보를 입력해 주세요.");
     } else {
       newIbanner = 1; // 만약 bannerInfo가 null이거나 길이가 0이면 1로 설정
     }
@@ -145,14 +144,17 @@ const MainBanner: React.FC = () => {
   };
   //  =================배너 값 관리 함수 =================
   // 체크여부
-  const handleCheckChange = (ibanner: number, isChecked: boolean) => {
-    // console.log(`ibanner: ${ibanner}, 변경된 체크 여부: ${isChecked}`);
+  const handleCheckChange = (item: any, isChecked: boolean) => {
+    // console.log(`item: ${item}, 변경된 체크 여부: ${isChecked}`);
+    console.log(item);
     if (isChecked === false) {
+      console.log("배너 상태 :", item.status);
       setBanenrState(1);
     } else if (isChecked === true) {
+      console.log("배너 상태 :", item.status);
       setBanenrState(0);
     }
-    console.log(bannerState);
+    console.log("useState", bannerState);
   };
 
   // url 입력창
@@ -177,13 +179,18 @@ const MainBanner: React.FC = () => {
   const handleState = async (action: string, ibanner: any) => {
     if (action === "editbanner") {
       // 수정 버튼이 클릭된 경우
+      console.log("ibanner", ibanner);
+      console.log("사진", ibanner.bannerPic);
+      console.log("url", ibanner.bannerUrl);
+      console.log("타겟", ibanner.target);
+      console.log("체크여부", ibanner.status);
       function convertToPostBannerData(data: any): PostBannerData {
         const postBannerData: PostBannerData = {
-          pic: bannerImg || "", // 기본값은 빈 문자열로 설정
+          pic: bannerImg || ibanner.bannerPic, // 기본값은 빈 문자열로 설정
           dto: {
-            bannerUrl: bannerUrl || "", // 기본값은 빈 문자열로 설정
-            target: bannerTarget || 0, // 기본값은 0으로 설정
-            status: bannerState || 0, // 기본값은 0으로 설정
+            bannerUrl: bannerUrl || ibanner.bannerUrl, // 기본값은 빈 문자열로 설정
+            target: bannerTarget || ibanner.target, // 기본값은 0으로 설정
+            status: bannerState || ibanner.status, // 기본값은 0으로 설정
           },
         };
         return postBannerData;
@@ -202,46 +209,59 @@ const MainBanner: React.FC = () => {
       const letsPostBanner: PostBannerData =
         convertToPostBannerData(ibannerData);
       console.log(letsPostBanner);
-      patchBanner(ibanner, letsPostBanner);
-      await setRefresh(refresh + 1);
-      console.log("수정 버튼", "ibanner:", ibanner);
+      patchBanner(ibanner.ibanner, letsPostBanner);
+      fetchData();
+      setRefresh(refresh + 1);
+      successEvent(`수정 되었습니다.`);
       // ==============================================
     } else if (action === "deletebanner") {
       // 삭제 버튼이 클릭된 경우
       deletBanner(ibanner);
+      fetchData();
       setRefresh(refresh + 1);
+      successEvent(`삭제 되었습니다.`);
       // console.log("삭제 버튼", "ibanner:", ibanner);
       // ==============================================
     } else if (action === "uploadbanner") {
       // 업로드 버튼이 클릭된 경우
-      function convertToPostBannerData(data: any): PostBannerData {
-        const postBannerData: PostBannerData = {
-          pic: bannerImg || "", // 기본값은 빈 문자열로 설정
-          dto: {
-            bannerUrl: bannerUrl || "", // 기본값은 빈 문자열로 설정
-            target: bannerTarget || 0, // 기본값은 0으로 설정
-            status: bannerState || 0, // 기본값은 0으로 설정
-          },
+      const splitBannerPic = ibanner.bannerPic.split("/");
+      const findImgNull = splitBannerPic[4];
+      console.log(findImgNull);
+      console.log("bannerImg", bannerImg);
+      if (bannerImg === undefined) {
+        warningEvent("이미지를 추가해 주세요.");
+      } else if (bannerImg !== undefined) {
+        function convertToPostBannerData(data: any): PostBannerData {
+          const postBannerData: PostBannerData = {
+            pic: bannerImg || "", // 기본값은 빈 문자열로 설정
+            dto: {
+              bannerUrl: bannerUrl || "", // 기본값은 빈 문자열로 설정
+              target: bannerTarget || 0, // 기본값은 0으로 설정
+              status: bannerState || 0, // 기본값은 0으로 설정
+            },
+          };
+          return postBannerData;
+        }
+        // 예시
+        const ibannerData = {
+          bannerNew: ibanner.bannerNew,
+          bannerPic: ibanner.bannerPic,
+          bannerUrl: ibanner.bannerUrl,
+          ibanner: ibanner.ibanner,
+          key: ibanner.key,
+          status: ibanner.status,
+          target: ibanner.target,
         };
-        return postBannerData;
-      }
-      // 예시
-      const ibannerData = {
-        bannerNew: ibanner.bannerNew,
-        bannerPic: ibanner.bannerPic,
-        bannerUrl: ibanner.bannerUrl,
-        ibanner: ibanner.ibanner,
-        key: ibanner.key,
-        status: ibanner.status,
-        target: ibanner.target,
-      };
 
-      const letsPostBanner: PostBannerData =
-        convertToPostBannerData(ibannerData);
-      console.log(letsPostBanner);
-      console.log("업로드 후!", bannerState);
-      postBanner(letsPostBanner);
-      await setRefresh(refresh + 1);
+        const letsPostBanner: PostBannerData =
+          convertToPostBannerData(ibannerData);
+        console.log(letsPostBanner);
+        console.log("업로드 후!", bannerState);
+        postBanner(letsPostBanner);
+        fetchData();
+        successEvent(`업로드 되었습니다.`);
+        setRefresh(refresh + 1);
+      }
     }
   };
 
@@ -251,13 +271,13 @@ const MainBanner: React.FC = () => {
     {
       title: "노출",
       dataIndex: "item",
-      key: "status",
+      key: "item",
       render: (item: any, record: any) => (
         <div>
           {/* status가 0일때 true 아니면 false를 ...? */}
           <Checkbox
-            defaultChecked={item.status === 0 ? true : false}
-            onChange={e => handleCheckChange(record.ibanner, e.target.checked)}
+            defaultChecked={record.status === 0 ? true : false}
+            onChange={e => handleCheckChange(record, e.target.checked)}
           />
         </div>
       ),
@@ -376,9 +396,9 @@ const MainBanner: React.FC = () => {
     },
     {
       title: "상태관리",
-      dataIndex: "ibanner",
-      key: "ibanner",
-      render: (ibanner: number, record: any) => (
+      dataIndex: "item",
+      key: "item",
+      render: (item: any, record: any) => (
         <div
           style={{
             width: "100%",
@@ -394,9 +414,7 @@ const MainBanner: React.FC = () => {
               </SearchButton>
             ) : (
               <>
-                <SearchButton
-                  onClick={() => handleState("editbanner", record.ibanner)}
-                >
+                <SearchButton onClick={() => handleState("editbanner", record)}>
                   수정
                 </SearchButton>
                 <SearchButton
@@ -412,6 +430,10 @@ const MainBanner: React.FC = () => {
       ),
     },
   ];
+
+  useEffect(() => {
+    fetchData();
+  }, [refresh]);
 
   return (
     <>
@@ -433,7 +455,7 @@ const MainBanner: React.FC = () => {
           style={{ marginBottom: 16, fontSize: "12px" }}
           onClick={handleAdd}
         >
-          배너 추가
+          배너 생성
         </MiddleButton>
       </div>
       <ConfigProvider
