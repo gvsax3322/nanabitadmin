@@ -1,5 +1,5 @@
 import { ConfigProvider, Pagination, Rate, Segmented } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { getReview } from "../../api/review/reviewApi";
 import {
   BigKeyword,
@@ -40,19 +40,23 @@ const ReviewSearch = () => {
   const [keyword, setKeyword] = useState("");
   const [iproduct, setIproduct] = useState<number>();
   const [sortBy, setSortBy] = useState<number>(0);
-  const [totalCount, setTotalCount] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   // 셀렉트바 상태변경
   const [mainCategory, setMainCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
   const [sendMainCate, setSendMainCate] = useState<number>(0);
-  const [sendSubCate, setSendSubCate] = useState<number>();
+  const [sendSubCate, setSendSubCate] = useState<number>(0);
 
   //모달
   const [showModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState<SearchReview>();
 
-  const changePage = () => {};
+  const handlePageChange = async (page: number) => {
+    setCurrentPage(page);
+    fetchData(page);
+  };
 
   const changeSortby = (value: string) => {
     if (value === "별점 높은 순") {
@@ -106,10 +110,7 @@ const ReviewSearch = () => {
 
   // select 옵션 변경 시 호출될 함수
   const handleSelectChange = (optionIndex: number): void => {
-    setSelectedOption(optionIndex); // 옵션 인덱스 직접 설정
-    // 선택된 옵션에 따라 inputValue 초기화
-    // 제품명 선택 시 (옵션 0) -> inputValue를 빈 문자열로 초기화
-    // 제품코드 선택 시 (옵션 1) -> inputValue를 0으로 초기화
+    setSelectedOption(optionIndex);
     setInputValue(optionIndex === 0 ? "" : 0);
   };
 
@@ -124,9 +125,10 @@ const ReviewSearch = () => {
     } else if (selectedOption === 1) {
       // 제품코드인 경우
       const value = parseInt(event.target.value, 10);
-      setInputValue(isNaN(value) ? "" : value); // 숫자로 처리, 유효하지 않은 숫자는 빈 문자열로 처리
+
+      setIproduct(isNaN(value) ? 0 : value); // 숫자로 처리, 유효하지 않은 숫자는 0으로 처리
       setKeyword("");
-      setIproduct(value);
+      setInputValue(event.target.value); // 문자열로 처리
     }
   };
 
@@ -225,7 +227,7 @@ const ReviewSearch = () => {
 
   const dataSource = sdata?.map((item, index) => ({
     item: item,
-    key: (index + 1).toString(),
+    key: item,
     nm: item.nm,
     reqReviewPic: `${API_SERVER_HOST}/pic/review/${item.ireview}/${item.reqReviewPic}`,
     iproduct: item.iproduct,
@@ -235,11 +237,12 @@ const ReviewSearch = () => {
     delFl: item.delFl,
   }));
 
-  const fetchData: any = async () => {
+  const fetchData = async (page: number) => {
+    const pageSize = 10;
     try {
-      const successFn = (data: SearchReview[] | undefined) => {
+      const successFn = (data: SearchReview[]) => {
         setSdata(data);
-        // console.log("성공이라규", data);
+        setTotalPages(Math.ceil(data[0].totalCount / pageSize) * 10);
       };
       const failFn = (error: string) => {
         console.error("목록 호출 오류:", error);
@@ -257,7 +260,7 @@ const ReviewSearch = () => {
         sendMainCate,
         sendSubCate,
         sortBy,
-        0,
+        page - 1,
       );
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -265,10 +268,9 @@ const ReviewSearch = () => {
   };
 
   const handleSearch = async () => {
-    fetchData();
+    await fetchData(1);
   };
   const handleReset = async () => {
-    setSelectedOption(1);
     setInputValue("");
     setMainCategory("");
     setSubCategory("");
@@ -277,13 +279,14 @@ const ReviewSearch = () => {
     setSendMainCate(0);
     setSendSubCate(0);
     setSortBy(0);
-    fetchData();
+    setCurrentPage(1);
+    fetchData(1);
     await setRefresh(refresh + 1);
   };
 
   useEffect(() => {
     // console.log("데이터:", sdata);
-    fetchData();
+    fetchData(currentPage);
   }, [refresh, sortBy]);
 
   return (
@@ -387,7 +390,7 @@ const ReviewSearch = () => {
         <ConfigProvider
           theme={{
             token: {
-              // colorPrimary: "#a5a5a5",
+              colorPrimary: "#a5a5a5",
             },
             components: {
               Table: {
@@ -427,7 +430,13 @@ const ReviewSearch = () => {
             bordered
           />
           <FlexJADiv style={{ marginTop: "20px" }}>
-            <Pagination defaultCurrent={1} total={totalCount} />
+            <Pagination
+              style={{ textAlign: "center" }}
+              current={currentPage}
+              total={totalPages}
+              onChange={handlePageChange}
+              showSizeChanger={false}
+            />
           </FlexJADiv>
         </ConfigProvider>
       </div>

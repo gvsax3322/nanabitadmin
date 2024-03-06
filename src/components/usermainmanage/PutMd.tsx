@@ -1,5 +1,5 @@
-import { ConfigProvider, Table, message } from "antd";
-import React, { useEffect, useState } from "react";
+import { ConfigProvider, Pagination, Table, message } from "antd";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   SearchProduct,
@@ -15,6 +15,7 @@ import {
   SelectStyle,
   SubTitle,
 } from "../../styles/AdminBasic";
+import { FlexJADiv } from "../../styles/review/reviewstyle";
 import { API_SERVER_HOST } from "../../util/util";
 import OrderAllSelect from "../order/orderSlect/OrderAllSelect";
 
@@ -33,11 +34,6 @@ export interface CategoryOptions {
   [key: string]: string[];
 }
 
-interface Keyword {
-  keyword: string;
-  iproduct: number;
-}
-
 const PutMd: React.FC = () => {
   const searchType = "searchRcProduct";
   const toggleType = "toggleRcProduct";
@@ -48,12 +44,19 @@ const PutMd: React.FC = () => {
   const [inputValue, setInputValue] = useState<string | number>("");
   const [keyword, setKeyword] = useState("");
   const [iproduct, setIproduct] = useState<number>();
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   // 셀렉트바 상태변경
   const [mainCategory, setMainCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
   const [sendMainCate, setSendMainCate] = useState<number>(0);
   const [sendSubCate, setSendSubCate] = useState<number>(0);
+
+  const handlePageChange = async (page: number) => {
+    setCurrentPage(page);
+    fetchData(page);
+  };
 
   const [messageApi, contextHolder] = message.useMessage();
   const successEvent = (txt: string) => {
@@ -109,14 +112,12 @@ const PutMd: React.FC = () => {
   // select 옵션 변경 시 호출될 함수
   const handleSelectChange = (optionIndex: number): void => {
     setSelectedOption(optionIndex); // 옵션 인덱스 직접 설정
-    // 선택된 옵션에 따라 inputValue 초기화
-    // 제품명 선택 시 (옵션 0) -> inputValue를 빈 문자열로 초기화
-    // 제품코드 선택 시 (옵션 1) -> inputValue를 0으로 초기화
     setInputValue(optionIndex === 0 ? "" : 0);
   };
-
   // 입력 필드 값 변경 시 호출될 함수
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // console.log(event.target.value);
+    console.log(keyword);
     // 선택된 옵션에 따라 입력 값 변환
     if (selectedOption === 0) {
       // 제품명인 경우
@@ -126,9 +127,10 @@ const PutMd: React.FC = () => {
     } else if (selectedOption === 1) {
       // 제품코드인 경우
       const value = parseInt(event.target.value, 10);
-      setInputValue(isNaN(value) ? "" : value); // 숫자로 처리, 유효하지 않은 숫자는 빈 문자열로 처리
+
+      setIproduct(isNaN(value) ? 0 : value); // 숫자로 처리, 유효하지 않은 숫자는 0으로 처리
       setKeyword("");
-      setIproduct(value);
+      setInputValue(event.target.value); // 문자열로 처리
     }
   };
 
@@ -228,7 +230,7 @@ const PutMd: React.FC = () => {
 
   const dataSource = sdata?.map(item => ({
     item: item,
-    key: item.productNm,
+    key: item,
     productNm: item.productNm,
     iproduct: item.iproduct,
     price: item.price,
@@ -236,10 +238,12 @@ const PutMd: React.FC = () => {
     status: item.iproduct,
   }));
 
-  const fetchData = async () => {
+  const fetchData = async (page: number) => {
+    const pageSize = 10;
     try {
-      const successFn = (data: SearchProduct[] | undefined) => {
+      const successFn = (data: SearchProduct[]) => {
         setSdata(data);
+        setTotalPages(Math.ceil(data[0].totalCount / pageSize) * 10);
       };
       const failFn = (error: string) => {
         console.error("목록 호출 오류:", error);
@@ -256,32 +260,33 @@ const PutMd: React.FC = () => {
         iproduct,
         sendMainCate,
         sendSubCate,
-        0,
+        page - 1,
       );
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+
   const handleSearch = async () => {
-    await fetchData();
-    setRefresh(refresh + 1);
+    await fetchData(1);
   };
+
   const handleReset = async () => {
-    setSelectedOption(1);
-    setInputValue("");
+    setInputValue(""); // 입력 필드의 값을 빈 문자열로 초기화
     setMainCategory("");
     setSubCategory("");
     setKeyword("");
     setIproduct(0);
     setSendMainCate(0);
     setSendSubCate(0);
-    await fetchData();
+    setCurrentPage(1);
+    await fetchData(1);
     setRefresh(refresh + 1);
+    console.log(inputValue);
   };
 
   useEffect(() => {
-    // console.log("데이터:", sdata);
-    fetchData();
+    fetchData(currentPage);
   }, [refresh]);
 
   return (
@@ -407,6 +412,15 @@ const PutMd: React.FC = () => {
           pagination={false}
           bordered
         />
+        <FlexJADiv style={{ marginTop: "20px" }}>
+          <Pagination
+            style={{ textAlign: "center" }}
+            current={currentPage}
+            total={totalPages}
+            onChange={handlePageChange}
+            showSizeChanger={false}
+          />
+        </FlexJADiv>
       </ConfigProvider>
     </ConfigProvider>
   );
