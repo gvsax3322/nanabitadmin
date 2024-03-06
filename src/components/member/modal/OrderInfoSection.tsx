@@ -435,6 +435,7 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({
           columns={columns}
           dataSource={dataSource}
           pagination={false}
+          locale={{ emptyText: "데이터가 없습니다." }}
           bordered
         />
 

@@ -10,7 +10,6 @@ import {
   SelectStyle,
   SubTitle,
 } from "../../../styles/AdminBasic";
-import styled from "styled-components";
 
 export interface RegisterChartData {
   date: string;
@@ -205,6 +204,7 @@ const DailyReg: React.FC = () => {
             style={{ textAlign: "center" }}
             dataSource={resMonth.data}
             columns={columns}
+            locale={{ emptyText: "데이터가 없습니다." }}
             pagination={false}
           />
         )}
