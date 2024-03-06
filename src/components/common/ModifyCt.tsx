@@ -10,6 +10,8 @@ export interface Category {
 interface DataPikerGet {
   searchImain: (data: any) => void;
   searchImiddle: (data: any) => void;
+  aaa: any;
+  bbb: any;
 }
 
 // 대분류와 중분류 데이터
@@ -37,10 +39,13 @@ export const subCategories: Category[] = [
   { id: 2, name: "모유용품", parentId: 5 },
 ];
 
-const CategorySelector: React.FC<DataPikerGet> = ({
+const ModifyCt: React.FC<DataPikerGet> = ({
   searchImain,
   searchImiddle,
+  aaa,
+  bbb,
 }) => {
+  console.log("수정데이터 넘어오니?", aaa, bbb);
   const [selectedMainCategory, setSelectedMainCategory] = useState<
     number | null
   >(null);
@@ -52,8 +57,31 @@ const CategorySelector: React.FC<DataPikerGet> = ({
     setSubCategoriesOfSelectedMainCategory,
   ] = useState<Category[]>([]);
 
-  
+  // 서브 카테고리 만들기
+  const makeSubOptionList = () => {
+    const selectedCategoryId = parseInt(aaa);
+    setSelectedMainCategory(selectedCategoryId);
+    // 선택된 대분류에 해당하는 중분류 찾기
+    const subCategoriesFiltered = subCategories.filter(
+      category => category.parentId === selectedCategoryId,
+    );
 
+    setSubCategoriesOfSelectedMainCategory(subCategoriesFiltered);
+
+    // console.log("========= ", subCategoriesFiltered);
+    // 대분류 변경에 따른 중분류의 기본값 설정
+    const selectedSubCategory = subCategoriesFiltered.find(
+      category => category.id === bbb,
+    );
+    console.log("========= ", selectedSubCategory);
+    if (selectedSubCategory) {
+      setSelectedSubCategoryIdData(selectedSubCategory.id);
+    }
+  };
+
+  useEffect(() => {
+    makeSubOptionList();
+  }, []);
   // 대분류 선택 핸들러
   const handleMainCategoryChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
@@ -65,14 +93,22 @@ const CategorySelector: React.FC<DataPikerGet> = ({
       category => category.parentId === selectedCategoryId,
     );
     setSubCategoriesOfSelectedMainCategory(subCategoriesFiltered);
+
+    // 대분류 변경에 따른 중분류의 기본값 설정
+    const selectedSubCategory = subCategoriesFiltered.find(
+      category => category.id === bbb,
+    );
+    if (selectedSubCategory) {
+      setSelectedSubCategoryIdData(selectedSubCategory.id);
+    }
   };
+
   // 중분류 선택 핸들러
   const handleSubCategoryChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     // 중분류 값을 상태에 설정
     const selectedSubCategoryId = parseInt(event.target.value);
-    // 여기에 선택된 중분류 값을 활용하여 필요한 작업을 수행하세요
     setSelectedSubCategoryIdData(selectedSubCategoryId);
   };
 
@@ -90,17 +126,21 @@ const CategorySelector: React.FC<DataPikerGet> = ({
 
   console.log(selectedMainCategory);
   console.log(selectedSubCategoryIdData);
+
   return (
     <div>
       <SelectStyle
         style={{ width: "246px" }}
         id="mainCategory"
         onChange={handleMainCategoryChange}
-        value={selectedMainCategory || ""}
+        // value={
+        //   selectedMainCategory !== null ? selectedMainCategory.toString() : aaa
+        // }
+        defaultValue={aaa}
       >
         <option value="">대분류를 선택하세요</option>
         {mainCategories.map(category => (
-          <option key={category.id} value={category.id}>
+          <option key={category.id} value={category.id.toString()}>
             {category.name}
           </option>
         ))}
@@ -110,11 +150,16 @@ const CategorySelector: React.FC<DataPikerGet> = ({
         id="subCategory"
         style={{ width: "246px" }}
         onChange={handleSubCategoryChange}
-        value={selectedSubCategoryIdData || ""}
+        value={
+          selectedSubCategoryIdData !== null
+            ? selectedSubCategoryIdData.toString()
+            : bbb
+        }
+        // defaultValue={bbb}
       >
         <option value="">중분류를 선택하세요</option>
         {subCategoriesOfSelectedMainCategory.map(category => (
-          <option key={category.id} value={category.id}>
+          <option key={category.id} value={category.id.toString()}>
             {category.name}
           </option>
         ))}
@@ -123,4 +168,4 @@ const CategorySelector: React.FC<DataPikerGet> = ({
   );
 };
 
-export default CategorySelector;
+export default ModifyCt;

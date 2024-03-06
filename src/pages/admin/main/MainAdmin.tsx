@@ -99,7 +99,7 @@ const MainAdmin = () => {
             onClick={() => handleClickMove("charts/dorder")}
             style={{ cursor: "pointer" }}
           >
-            <SubTitle>최근 주문내역</SubTitle>
+            <SubTitle>최근 주문통계</SubTitle>
             <OrderChartCom />
           </BigCard>
         </div>

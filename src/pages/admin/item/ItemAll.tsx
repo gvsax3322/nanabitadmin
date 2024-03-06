@@ -1,9 +1,10 @@
 import styled from "@emotion/styled";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { getDeldel, getProductlist } from "../../../api/mainApi";
+import DayData from "../../../components/common/DayData";
 import ResultModal from "../../../components/common/Modal";
-import OrderAllSelect from "../../../components/order/orderSlect/OrderAllSelect";
-import OrderPicker from "../../../components/order/orderSlect/OrderPicker";
+import SearchCt from "../../../components/common/SearchCt";
 import ItemTable from "../../../components/table/ItemTable";
 import {
   BigKeyword,
@@ -16,16 +17,27 @@ import {
   SubTitle,
 } from "../../../styles/AdminBasic";
 import ExcelDownloadButton from "./ExcelDownloadButton";
-import DayData from "../../../components/common/DayData";
-import SearchCt from "../../../components/common/SearchCt";
-import { InputNumber } from "antd";
 
 const Wrap = styled.div`
   margin-bottom: 30px;
   border-bottom: 2px solid ${Common.color.primary};
 `;
 
+const initialSearchCriteria: SearchCriteria = {
+  keyword: "",
+  iproduct: 0,
+  imain: 0,
+  imiddle: 0,
+  minPrice: 0,
+  maxPrice: 0,
+  dateFl: 0,
+  searchStartDate: "",
+  searchEndDate: "",
+  page: 0,
+};
+
 export interface GetProduct {
+  remainedCnt: any;
   productNm: string;
   iproduct: number;
   price: number;
@@ -51,6 +63,7 @@ interface SearchCriteria {
 export type ProductGetList = GetProduct[];
 
 const ItemAll = () => {
+  console.log("리랜더링");
   // ResultModal을 표시할지 여부를 결정하는 상태
   const [showModal, setShowModal] = useState(false);
   const [dataFromChild, setDataFromChild] = useState<any[]>([]);
@@ -58,16 +71,10 @@ const ItemAll = () => {
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   // 검색기능
-  const [searchPdnm, setSearchPdnm] = useState<string>();
-  const [searchMaxPrice, setSearchMaxPrice] = useState<number | null>(null);
-  const [searchMinPrice, setSearchMinPrice] = useState<number | null>(null);
-  const [searchimain, setSearchimain] = useState<number | undefined>(undefined);
-  const [searchimiddle, setSearchimiddle] = useState<number | undefined>(
-    undefined,
-  );
+  const { register, handleSubmit } = useForm<SearchCriteria>();
 
   // 상품정보 가져오기
-  const fetchData = async () => {
+  const fetchData = async (data: SearchCriteria) => {
     try {
       const successPr = (data: GetProduct[]) => {
         console.log("데이터:", data);
@@ -86,12 +93,12 @@ const ItemAll = () => {
         successPr,
         failFn,
         errorFn,
-        searchPdnm,
+        data.keyword,
         0,
-        searchimain,
-        searchimiddle,
-        searchMinPrice ?? undefined,
-        searchMaxPrice ?? undefined,
+        data.imain,
+        data.imiddle,
+        data.minPrice || 0,
+        data.maxPrice || 0,
         0,
         startDate,
         endDate,
@@ -124,7 +131,7 @@ const ItemAll = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData(initialSearchCriteria);
   }, []);
 
   // ResultModal을 보여주는 함수
@@ -154,12 +161,9 @@ const ItemAll = () => {
   };
 
   // 검색버튼
-  const handleClickSearch = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    e.preventDefault();
+  const handleClickSearch = async (data: SearchCriteria) => {
     try {
-      await fetchData();
+      await fetchData(data);
     } catch (error) {
       console.error("검색 오류:", error);
     }
@@ -167,11 +171,9 @@ const ItemAll = () => {
 
   function handClickImain(data: any): void {
     console.log("main", data);
-    setSearchimain(data);
   }
   function handClickImiddle(data: any): void {
     console.log("middle", data);
-    setSearchimiddle(data);
   }
 
   return (
@@ -179,80 +181,76 @@ const ItemAll = () => {
       <Wrap>
         <MainTitle>전체 상품관리</MainTitle>
         <SubTitle>기본검색</SubTitle>
-        <div style={{ marginBottom: "20px" }}>
-          <BigKeyword
-            style={{ borderTop: `1px solid ${Common.color.primary}` }}
-          >
-            <div className="left">상품명</div>
-            <div className="right">
-              <MiddleInput
-                value={searchPdnm}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setSearchPdnm(e.target.value)
+        <form onSubmit={handleSubmit(handleClickSearch)}>
+          <div style={{ marginBottom: "20px" }}>
+            <BigKeyword
+              style={{ borderTop: `1px solid ${Common.color.primary}` }}
+            >
+              <div className="left">상품명</div>
+              <div className="right">
+                <MiddleInput {...register("keyword")} />
+              </div>
+            </BigKeyword>
+            <BigKeyword>
+              <div className="left">카테고리</div>
+              <div className="right">
+                <SearchCt
+                  searchImain={handClickImain}
+                  searchImiddle={handClickImiddle}
+                />
+              </div>
+            </BigKeyword>
+            <BigKeyword>
+              <DayData
+                onChange={handleDateChange}
+                value={
+                  startDate && endDate
+                    ? [startDate, endDate]
+                    : [undefined, undefined]
                 }
               />
-            </div>
-          </BigKeyword>
-          <BigKeyword>
-            <div className="left">카테고리</div>
-            <div className="right">
-              <SearchCt
-                searchImain={handClickImain}
-                searchImiddle={handClickImiddle}
-              />
-            </div>
-          </BigKeyword>
-          <BigKeyword>
-            <DayData
-              onChange={handleDateChange}
-              value={
-                startDate && endDate
-                  ? [startDate, endDate]
-                  : [undefined, undefined]
-              }
-            />
-          </BigKeyword>
-          <BigKeyword>
-            <div className="left">상품가격</div>
-            <div className="right">
-              <InputNumber
-                value={searchMinPrice}
-                controls={false}
-                onChange={(value: number | null) => setSearchMinPrice(value)}
-                style={{
-                  width: "100px",
-                  height: "25px",
-                  border: ` 1px solid ${Common.color.p500}`,
-                }}
-              />
-              원 이상~
-              <InputNumber
-                value={searchMaxPrice}
-                controls={false}
-                onChange={(value: number | null) => setSearchMaxPrice(value)}
-                style={{
-                  width: "100px",
-                  height: "25px",
-                  border: ` 1px solid ${Common.color.p500}`,
-                }}
-              />
-              원 이하
-            </div>
-          </BigKeyword>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "5px",
-            marginBottom: "20px",
-          }}
-        >
-          <SearchButton onClick={handleClickSearch}>검색</SearchButton>
-          <SearchButton style={{ background: " #f44336" }} onClick={ResetData}>
-            초기화
-          </SearchButton>
-        </div>
+            </BigKeyword>
+            <BigKeyword>
+              <div className="left">상품가격</div>
+              <div className="right">
+                <SmallInput
+                  {...register("minPrice")}
+                  style={{
+                    width: "100px",
+                    height: "25px",
+                    border: ` 1px solid ${Common.color.p500}`,
+                  }}
+                />
+                원 이상~
+                <SmallInput
+                  {...register("maxPrice")}
+                  style={{
+                    width: "100px",
+                    height: "25px",
+                    border: ` 1px solid ${Common.color.p500}`,
+                  }}
+                />
+                원 이하
+              </div>
+            </BigKeyword>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: "5px",
+              marginBottom: "20px",
+            }}
+          >
+            <SearchButton type="submit">검색</SearchButton>
+            <SearchButton
+              style={{ background: " #f44336" }}
+              onClick={ResetData}
+            >
+              초기화
+            </SearchButton>
+          </div>
+        </form>
       </Wrap>
       <div
         style={{
@@ -264,7 +262,7 @@ const ItemAll = () => {
         <div>
           <SmallButton
             style={{ marginRight: "5px" }}
-            onClick={() => handleClcikRemove()}
+            onClick={handleClcikRemove}
           >
             선택 삭제
           </SmallButton>
@@ -286,4 +284,5 @@ const ItemAll = () => {
     </>
   );
 };
+
 export default ItemAll;
