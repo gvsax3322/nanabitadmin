@@ -13,7 +13,7 @@ const CatePage = () => {
 
   return (
     <div>
-      {/* 헤더 컴포넌트 */}
+      {/* 헤더 컴포넌트f */}
       <CateHeader
         fetchData={handleClickTableuum}
         tableNum={handleClickTableuum}
