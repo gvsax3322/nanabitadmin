@@ -2,7 +2,9 @@ import { ConfigProvider, Pagination, Table, message } from "antd";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import styled from "styled-components";
 import {
+  MainProRc,
   SearchProduct,
+  getMainProNew,
   getMdSearch,
   putMainProRc,
 } from "../../api/usermain/mainProductSetApi";
@@ -34,7 +36,6 @@ export interface CategoryOptions {
   [key: string]: string[];
 }
 
-
 const PutNew: React.FC = () => {
   const searchType = "searchNewProduct";
   const toggleType = "toggleNewProduct";
@@ -47,6 +48,7 @@ const PutNew: React.FC = () => {
   const [iproduct, setIproduct] = useState<number>();
   const [totalPages, setTotalPages] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [productCheck, setProductCheck] = useState<MainProRc[]>([]);
 
   // 셀렉트바 상태변경
   const [mainCategory, setMainCategory] = useState("");
@@ -118,6 +120,8 @@ const PutNew: React.FC = () => {
 
   // 입력 필드 값 변경 시 호출될 함수
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // console.log(event.target.value);
+    console.log(keyword);
     // 선택된 옵션에 따라 입력 값 변환
     if (selectedOption === 0) {
       // 제품명인 경우
@@ -146,9 +150,9 @@ const PutNew: React.FC = () => {
     const putErrorFn = () => {
       console.log("등록 에러");
     };
-    const filteredProducts: any = sdata?.filter(sdata => sdata.status === 1);
+    // const filteredProducts: any = sdata?.filter(sdata => sdata.status === 1);
 
-    if (filteredProducts.length >= 8) {
+    if (productCheck.length >= 8) {
       // item.status가 1이면서 등록된 제품이 8개 이상인 경우에도 putMainProRc를 실행
       if (item.status === 1) {
         putMainProRc(
@@ -284,7 +288,26 @@ const PutNew: React.FC = () => {
     setRefresh(refresh + 1);
   };
 
+  const checkToProduct = async () => {
+    try {
+      const successFn = (data: MainProRc[]) => {
+        setProductCheck(data);
+        // console.log("데이터:", resMonth);
+      };
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+      await getMainProNew(successFn, failFn, errorFn);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   useEffect(() => {
+    checkToProduct();
     fetchData(currentPage);
   }, [refresh]);
 
