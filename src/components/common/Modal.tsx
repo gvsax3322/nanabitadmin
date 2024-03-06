@@ -1,5 +1,5 @@
 import { UploadOutlined } from "@ant-design/icons";
-import { Button, Form, Input, InputNumber, Select, Upload } from "antd";
+import { Button, ConfigProvider, Form, Input, InputNumber, Upload } from "antd";
 import React, { useState } from "react";
 import { postProduct } from "../../api/mainApi";
 import {
@@ -11,7 +11,6 @@ import {
 } from "../../styles/AdminBasic";
 import { ModalContent, ModalOverlay } from "../../styles/main/main";
 import { API_SERVER_HOST } from "../../util/util";
-import AntCategory from "./AntCategory";
 import CategorySelector from "./SearchCt";
 // import { postAlbum } from "../../api/album/album_api";
 
@@ -25,46 +24,33 @@ interface Product {
     imain: number;
     imiddle: number;
     productNm: string;
-    recommendedAge: number;
+    recommandAge: number;
     price: number;
     remainedCount: number;
     adminMemo: string;
   };
 }
 
-const initState: Product = {
-  pics: [],
-  productDetails: "",
-  dto: {
-    imain: 0,
-    imiddle: 0,
-    productNm: "",
-    recommendedAge: 0,
-    adminMemo: "",
-    price: 0,
-    remainedCount: 0,
-  },
-};
 interface FormData {
   imain: number;
   imiddle: number;
   productNm: string;
   price: number;
-  remainedCount: number;
-  recommendedAge: number;
+  remainedCnt: number;
+  recommandAge: number;
   adminMemo: string;
-  newFl: number;
-  popFl: number;
 }
-interface WriteAlbumProps {
-  albumData: any; // You can specify the correct type for albumData
-  submit: () => void;
-}
+
 const host = `${API_SERVER_HOST}/api/admin`;
 
 const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState<any[]>([]);
+  const [activeSubcategory, setActiveSubcategory] = useState<number>(1);
+
+  const handleSubcategoryClick = (subcategory: number) => {
+    setActiveSubcategory(subcategory);
+  };
 
   const [submitClicked, setSubmitClicked] = useState<boolean>(false);
   const [fileListDetails, setFileListDetails] = useState<any[]>([]); // State for details Upload.Dragger
@@ -120,12 +106,10 @@ const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
           imain: searchimain,
           imiddle: searchimiddle,
           productNm: data.productNm,
-          recommendedAge: data.recommendedAge,
+          recommandAge: activeSubcategory,
           adminMemo: data.adminMemo,
           price: data.price,
-          remainedCount: data.remainedCount,
-          newFl: data.newFl,
-          popFl: data.popFl,
+          remainedCnt: data.remainedCnt,
         }),
       ],
       { type: "application/json" },
@@ -172,220 +156,265 @@ const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
         transition={{ duration: 0.5 }}
         onClick={e => e.stopPropagation()}
       >
-        <div style={{ marginBottom: "20px" }}>
-          <BigKeyword
-            style={{ borderTop: `1px solid ${Common.color.primary}` }}
-          >
-            <div className="left">카테고리</div>
-            <div className="right">
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  gap: "30px",
-                }}
-              >
-                <CategorySelector
-                  searchImain={handClickImain}
-                  searchImiddle={handClickImiddle}
-                />
-              </div>
-            </div>
-          </BigKeyword>
-          <BigKeyword>
-            <div className="left">상품명</div>
-            <div className="right">
-              <Form.Item
-                name="productNm"
-                rules={[{ required: true, message: "제목을 입력해주세요!" }]}
-                style={{
-                  height: "25px",
-                  marginBottom: "6px",
-                }}
-              >
-                <Input
-                  style={{
-                    width: "500px",
-                    height: "25px",
-                    border: `1px solid ${Common.color.p500}`,
-                  }}
-                />
-              </Form.Item>
-            </div>
-          </BigKeyword>
-          <BigKeyword>
-            <div className="left">상품가격</div>
-            <div className="right">
-              <Form.Item
-                name="price"
-                rules={[{ required: true, message: "제목을 입력해주세요!" }]}
-                style={{
-                  height: "25px",
-                  marginBottom: "6px",
-                }}
-              >
-                <InputNumber
-                  controls={false}
-                  style={{
-                    width: "500px",
-                    height: "25px",
-                    border: `1px solid ${Common.color.p500}`,
-                  }}
-                />
-              </Form.Item>
-            </div>
-          </BigKeyword>
-          <BigKeyword>
-            <div className="left">상품재고</div>
-            <div className="right">
-              <Form.Item
-                name="remainedCount"
-                rules={[{ required: true, message: "제목을 입력해주세요!" }]}
-                style={{
-                  height: "25px",
-                  marginBottom: "6px",
-                }}
-              >
-                <InputNumber
-                  controls={false}
-                  style={{
-                    width: "500px",
-                    height: "25px",
-                    border: `1px solid ${Common.color.p500}`,
-                  }}
-                />
-              </Form.Item>
-            </div>
-          </BigKeyword>
-          <BigKeyword>
-            <div className="left">관리자메모</div>
-            <div className="right">
-              <Form.Item
-                style={{ width: "95%", marginBottom: "0px" }}
-                name="adminMemo"
-                rules={[{ required: true, message: "내용을 입력해주세요!" }]}
-              >
-                <Input.TextArea
-                  placeholder="내용 입력"
-                  style={{
-                    position: "relative",
-                    width: "100%",
-                    height: "75px",
-                    margin: "10px",
-                    marginLeft: "0px",
-                    padding: "10px",
-                    fontSize: "16px",
-                    border: "1px solid #ccc",
-                    borderRadius: "5px",
-                    backgroundColor: Common.color.p800,
-                    resize: "none",
-                  }}
-                />
-              </Form.Item>
-            </div>
-          </BigKeyword>
-        </div>
-
         <MainTitle>상품관리 상세페이지</MainTitle>
         <div>
-          <SubTitle>카테고리</SubTitle>
+          <SubTitle>기본 정보</SubTitle>
           <Form form={form} onFinish={onFinish}>
-            <div>
-              <SubTitle>신상품</SubTitle>
-              <Form.Item
-                name="newFl"
-                rules={[{ required: true, message: "제목을 입력해주세요!" }]}
+            <div style={{ marginBottom: "20px" }}>
+              <BigKeyword
+                style={{ borderTop: `1px solid ${Common.color.primary}` }}
               >
-                <Select placeholder="카테고리 중분류">
-                  <Select.Option value={1}>Demo</Select.Option>
-                  <Select.Option value={2}>Demo</Select.Option>
-                  <Select.Option value={3}>Demo</Select.Option>
-                  <Select.Option value={4}>Demo</Select.Option>
-                </Select>
-              </Form.Item>
-              <SubTitle>인기상품</SubTitle>
-              <Form.Item
-                name="popFl"
-                rules={[{ required: true, message: "제목을 입력해주세요!" }]}
+                <div className="left">상품명</div>
+                <div className="right">
+                  <Form.Item
+                    name="productNm"
+                    style={{
+                      height: "25px",
+                      marginBottom: "6px",
+                    }}
+                  >
+                    <Input
+                      style={{
+                        width: "500px",
+                        height: "25px",
+                        border: `1px solid ${Common.color.p500}`,
+                      }}
+                    />
+                  </Form.Item>
+                </div>
+              </BigKeyword>
+              <BigKeyword>
+                <div className="left">카테고리</div>
+                <div className="right">
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "30px",
+                    }}
+                  >
+                    <CategorySelector
+                      searchImain={handClickImain}
+                      searchImiddle={handClickImiddle}
+                    />
+                  </div>
+                </div>
+              </BigKeyword>
+              <BigKeyword>
+                <div className="left">나이별상품</div>
+                <div className="right">
+                  <Form.Item
+                    name="recommandAge"
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginBottom: "6px",
+                      marginTop: "6px",
+                    }}
+                  >
+                    <ConfigProvider
+                      autoInsertSpaceInButton={false}
+                      theme={{
+                        token: {
+                          // Seed Token
+                          colorPrimary: "#a5a5a5",
+
+                          // Alias Token
+                          colorBgContainer: "#fff",
+                        },
+                      }}
+                    >
+                      <Button
+                        type={activeSubcategory === 1 ? "primary" : "default"}
+                        onClick={() => handleSubcategoryClick(1)}
+                        style={{
+                          marginRight: "10px",
+                          border: `1px solid ${Common.color.p500}`,
+                        }}
+                      >
+                        초기(4~6개월)
+                      </Button>
+                    </ConfigProvider>
+                    <ConfigProvider
+                      autoInsertSpaceInButton={false}
+                      theme={{
+                        token: {
+                          // Seed Token
+                          colorPrimary: "#a5a5a5",
+
+                          // Alias Token
+                          colorBgContainer: "#fff",
+                        },
+                      }}
+                    >
+                      <Button
+                        type={activeSubcategory === 2 ? "primary" : "default"}
+                        onClick={() => handleSubcategoryClick(2)}
+                        style={{
+                          marginRight: "10px",
+                          border: `1px solid ${Common.color.p500}`,
+                        }}
+                      >
+                        중기(7~9개월)
+                      </Button>
+                    </ConfigProvider>
+                    <ConfigProvider
+                      autoInsertSpaceInButton={false}
+                      theme={{
+                        token: {
+                          // Seed Token
+                          colorPrimary: "#a5a5a5",
+
+                          // Alias Token
+                          colorBgContainer: "#fff",
+                        },
+                      }}
+                    >
+                      <Button
+                        type={activeSubcategory === 3 ? "primary" : "default"}
+                        onClick={() => handleSubcategoryClick(3)}
+                        style={{
+                          marginRight: "10px",
+                          border: `1px solid ${Common.color.p500}`,
+                        }}
+                      >
+                        후기(10~12개월)
+                      </Button>
+                    </ConfigProvider>
+                    <ConfigProvider
+                      autoInsertSpaceInButton={false}
+                      theme={{
+                        token: {
+                          // Seed Token
+                          colorPrimary: "#a5a5a5",
+
+                          // Alias Token
+                          colorBgContainer: "#fff",
+                        },
+                      }}
+                    >
+                      <Button
+                        type={activeSubcategory === 4 ? "primary" : "default"}
+                        onClick={() => handleSubcategoryClick(4)}
+                        style={{ border: `1px solid ${Common.color.p500}` }}
+                      >
+                        완료기(12~24개월)
+                      </Button>
+                    </ConfigProvider>
+                  </Form.Item>
+                </div>
+              </BigKeyword>
+              <BigKeyword>
+                <div className="left">상품가격</div>
+                <div className="right">
+                  <Form.Item
+                    name="price"
+                    style={{
+                      height: "25px",
+                      marginBottom: "6px",
+                    }}
+                  >
+                    <InputNumber
+                      controls={false}
+                      style={{
+                        width: "500px",
+                        height: "25px",
+                        border: `1px solid ${Common.color.p500}`,
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                      formatter={value =>
+                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      }
+                    />
+                  </Form.Item>
+                </div>
+              </BigKeyword>
+              <BigKeyword>
+                <div className="left">상품재고</div>
+                <div className="right">
+                  <Form.Item
+                    name="remainedCnt"
+                    style={{
+                      height: "25px",
+                      marginBottom: "6px",
+                    }}
+                  >
+                    <InputNumber
+                      controls={false}
+                      style={{
+                        width: "500px",
+                        height: "25px",
+                        border: `1px solid ${Common.color.p500}`,
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                      formatter={value =>
+                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      }
+                    />
+                  </Form.Item>
+                </div>
+              </BigKeyword>
+              <BigKeyword>
+                <div className="left">관리자메모</div>
+                <div className="right">
+                  <Form.Item
+                    style={{ width: "95%", marginBottom: "0px" }}
+                    name="adminMemo"
+                  >
+                    <Input.TextArea
+                      placeholder="내용 입력"
+                      style={{
+                        position: "relative",
+                        width: "100%",
+                        height: "75px",
+                        margin: "10px",
+                        marginLeft: "0px",
+                        padding: "10px",
+                        fontSize: "16px",
+                        border: "1px solid #ccc",
+                        borderRadius: "5px",
+                        backgroundColor: Common.color.p800,
+                        resize: "none",
+                      }}
+                    />
+                  </Form.Item>
+                </div>
+              </BigKeyword>
+            </div>
+            <SubTitle>상품이미지</SubTitle>
+            <div style={{ marginBottom: "30px" }}>
+              <Upload.Dragger
+                action={`${host}`}
+                listType="picture"
+                fileList={fileList}
+                onChange={handleChange}
+                className="upload-list-inline"
+                multiple={true}
+                style={uploadAreaStyle}
+                beforeUpload={() => false}
+                maxCount={4}
               >
-                <Select placeholder="카테고리 중분류">
-                  <Select.Option value={1}>Demo</Select.Option>
-                  <Select.Option value={2}>Demo</Select.Option>
-                  <Select.Option value={3}>Demo</Select.Option>
-                  <Select.Option value={4}>Demo</Select.Option>
-                </Select>
-              </Form.Item>
-              <SubTitle>상품명</SubTitle>
-              <Form.Item
-                name="productNm"
-                rules={[{ required: true, message: "제목을 입력해주세요!" }]}
+                <Button icon={<UploadOutlined />}>업로드(최대 4개) </Button>
+              </Upload.Dragger>
+            </div>
+            <SubTitle>상품상세이미지</SubTitle>
+            <div style={{ marginBottom: "30px" }}>
+              <Upload.Dragger
+                action={`${host}`}
+                listType="picture"
+                fileList={fileListDetails}
+                onChange={handleChangeDetails}
+                className="upload-list-inline"
+                multiple={false}
+                style={uploadAreaStyle}
+                beforeUpload={() => false}
+                maxCount={1}
               >
-                <Input placeholder="상품명 입력" />
-              </Form.Item>
-              <SubTitle>나이별상품</SubTitle>
-              <Form.Item
-                name="recommendedAge"
-                rules={[{ required: true, message: "제목을 입력해주세요!" }]}
-              >
-                <InputNumber placeholder="상품명 입력" controls={false} />
-              </Form.Item>
-              <SubTitle>상품가격</SubTitle>
-              <Form.Item
-                name="price"
-                rules={[{ required: true, message: "제목을 입력해주세요!" }]}
-              >
-                <InputNumber placeholder="상품명 입력" controls={false} />
-              </Form.Item>
-              <SubTitle>상품재고</SubTitle>
-              <Form.Item
-                name="remainedCount"
-                rules={[{ required: true, message: "제목을 입력해주세요!" }]}
-              >
-                <InputNumber placeholder="상품명 입력" controls={false} />
-              </Form.Item>
-              <SubTitle>관리자메모</SubTitle>
-              <Form.Item
-                style={{ height: "150px" }}
-                name="adminMemo"
-                rules={[{ required: true, message: "내용을 입력해주세요!" }]}
-              >
-                <Input.TextArea
-                  placeholder="내용 입력"
-                  style={{ height: "150px" }}
-                />
-              </Form.Item>
-              <SubTitle>상품이미지</SubTitle>
-              <div style={{ marginBottom: "30px" }}>
-                <Upload.Dragger
-                  action={`${host}`}
-                  listType="picture"
-                  fileList={fileList}
-                  onChange={handleChange}
-                  className="upload-list-inline"
-                  multiple={true}
-                  style={uploadAreaStyle}
-                  beforeUpload={() => false}
-                  maxCount={4}
-                >
-                  <Button icon={<UploadOutlined />}>업로드(최대 4개) </Button>
-                </Upload.Dragger>
-              </div>
-              <SubTitle>상품상세이미지</SubTitle>
-              <div style={{ marginBottom: "30px" }}>
-                <Upload.Dragger
-                  action={`${host}`}
-                  listType="picture"
-                  fileList={fileListDetails}
-                  onChange={handleChangeDetails}
-                  className="upload-list-inline"
-                  multiple={false}
-                  style={uploadAreaStyle}
-                  beforeUpload={() => false}
-                  maxCount={1}
-                >
-                  <Button icon={<UploadOutlined />}>업로드(최대 1개) </Button>
-                </Upload.Dragger>
-              </div>
+                <Button icon={<UploadOutlined />}>업로드(최대 1개) </Button>
+              </Upload.Dragger>
             </div>
             <div
               style={{

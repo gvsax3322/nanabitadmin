@@ -5,6 +5,7 @@ import { GetProduct } from "../../pages/admin/item/ItemAll";
 import { Common, SearchButton } from "../../styles/AdminBasic";
 import ModifyModal from "../common/ModifyModal";
 import { Category, mainCategories, subCategories } from "../common/SearchCt";
+import { API_SERVER_HOST } from "../../util/util";
 
 export interface IDataItem {
   key: number;
@@ -85,11 +86,11 @@ const ItemTable: React.FC<ItemTableModify> = ({ tableNum, productList }) => {
     },
     {
       title: "이미지",
-      dataIndex: "repPic",
-      render: (repPic: string): any => (
+      dataIndex: "productPic",
+      render: (productPic: string, aaa: any): any => (
         <img
           style={{ width: "190px", height: "66px", objectFit: "cover" }}
-          src={repPic}
+          src={`${API_SERVER_HOST}/pic/product/${aaa.iproduct}/${productPic[0]}`}
           alt=""
           className="diaryadd-img-before"
         />
@@ -101,34 +102,43 @@ const ItemTable: React.FC<ItemTableModify> = ({ tableNum, productList }) => {
     },
     {
       title: "카테고리",
-      render: (record: GetProduct) =>
-        `${findCategoryName(record.imain, mainCategories)} > ${findCategoryName(
-          record.imiddle,
-          subCategories,
-        )}`,
+      render: (record: GetProduct) => {
+        const mainCategoryName = findCategoryName(record.imain, mainCategories);
+        const subCategoryName =
+          subCategories.find(
+            category =>
+              category.parentId === record.imain &&
+              category.id === record.imiddle,
+          )?.name || "";
+        return `${mainCategoryName} > ${subCategoryName}`;
+      },
     },
+
     {
       title: "재고",
-      dataIndex: "iproduct",
+      dataIndex: "remainedCnt",
     },
     {
       title: "판매가",
       dataIndex: "price",
+      render: (price: number) => <span>{price.toLocaleString()}</span>,
     },
     {
       title: "관리",
       render: (record: GetProduct) => (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <SearchButton onClick={() => handleShowModal(record)}>
-            수정
-          </SearchButton>
-        </div>
+        <>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <SearchButton onClick={() => handleShowModal(record)}>
+              수정
+            </SearchButton>
+          </div>
+        </>
       ),
     },
   ];

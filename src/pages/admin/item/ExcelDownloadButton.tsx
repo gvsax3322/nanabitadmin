@@ -2,10 +2,23 @@ import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import { SmallButton } from "../../../styles/AdminBasic";
 import { GetProduct } from "./ItemAll";
+import {
+  Category,
+  mainCategories,
+  subCategories,
+} from "../../../components/common/SearchCt";
 
 interface ExcelDownloadButtonProps {
   exceldata: GetProduct[]; // IDataItem 타입으로 된 배열을 exceldata로 전달받음
 }
+
+const findCategoryName = (
+  categoryId: number,
+  categories: Category[],
+): string => {
+  const category = categories.find(cat => cat.id === categoryId);
+  return category ? category.name : "";
+};
 
 const ExcelDownloadButton: React.FC<ExcelDownloadButtonProps> = ({
   exceldata,
@@ -17,8 +30,13 @@ const ExcelDownloadButton: React.FC<ExcelDownloadButtonProps> = ({
     const excelData = exceldata.map(item => [
       item.iproduct,
       item.productNm,
-      item.imain,
-      item.iproduct,
+      `${findCategoryName(item.imain, mainCategories)} > ${
+        subCategories.find(
+          category =>
+            category.parentId === item.imain && category.id === item.imiddle,
+        )?.name || ""
+      }`,
+      item.remainedCnt,
       item.price,
     ]);
 

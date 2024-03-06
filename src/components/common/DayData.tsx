@@ -66,7 +66,7 @@ const DayData = ({
   };
 
   const handleAllClick = () => {
-    const startDate = today.subtract(365, "y").format("YYYY-MM-DD");
+    const startDate = today.subtract(1, "y").format("YYYY-MM-DD");
     const endDate = today.format("YYYY-MM-DD");
     setSelectedDate([startDate, endDate]);
     onChange([startDate, endDate]);
@@ -92,25 +92,46 @@ const DayData = ({
                 : [undefined, undefined]
             }
           />
-          <SmallButton style={{ minWidth: "40px" }} onClick={handleDayClick}>
+          <SmallButton
+            style={{ minWidth: "40px" }}
+            type="button"
+            onClick={handleDayClick}
+          >
             오늘
           </SmallButton>
-          <SmallButton style={{ minWidth: "40px" }} onClick={handleYesClick}>
+          <SmallButton
+            style={{ minWidth: "40px" }}
+            type="button"
+            onClick={handleYesClick}
+          >
             어제
           </SmallButton>
-          <SmallButton style={{ minWidth: "40px" }} onClick={handleWeekClick}>
+          <SmallButton
+            style={{ minWidth: "40px" }}
+            type="button"
+            onClick={handleWeekClick}
+          >
             일주일
           </SmallButton>
-          <SmallButton style={{ minWidth: "40px" }} onClick={handleMonthClick}>
+          <SmallButton
+            style={{ minWidth: "40px" }}
+            type="button"
+            onClick={handleMonthClick}
+          >
             1개월
           </SmallButton>
           <SmallButton
             style={{ minWidth: "40px" }}
+            type="button"
             onClick={handlequarterClick}
           >
             3개월
           </SmallButton>
-          <SmallButton style={{ minWidth: "40px" }} onClick={handleAllClick}>
+          <SmallButton
+            style={{ minWidth: "40px" }}
+            type="button"
+            onClick={handleAllClick}
+          >
             전체
           </SmallButton>
         </Space>
