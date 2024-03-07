@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 import React, { useState } from "react";
 import {
   BigCard,
@@ -137,7 +138,12 @@ const ModalComm: React.FC<ResultModalProps> = ({
             {answer.writerNm}
           </div>
         </BigKeyword>
-        <BigCard style={{ fontSize: "1.8rem" }}>{answer.contents}</BigCard>
+        <BigCard
+          style={{ fontSize: "1.8rem", minHeight: 500, overflow: "hidden" }}
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(answer.contents),
+          }}
+        />
         <div style={{ display: "flex", flexDirection: "column" }}>
           {answer.commentList?.map((item: any, index: number) => (
             <motion.div
