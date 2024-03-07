@@ -94,7 +94,7 @@ export const getProductlist = async (
   maxPrice: number = 0,
   dateFl: number = 0,
   searchStartDate: string = "2023-03-02",
-  searchEndDate: string = "2024-03-02",
+  searchEndDate: string = "2024-03-09",
   page: number = 0,
 ) => {
   try {

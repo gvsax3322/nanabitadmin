@@ -1,7 +1,7 @@
 import { UploadOutlined } from "@ant-design/icons";
 import { Button, Form, Input, InputNumber, Upload } from "antd";
 import React, { useState } from "react";
-import { productPatch } from "../../api/mainApi";
+import { getProductlist, productPatch } from "../../api/mainApi";
 import {
   BigKeyword,
   Common,
@@ -12,11 +12,14 @@ import {
 import { ModalContent, ModalOverlay } from "../../styles/main/main";
 import { API_SERVER_HOST } from "../../util/util";
 import ModifyCt from "./ModifyCt";
+import { GetProduct } from "../../pages/admin/item/ItemAll";
 // import { postAlbum } from "../../api/album/album_api";
 
 interface ResultModalProps {
   onClose: () => void;
   patchData: any;
+  reset: any;
+  setProductList: any;
 }
 interface Product {
   pics: string[];
@@ -46,7 +49,12 @@ interface FormData {
 
 const host = `${API_SERVER_HOST}/api/admin`;
 
-const ModifyModal: React.FC<ResultModalProps> = ({ onClose, patchData }) => {
+const ModifyModal: React.FC<ResultModalProps> = ({
+  onClose,
+  patchData,
+  reset,
+  setProductList,
+}) => {
   console.log("여기도 들어오니?", patchData);
   const abc = JSON.parse(JSON.stringify(patchData));
   console.log(abc);
@@ -146,6 +154,7 @@ const ModifyModal: React.FC<ResultModalProps> = ({ onClose, patchData }) => {
     if (fileList.length === 0) {
       return;
     }
+
     setSubmitClicked(true);
     form.submit();
   };
@@ -191,8 +200,22 @@ const ModifyModal: React.FC<ResultModalProps> = ({ onClose, patchData }) => {
     productPatch({
       product: formData,
       abc,
-    });
+    }).then(async () => {
+      const successFn = (data: GetProduct[]) => {
+        console.log("데이터:", data);
+        setProductList(data);
+      };
 
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+      await getProductlist(successFn, failFn, errorFn);
+    });
+    reset();
     setSubmitClicked(false);
     onClose();
   };
@@ -231,7 +254,7 @@ const ModifyModal: React.FC<ResultModalProps> = ({ onClose, patchData }) => {
       setIsMinimumWarningVisible(true);
       return false; // 삭제 처리를 중지
     }
-};
+  };
 
   console.log("이게 담기니?", deletedPics);
   return (

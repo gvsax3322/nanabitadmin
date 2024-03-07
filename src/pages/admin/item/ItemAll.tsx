@@ -152,6 +152,7 @@ const ItemAll = () => {
     const iproductList: number[] = dataFromChild.map(item => item.iproduct);
     console.log("선택된 iproduct 리스트:", iproductList);
     getDeldel(iproductList);
+    ResetData();
   };
 
   // 날짜 변경
@@ -279,9 +280,11 @@ const ItemAll = () => {
         </div>
       </div>
       <div>
-        <ItemTable tableNum={handleClickTableuum} productList={productList} />
+        <ItemTable tableNum={handleClickTableuum} productList={productList} reset={ResetData} setProductList={setProductList}/>
       </div>
-      {showModal && <ResultModal onClose={handleCloseModal} />}
+      {showModal && (
+      <ResultModal onClose={handleCloseModal} reset={ResetData} setProductList={setProductList} />
+      )}
     </>
   );
 };

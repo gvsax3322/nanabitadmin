@@ -1,7 +1,7 @@
 import { UploadOutlined } from "@ant-design/icons";
 import { Button, ConfigProvider, Form, Input, InputNumber, Upload } from "antd";
 import React, { useState } from "react";
-import { postProduct } from "../../api/mainApi";
+import { getProductlist, postProduct } from "../../api/mainApi";
 import {
   BigKeyword,
   Common,
@@ -12,10 +12,13 @@ import {
 import { ModalContent, ModalOverlay } from "../../styles/main/main";
 import { API_SERVER_HOST } from "../../util/util";
 import CategorySelector from "./SearchCt";
+import { GetProduct } from "../../pages/admin/item/ItemAll";
 // import { postAlbum } from "../../api/album/album_api";
 
 interface ResultModalProps {
   onClose: () => void;
+  reset: () => void;
+  setProductList: any;
 }
 interface Product {
   pics: string[];
@@ -43,7 +46,12 @@ interface FormData {
 
 const host = `${API_SERVER_HOST}/api/admin`;
 
-const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
+const ResultModal: React.FC<ResultModalProps> = ({
+  onClose,
+  reset,
+  setProductList,
+}) => {
+  console.log(reset);
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState<any[]>([]);
   const [activeSubcategory, setActiveSubcategory] = useState<number>(1);
@@ -89,6 +97,19 @@ const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
     if (fileList.length === 0) {
       return;
     }
+    const successFn = (data: GetProduct[]) => {
+      console.log("데이터:", data);
+      setProductList(data);
+    };
+
+    const failFn = (error: string) => {
+      console.error("목록 호출 오류:", error);
+    };
+
+    const errorFn = (error: string) => {
+      console.error("목록 호출 서버 에러:", error);
+    };
+    getProductlist(successFn, failFn, errorFn);
     setSubmitClicked(true);
     form.submit();
   };
@@ -129,6 +150,20 @@ const ResultModal: React.FC<ResultModalProps> = ({ onClose }) => {
 
     postProduct({
       product: formData,
+    }).then(async () => {
+      const successFn = (data: GetProduct[]) => {
+        console.log("데이터:", data);
+        setProductList(data);
+      };
+
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+      await getProductlist(successFn, failFn, errorFn);
     });
 
     setSubmitClicked(false);

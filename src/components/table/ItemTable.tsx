@@ -20,6 +20,8 @@ export interface IDataItem {
 interface ItemTableModify {
   tableNum: (data: any) => void;
   productList: GetProduct[]; // 이 부분 수정
+  reset: any;
+  setProductList: any;
 }
 
 const findCategoryName = (
@@ -30,7 +32,12 @@ const findCategoryName = (
   return category ? category.name : "";
 };
 
-const ItemTable: React.FC<ItemTableModify> = ({ tableNum, productList }) => {
+const ItemTable: React.FC<ItemTableModify> = ({
+  tableNum,
+  productList,
+  reset,
+  setProductList,
+}) => {
   console.log(productList);
   const aaa = productList;
 
@@ -242,7 +249,12 @@ const ItemTable: React.FC<ItemTableModify> = ({ tableNum, productList }) => {
         showSizeChanger={false}
       />
       {showModal && (
-        <ModifyModal onClose={handleCloseModal} patchData={modifyData} />
+        <ModifyModal
+          onClose={handleCloseModal}
+          patchData={modifyData}
+          reset={reset}
+          setProductList={setProductList}
+        />
       )}
     </ConfigProvider>
   );
