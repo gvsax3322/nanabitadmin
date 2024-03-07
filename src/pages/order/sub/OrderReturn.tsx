@@ -9,7 +9,6 @@ const OrderReturn = () => {
   };
   return (
     <div>
-      OrderReturn
       <OrReturnHeader
         fetchData={handleClickTableuum}
         tableNum={handleClickTableuum}

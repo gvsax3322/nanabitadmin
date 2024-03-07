@@ -26,6 +26,11 @@ export interface mainAdd {
   main_category: string;
 }
 
+export interface subAdd {
+  imain: number;
+  main_category: string;
+}
+
 const prefix = `${API_SERVER_HOST}/api/admin`;
 // const API_SERVER_HOST = "";
 export const getCategory = async ({

@@ -118,7 +118,7 @@ const PutPop: React.FC = () => {
   // 입력 필드 값 변경 시 호출될 함수
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     // console.log(event.target.value);
-    console.log(keyword);
+    // console.log(keyword);
     // 선택된 옵션에 따라 입력 값 변환
     if (selectedOption === 0) {
       // 제품명인 경우
@@ -205,7 +205,7 @@ const PutPop: React.FC = () => {
       render: (price: number) => <span>{price.toLocaleString()}</span>,
     },
     {
-      title: "삭제",
+      title: "상태",
       dataIndex: "item",
       width: "80px",
       key: "iproduct",
@@ -230,7 +230,7 @@ const PutPop: React.FC = () => {
 
   const dataSource = sdata?.map(item => ({
     item: item,
-    key: item,
+    key: item.iproduct,
     productNm: item.productNm,
     iproduct: item.iproduct,
     price: item.price,
@@ -268,7 +268,35 @@ const PutPop: React.FC = () => {
   };
 
   const handleSearch = async () => {
-    await fetchData(1);
+    try {
+      setCurrentPage(1);
+      const successFn = (data: SearchProduct[]) => {
+        setSdata(data);
+        if (data.length !== 0) {
+          successEvent("검색 완료");
+        } else {
+          warningEvent("검색 결과가 없습니다.");
+        }
+      };
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+        warningEvent("검색실패");
+      };
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+        warningEvent("검색실패");
+      };
+      await getMdSearch(
+        successFn,
+        failFn,
+        errorFn,
+        searchType,
+        keyword,
+        iproduct,
+        sendMainCate,
+        sendSubCate,
+      );
+    } catch (error) {}
   };
 
   const handleReset = async () => {
@@ -282,7 +310,7 @@ const PutPop: React.FC = () => {
     setCurrentPage(1);
     await fetchData(1);
     setRefresh(refresh + 1);
-    console.log(inputValue);
+    successEvent("검색 초기화 완료");
   };
 
   const checkToProduct = async () => {

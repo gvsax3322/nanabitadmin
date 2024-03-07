@@ -15,10 +15,11 @@ import OrPicker from "../../../components/order/orderSlect/OrPicker";
 import { Dayjs } from "dayjs";
 import { getDetailList, putOrderState } from "../../../api/order/orderAllApi";
 
-import { ConfigProvider, Table } from "antd";
+import { ConfigProvider, Pagination, Table } from "antd";
 import TestMd from "../../../components/order/TestMd";
 import { API_SERVER_HOST } from "../../../util/util";
 import { useNavigate } from "react-router";
+import { FlexJADiv } from "../../../styles/review/reviewstyle";
 
 // import OrAllFooter from "./footer/OrAllFooter";
 
@@ -104,11 +105,14 @@ const ShipHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
 
   // 현재 선택된 iOrder 값을 보관하는 state
   const [selectIorder, setSelectIorder] = useState(0);
+
+  // 페이지네이션
+  const [currentPage, setCurrentPage] = useState<number>(1);
   // ----------------------------------------------------------------------------
 
-  const dataSource = orderData.map(item => ({
+  const dataSource = orderData.map((item, index) => ({
     key: item.iorder, // iorder를 key로 사용
-    idk: item.idk,
+    idk: (currentPage - 1) * 10 + index + 1,
     iorder: item.iorder,
     orderedAt: item.orderedAt,
     ordered: item.ordered,
@@ -212,6 +216,11 @@ const ShipHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     console.log("paymentOp 변경됨", paymentOp);
   }, [paymentOp]);
 
+  // 페이지 변경
+  const handlePageChange = async (page: number) => {
+    setCurrentPage(page);
+    fetchData(page); // 페이지 번호를 전달하여 fetchData 호출
+  };
   // 검색 버튼 클릭시 처리
   const handleClickSearch = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -219,7 +228,7 @@ const ShipHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     e.preventDefault();
     console.log("================= 버튼 클릭 ");
     // setUserSearchActive(true);
-    fetchData();
+    fetchData(currentPage);
 
     console.log(
       "검색버튼눌렀어융",
@@ -247,7 +256,7 @@ const ShipHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     setSelectedDate([""]);
     setSelectedDate([""]);
 
-    fetchData();
+    fetchData(currentPage);
 
     console.log(
       "초기화버튼눌렀어융",
@@ -263,11 +272,10 @@ const ShipHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   };
 
   useEffect(() => {
-    console.log("================= 전체 최초 검색");
-    fetchData(); // 페이지가 처음 렌더링될 때 데이터를 호출합니다.
-  }, []);
+    fetchData(currentPage); // 페이지가 처음 렌더링될 때 데이터를 호출합니다.
+  }, [currentPage]);
   // 서버연동
-  const fetchData = () => {
+  const fetchData = (page: number) => {
     // 검색 버튼 클릭시만 API 날리기
     // if (userSearchActive) {
     // 결과가 오기 전까지는 무효화
@@ -282,7 +290,7 @@ const ShipHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
         dateFl: periodBt,
         payCategory: paymentOp,
         sort: 0,
-        page: 0,
+        page: page,
         // size: 1,
       },
       successFn: successFn_AllOrder,
@@ -310,16 +318,15 @@ const ShipHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     // API를 호출하여 주문 상태를 변경합니다.
     putOrderState({
       processOrder: requestData,
-      successFn: successFn_AllOrder,
+      successFn: () => {
+        fetchData(currentPage);
+      },
       failFn: failFn_AllOrder,
       errorFn: errorFn_AllOrder,
     });
   };
 
   const successFn_AllOrder = (data: any) => {
-    // console.log("반품신청 successFn : ", data);
-
-    // setUserSearchActive(false);
     setOrderData(data);
   };
 
@@ -499,7 +506,10 @@ const ShipHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
         >
           <div>
             {products[0].refundFl === 0 && (
-              <SearchButton style={{ marginBottom: "30px", marginTop: "30px" }}>
+              <SearchButton
+                style={{ marginBottom: "30px", marginTop: "30px" }}
+                onClick={() => handleProcessBtApi([dataSource[0].iorder], 4)}
+              >
                 배송완료
               </SearchButton>
             )}
@@ -752,6 +762,30 @@ const ShipHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
             </div>
           </BigKeyword>
         </Wrap>
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: "#A5A5A5",
+            },
+            components: {
+              Table: {
+                headerBg: "#535353",
+                headerColor: "#fff",
+              },
+            },
+          }}
+        >
+          <FlexJADiv style={{ marginTop: "20px" }}>
+            <Pagination
+              style={{ textAlign: "center" }}
+              current={currentPage}
+              total={Math.ceil(dataSource[0].totalCount / 10)}
+              onChange={handlePageChange}
+              showSizeChanger={false}
+              showTotal={(total, range) => ""}
+            />
+          </FlexJADiv>
+        </ConfigProvider>
       </div>
     </>
   );

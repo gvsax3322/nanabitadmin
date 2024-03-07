@@ -253,36 +253,36 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
     //   dataIndex: "iproduct",
     //   key: "iproduct",
     // },
-    {
-      title: "이미지",
-      dataIndex: "products",
-      key: "repPic",
-      render: (items: any[]) => (
-        <div
-          style={{
-            width: "100%",
-            // display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {items.map((item, index) => (
-            <div>
-              <img
-                src={`${API_SERVER_HOST}/pic/product/${item.iproduct}/${item.repPic}`}
-                alt=""
-                style={{
-                  marginBottom: "10px",
-                  marginTop: "10px",
-                  width: "50px",
-                  height: "50px",
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      ),
-    },
+    // {
+    //   title: "이미지",
+    //   dataIndex: "products",
+    //   key: "repPic",
+    //   render: (items: any[]) => (
+    //     <div
+    //       style={{
+    //         width: "100%",
+    //         // display: "flex",
+    //         justifyContent: "center",
+    //         alignItems: "center",
+    //       }}
+    //     >
+    //       {items.map((item, index) => (
+    //         <div>
+    //           <img
+    //             src={`${API_SERVER_HOST}/pic/product/${item.iproduct}/${item.repPic}`}
+    //             alt=""
+    //             style={{
+    //               marginBottom: "10px",
+    //               marginTop: "10px",
+    //               width: "50px",
+    //               height: "50px",
+    //             }}
+    //           />
+    //         </div>
+    //       ))}
+    //     </div>
+    //   ),
+    // },
     {
       title: "상품명",
       dataIndex: "products",
@@ -309,6 +309,7 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
               {item.processState === 2 && "배송준비중"}
               {item.processState === 3 && "배송중"}
               {item.processState === 4 && "배송완료"}
+              {item.processState === 5 && "주문취소"}
             </li>
           ))}
         </ul>
@@ -329,11 +330,7 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
         </ul>
       ),
     },
-    // {
-    //   title: "처리 상태",
-    //   dataIndex: "processState",
-    //   key: "processState",
-    // },
+
     {
       title: "상품금액",
       dataIndex: "products",
@@ -348,12 +345,6 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
         </ul>
       ),
     },
-
-    // {
-    //   title: "키",
-    //   dataIndex: "key",
-    //   key: "key",
-    // },
   ];
   return (
     <ModalOverlay onClick={onClose}>
@@ -423,7 +414,7 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
               <div className="left">결제상태</div>
               <div className="right">
                 <h2>
-                  {detailSource[0].processState}
+                  {/* {detailSource[0].processState} */}
                   {detailSource[0].processState === 0 ? "결제완료" : "미결제"}
                   {/* {detailSource[0].payCategory === 3 && "카드"} */}
                 </h2>
@@ -513,11 +504,10 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
             >
               <div className="left">관리자 메모</div>
               <div className="right">
-                <h2>{detailSource[0].adminMemo}</h2>
                 <TextareaStyle
                   name="notes"
                   id="notes"
-                  value={putMemo}
+                  value={putMemo || detailSource[0].adminMemo}
                   onChange={handleInputChange}
                 >
                   {detailSource[0].adminMemo}
@@ -555,7 +545,9 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
                   </li>
                 </CardFont>
               </DeMiddleCard>
-              <FontSize>
+              <FontSize
+                style={{ justifyContent: "space-between", width: "200px" }}
+              >
                 <p>총 주문금액</p>
                 <b>{detailSource[0].totalAmount}원</b>
               </FontSize>

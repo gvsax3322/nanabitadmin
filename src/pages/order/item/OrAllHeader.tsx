@@ -10,15 +10,25 @@ import {
 } from "../../../styles/AdminBasic";
 import styled from "@emotion/styled";
 import OrderAllSelect from "../../../components/order/orderSlect/OrderAllSelect";
-import React, { useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  Ref,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import OrPicker from "../../../components/order/orderSlect/OrPicker";
 import { Dayjs } from "dayjs";
 import { getOrderAll, putOrderState } from "../../../api/order/orderAllApi";
 
-import { ConfigProvider, Table } from "antd";
+import { ConfigProvider, Pagination, Table } from "antd";
 import TestMd from "../../../components/order/TestMd";
 import { API_SERVER_HOST } from "../../../util/util";
 import { useNavigate } from "react-router";
+import { CenteredHeaderTable } from "../../../components/usermainmanage/PutPop";
+import { FlexJADiv } from "../../../styles/review/reviewstyle";
 
 // import OrAllFooter from "./footer/OrAllFooter";
 
@@ -26,6 +36,10 @@ const Wrap = styled.div`
   margin-bottom: 30px;
   border-bottom: 2px solid ${Common.color.primary};
 `;
+
+interface MiddleInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+}
 
 export interface AllOrderData {
   idk: number;
@@ -37,6 +51,7 @@ export interface AllOrderData {
   totalAmount: number;
   payCategory: number;
   refundFl: number;
+  totalCount: number;
 }
 
 export interface products {
@@ -69,13 +84,15 @@ const initState = {
   totalAmount: 0,
   payCategory: 0,
   refundFl: 0,
+  totalCount: 0,
 };
 
 interface OrAllHeaderProps {
   fetchData: (data: any) => void;
   tableNum: (selectedRowKeys: React.Key[]) => void;
 }
-const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
+const OrAllHeader: React.FC<OrAllHeaderProps> = React.memo(({ tableNum }) => {
+  console.log("리렌더링");
   const [orderData, setOrderData] = useState([initState]);
   const [periodBt, setPeriodBt] = useState(0); // 선택된 기간 상태 버튼관리
   const [prdOp, setPrdOp] = useState(0);
@@ -86,7 +103,11 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     // "2024-03-04",
     // "2024-03-04",
   ]); // Date picker 관리
-
+  useEffect(() => {
+    // prdOp, stateOp, searchOp, paymentOp 상태 중 하나라도 변경될 때 실행되는 코드
+    console.log("하나 이상의 상태가 변경되었습니다.");
+    // 여기서 추가적인 작업 수행
+  }, [prdOp, stateOp, searchOp, paymentOp]);
   const iorderNavi = useNavigate();
   // const [userSearchActive, setUserSearchActive] = useState(true); // 검색버튼 옵션관리
   const [searchText, setSearchText] = useState(""); //  검색어텍스트 관리
@@ -103,11 +124,16 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
 
   // 현재 선택된 iOrder 값을 보관하는 state
   const [selectIorder, setSelectIorder] = useState(0);
+
+  // 페이지네이션
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  // const totalPages = Math.ceil(dataSource[0].totalCount / 15);
+
   // ----------------------------------------------------------------------------
 
-  const dataSource = orderData.map(item => ({
+  const dataSource = orderData.map((item, index) => ({
     key: item.iorder, // iorder를 key로 사용
-    idk: item.idk,
+    idk: (currentPage - 1) * 10 + index + 1,
     iorder: item.iorder,
     orderedAt: item.orderedAt,
     ordered: item.ordered,
@@ -115,7 +141,8 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     totalAmount: item.totalAmount,
     payCategory: item.payCategory,
     refundFl: item.refundFl,
-    sampleData: [item.refundFl, item.iorder],
+    sampleData: [item.refundFl, item.iorder, item.products[0].processState],
+    totalCount: item.totalCount,
     // products 배열을 반복하면서 각 상품 정보를 키로 추가합니다.
     products: item.products.map((product, index) => ({
       iproduct: product.iproduct,
@@ -125,9 +152,12 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
       processState: product.processState,
       amount: product.amount,
       refundFl: product.refundFl,
+
       key: `${item.iorder}_${index}`, // 상품마다 고유한 key 생성
     })),
   }));
+  // ----------------------------------------------------------------------------
+
   // ----------------------------------------------------------------------------
 
   // 기간버튼 핸들러
@@ -146,6 +176,13 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   };
 
   // 검색어 작성
+  // const handleInputChange = useCallback(
+  //   (e: React.ChangeEvent<HTMLInputElement>) => {
+  //     setSearchText(e.target.value);
+  //   },
+  //   [],
+  // );
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
   };
@@ -180,41 +217,44 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     console.log("기간검색", optionIndex);
   };
   // 검색어 셀렉함수
-  const handleSearchOp = (optionIndex: number): void => {
-    switch (optionIndex) {
-      case 0:
-        // 주문상태 전체보기에 대한 동작 수행
-        setSearchOp(0);
-        break;
-      case 1:
-        // 입금대기에 대한 동작 수행
-        setSearchOp(1);
-        break;
-      case 2:
-        // 배송준비중에 대한 동작 수행
-        setSearchOp(2);
-        break;
-      case 3:
-        // 배송중에 대한 동작 수행
-        setSearchOp(3);
-        break;
-      case 4:
-        // 배송완료에 대한 동작 수행
-        setSearchOp(4);
-        break;
-      case 5:
-        // 취소에 대한 동작 수행
-        setSearchOp(5);
-        break;
-      case 6:
-        // 반품에 대한 동작 수행
-        setSearchOp(6);
-        break;
-      default:
-        break;
-    }
-    console.log("검색어", optionIndex);
-  };
+  const handleSearchOp = useCallback(
+    (optionIndex: number): void => {
+      switch (optionIndex) {
+        case 0:
+          // 주문상태 전체보기에 대한 동작 수행
+          setSearchOp(0);
+          break;
+        case 1:
+          // 입금대기에 대한 동작 수행
+          setSearchOp(1);
+          break;
+        case 2:
+          // 배송준비중에 대한 동작 수행
+          setSearchOp(2);
+          break;
+        case 3:
+          // 배송중에 대한 동작 수행
+          setSearchOp(3);
+          break;
+        case 4:
+          // 배송완료에 대한 동작 수행
+          setSearchOp(4);
+          break;
+        case 5:
+          // 취소에 대한 동작 수행
+          setSearchOp(5);
+          break;
+        case 6:
+          // 반품에 대한 동작 수행
+          setSearchOp(6);
+          break;
+        default:
+          break;
+      }
+      console.log("검색어", optionIndex);
+    },
+    [setSearchOp],
+  );
   // 주문상태 셀렉함수
   const handleStateOp = (optionIndex: number): void => {
     switch (optionIndex) {
@@ -264,6 +304,12 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     console.log("paymentOp 변경됨", paymentOp);
   }, [paymentOp]);
 
+  // 페이지 변경
+  const handlePageChange = async (page: number) => {
+    setCurrentPage(page);
+    fetchData(page); // 페이지 번호를 전달하여 fetchData 호출
+  };
+
   // 검색 버튼 클릭시 처리
   const handleClickSearch = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -271,7 +317,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     e.preventDefault();
     console.log("================= 버튼 클릭 ");
     // setUserSearchActive(true);
-    fetchData();
+    fetchData(currentPage);
 
     console.log(
       "검색버튼눌렀어융",
@@ -299,9 +345,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     setSelectedDate([""]);
     setSelectedDate([""]);
 
-    // 사용자는 검색을 했다.
-    // setUserSearchActive(true);
-    fetchData();
+    // fetchData(currentPage);
 
     console.log(
       "초기화버튼눌렀어융",
@@ -314,18 +358,14 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
       searchText,
       selectedDate,
     );
+    fetchData(currentPage);
   };
 
   useEffect(() => {
-    console.log("================= 전체 최초 검색");
-    fetchData(); // 페이지가 처음 렌더링될 때 데이터를 호출합니다.
-  }, []);
+    fetchData(currentPage); // 페이지가 처음 렌더링될 때 데이터를 호출합니다.
+  }, [currentPage]);
   // 서버연동
-  const fetchData = () => {
-    // 검색 버튼 클릭시만 API 날리기
-    // if (userSearchActive) {
-    // 결과가 오기 전까지는 무효화
-    // setUserSearchActive(false);
+  const fetchData = (page: number) => {
     getOrderAll({
       orderParam: {
         processState: stateOp,
@@ -337,7 +377,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
         dateFl: periodBt,
         payCategory: paymentOp,
         sort: 0,
-        page: 0,
+        page: page,
         // size: 1,
       },
       successFn: successFn_AllOrder,
@@ -354,8 +394,34 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
       "상태번호:",
       processNum,
     );
+
+    // 이전 상태 확인
+    const prevOrder = orderData.find(item => item.iorder === iorder[0]);
+    const prevProcessState = prevOrder
+      ? prevOrder.products[0].processState
+      : undefined;
+
+    // 선택한 상태와 이전 상태를 비교하여 알맞은 조건을 설정
+    if (processNum === 2 && prevProcessState !== 1) {
+      alert("배송 준비중 상태로 변경할 수 없습니다.");
+      return;
+    } else if (processNum === 3 && prevProcessState !== 2) {
+      alert("배송 중 상태로 변경할 수 없습니다.");
+      return;
+    } else if (processNum === 4 && prevProcessState !== 3) {
+      alert("배송 완료 상태로 변경할 수 없습니다.");
+      return;
+      // } else if (processNum === 5 && ![1, 2].includes(prevProcessState)) {
+      //   alert("주문 취소 상태로 변경할 수 없습니다.");
+      //   return;
+    } else if (processNum === 6 && prevProcessState !== 4) {
+      alert("반품 상태로 변경할 수 없습니다.");
+      return;
+    }
+
     // 선택한 일괄 처리 버튼의 상태를 업데이트합니다.
     setProcesStateBt(processNum);
+
     // 주문 상태 변경을 위한 데이터를 준비합니다.
     const requestData = {
       iorders: iorder, // 주문 번호를 배열에 담음
@@ -365,22 +431,23 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     // API를 호출하여 주문 상태를 변경합니다.
     putOrderState({
       processOrder: requestData,
-      successFn: successFn_AllOrder,
+      successFn: () => {
+        fetchData(currentPage);
+        alert("변경이 완료되었습니다.");
+      },
       failFn: failFn_AllOrder,
       errorFn: errorFn_AllOrder,
     });
   };
 
   const successFn_AllOrder = (data: any) => {
-    // console.log("반품신청 successFn : ", data);
-
-    // setUserSearchActive(false);
     setOrderData(data);
   };
 
   const failFn_AllOrder = (data: any) => {
     // console.log("failFn : ", data);
     alert("failFn오더all : 데이터 호출에 실패하였습니다.");
+    fetchData(currentPage);
   };
 
   const errorFn_AllOrder = (data: any) => {
@@ -428,7 +495,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     {
       title: "주문목록",
       dataIndex: "sampleData",
-      key: "refundFl",
+      key: "sampleData",
       render: (items: any[]) => (
         <div
           style={{
@@ -445,18 +512,14 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
             >
               주문목록
             </SearchButton>
-
-            {items[0] === 0 && (
-              <SearchButton style={{ background: "rgb(244, 67, 54)" }}>
+            {items[2] !== undefined && (items[2] === 1 || items[2] === 2) && (
+              <SearchButton
+                style={{ background: "rgb(244, 67, 54)" }}
+                onClick={() => handleProcessBtApi([items[1]], 5)}
+              >
                 주문취소
               </SearchButton>
             )}
-
-            {/* <button
-              onClick={() => iorderNavi(`/order/details/${record.iorder}`)}
-            >
-              주문상세보기
-            </button> */}
           </div>
         </div>
       ),
@@ -545,6 +608,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
               {item.processState === 2 && "배송준비중"}
               {item.processState === 3 && "배송중"}
               {item.processState === 4 && "배송완료"}
+              {item.processState === 5 && "주문취소"}
             </li>
           ))}
         </ul>
@@ -553,7 +617,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     {
       title: "반품신청",
       dataIndex: "products",
-      key: "refundFlProduct",
+      key: "processState",
       render: (products: any[]) => (
         <div
           style={{
@@ -566,9 +630,10 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
           <div>
             {products.map((product, index) => (
               <React.Fragment key={index}>
-                {product.refundFl === 0 && (
+                {product.processState === 4 && (
                   <SearchButton
                     style={{ marginBottom: "30px", marginTop: "30px" }}
+                    onClick={() => handleProcessBtApi([orderData[1].iorder], 6)}
                   >
                     반품신청
                   </SearchButton>
@@ -669,13 +734,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
                 option8="수령자 핸드폰"
                 onClick={handleSearchOp}
               />
-              <MiddleInput
-                type="text"
-                placeholder="검색어를 입력하세요"
-                autoFocus
-                value={searchText}
-                onChange={handleInputChange}
-              />
+              <MiddleInput value={searchText} onChange={handleInputChange} />
             </div>
           </BigKeyword>
           <BigKeyword>
@@ -872,9 +931,43 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
             </div>
           </BigKeyword>
         </Wrap>
+
+        {/* <Pagination
+          style={{ textAlign: "center" }}
+          current={currentPage}
+          total={Math.ceil(dataSource[0].totalCount / 15)}
+          onChange={handlePageChange}
+          showSizeChanger={false}
+          showTotal={(total, range) => ""}
+        /> */}
+
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: "#A5A5A5",
+            },
+            components: {
+              Table: {
+                headerBg: "#535353",
+                headerColor: "#fff",
+              },
+            },
+          }}
+        >
+          <FlexJADiv style={{ marginTop: "20px" }}>
+            <Pagination
+              style={{ textAlign: "center" }}
+              current={currentPage}
+              total={Math.ceil(dataSource[0].totalCount / 15)}
+              onChange={handlePageChange}
+              showSizeChanger={false}
+              showTotal={(total, range) => ""}
+            />
+          </FlexJADiv>
+        </ConfigProvider>
       </div>
     </>
   );
-};
+});
 
 export default OrAllHeader;

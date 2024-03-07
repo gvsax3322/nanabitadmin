@@ -1,73 +1,21 @@
+// import React, { useState, useEffect } from "react";
+// import { Table, Pagination, ConfigProvider } from "antd";
 // import styled from "@emotion/styled";
-// import { ConfigProvider, Table } from "antd";
-// import React, { useEffect, useState } from "react";
-// import { Common, SearchButton } from "../../../../styles/AdminBasic";
-// import TestMd from "../../TestMd";
-// import axios from "axios";
-// import { getOrderAll } from "../../../../api/order/orderAllApi";
+// import { API_SERVER_HOST } from "../../../util/util";
+// import TestMd from "../../../components/order/TestMd";
+// import { getOrderAll, putOrderState } from "../../../api/order/orderAllApi";
+// import { Dayjs } from "dayjs";
 
-// interface Order {
-//   idk: number;
-//   iorder: number;
-//   orderedAt: string;
-//   products: {
-//     repPic: string;
-//     productNm: string;
-//     cnt: number;
-//     processState: number;
-//     amount: number;
-//     refundFl: number;
-//   }[];
-//   ordered: string;
-//   recipient: string;
-//   totalAmount: number;
-//   payCategory: number;
-//   refundFl: number;
-// }
-
-// interface ISubTableProps {
-//   tableNum: (selectedRowKeys: React.Key[]) => void;
-// }
-
-// const OrderAllTable: React.FC<ISubTableProps> = ({ tableNum }) => {
-//   const [showModal, setShowModal] = useState(false);
-//   const [tableData, setTableData] = useState([]);
-//   const [data, setData] = useState<ISubTableProps[]>([]);
-//   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const { data } = await getOrderAll();
-//         setTableData(data);
-//       } catch (error) {
-//         console.error("Error fetching data:", error);
-//       }
-//     };
-//     fetchData();
-//   }, []);
-
-//   // ResultModal을 보여주는 함수
-//   const handleShowModal = () => {
-//     setShowModal(true);
-//   };
-
-//   // ResultModal을 닫는 함수
-//   const handleCloseModal = () => {
-//     setShowModal(false);
-//   };
-//   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-//     console.log("selectedRowKeys changed: ", newSelectedRowKeys);
-
-//     setSelectedRowKeys(newSelectedRowKeys);
-//     tableNum(newSelectedRowKeys);
-//   };
-
-//   const rowSelection = {
-//     selectedRowKeys,
-//     onChange: onSelectChange,
-//   };
-
+// // OrderTable 컴포넌트 정의
+// const OrderTable = ({
+//   dataSource,
+//   showModal,
+//   handleShowModal,
+//   selectIorder,
+//   handleProcessBtApi,
+//   selectedRowKeys,
+//   onSelectChange,
+// }) => {
 //   const columns: any[] = [
 //     {
 //       title: "No",
@@ -81,9 +29,9 @@
 //     },
 //     {
 //       title: "주문목록",
-//       dataIndex: "refundFl",
+//       dataIndex: "sampleData",
 //       key: "refundFl",
-//       render: (refundFl: number) => (
+//       render: (items: any[]) => (
 //         <div
 //           style={{
 //             width: "100%",
@@ -95,12 +43,16 @@
 //           <div>
 //             <SearchButton
 //               style={{ marginBottom: "12px" }}
-//               onClick={handleShowModal}
+//               onClick={() => handleShowModal(items[1])}
 //             >
 //               주문목록
 //             </SearchButton>
-//             {refundFl === 1 && (
-//               <SearchButton style={{ background: "rgb(244, 67, 54)" }}>
+
+//             {items[0] === 0 && (
+//               <SearchButton
+//                 style={{ background: "rgb(244, 67, 54)" }}
+//                 onClick={() => handleProcessBtApi([orderData[1].iorder], 5)}
+//               >
 //                 주문취소
 //               </SearchButton>
 //             )}
@@ -116,21 +68,25 @@
 //         <div
 //           style={{
 //             width: "100%",
-//             display: "flex",
+//             // display: "flex",
 //             justifyContent: "center",
 //             alignItems: "center",
 //           }}
 //         >
-//           <ul>
-//             {items.map((item, index) => (
-//               <li
-//                 style={{ marginBottom: "10px", marginTop: "10px" }}
-//                 key={index}
-//               >
-//                 {item.repPic}
-//               </li>
-//             ))}
-//           </ul>
+//           {items.map((item, index) => (
+//             <div>
+//               <img
+//                 src={`${API_SERVER_HOST}/pic/product/${item.iproduct}/${item.repPic}`}
+//                 alt=""
+//                 style={{
+//                   marginBottom: "10px",
+//                   marginTop: "10px",
+//                   width: "50px",
+//                   height: "50px",
+//                 }}
+//               />
+//             </div>
+//           ))}
 //         </div>
 //       ),
 //     },
@@ -184,7 +140,10 @@
 //         <ul>
 //           {items.map((item, index) => (
 //             <li style={{ marginBottom: "30px", marginTop: "30px" }} key={index}>
-//               {item.processState}
+//               {item.processState === 1 && "입금대기"}
+//               {item.processState === 2 && "배송준비중"}
+//               {item.processState === 3 && "배송중"}
+//               {item.processState === 4 && "배송완료"}
 //             </li>
 //           ))}
 //         </ul>
@@ -203,15 +162,20 @@
 //             alignItems: "center",
 //           }}
 //         >
-//           {products.map((product, index) => (
-//             <React.Fragment key={index}>
-//               {product.refundFl === 1 && (
-//                 <SearchButton style={{ background: "rgb(244, 67, 54)" }}>
-//                   주문취소
-//                 </SearchButton>
-//               )}
-//             </React.Fragment>
-//           ))}
+//           <div>
+//             {products.map((product, index) => (
+//               <React.Fragment key={index}>
+//                 {product.refundFl === 0 && (
+//                   <SearchButton
+//                     style={{ marginBottom: "30px", marginTop: "30px" }}
+//                     onClick={() => handleProcessBtApi([orderData[1].iorder], 6)}
+//                   >
+//                     반품신청
+//                   </SearchButton>
+//                 )}
+//               </React.Fragment>
+//             ))}
+//           </div>
 //         </div>
 //       ),
 //     },
@@ -234,43 +198,29 @@
 //       title: "결제수단",
 //       dataIndex: "payCategory",
 //       key: "payCategory",
+//       render: (payCategory: number) => (
+//         <ul>
+//           <li
+//             style={{ marginBottom: "30px", marginTop: "30px" }}
+//             key={payCategory}
+//           >
+//             {payCategory === 0 && "전체"}
+//             {payCategory === 2 && "무통장"}
+//             {payCategory === 3 && "카드"}
+//           </li>
+//         </ul>
+//       ),
 //     },
 //   ];
 
-//   const Aaa = styled(Table)`
-//     :where(.css-dev-only-do-not-override-1xg9z9n).ant-table-wrapper
-//       .ant-table-tbody
-//       .ant-table-row.ant-table-row-selected
-//       > .ant-table-cell {
-//       background-color: ${Common.color.p800};
-//     }
-//     .ant-checkbox-checked .ant-checkbox-inner {
-//       background-color: ${Common.color.p600};
-//       border-color: ${Common.color.p800};
-//     }
-//     .ant-checkbox-wrapper-checked:hover .ant-checkbox-inner,
-//     .ant-checkbox-checked:hover .ant-checkbox-inner {
-//       border-color: rgba(40, 40, 40, 0.8) !important;
-//     }
-
-//     .ant-checkbox-wrapper:hover .ant-checkbox-inner,
-//     .ant-checkbox:hover .ant-checkbox-inner,
-//     .ant-checkbox-input:focus + .ant-checkbox-inner {
-//       border-color: #d9d9d9 !important;
-//     }
-//     :where(.css-dev-only-do-not-override-1xg9z9n).ant-checkbox-indeterminate
-//       .ant-checkbox-inner:after {
-//       background-color: ${Common.color.p800};
-//     }
-//     &&& {
-//       .ant-table-thead > tr > th {
-//         text-align: center;
-//       }
-//       .ant-table-tbody > tr > td {
-//         text-align: center;
-//       }
-//     }
-//   `;
+//   const rowSelection = {
+//     selectedRowKeys,
+//     onChange: onSelectChange,
+//   };
+//   // ResultModal을 닫는 함수
+//   const handleCloseModal = () => {
+//     setShowModal(false);
+//   };
 
 //   return (
 //     <ConfigProvider
@@ -286,16 +236,13 @@
 //         },
 //       }}
 //     >
-//       <Aaa
+//       <Table
 //         rowSelection={rowSelection}
 //         columns={columns}
-//         dataSource={data}
-//         // dataSource={orderData}
+//         dataSource={dataSource}
 //         pagination={false}
 //       />
-//       {showModal && <TestMd onClose={handleCloseModal}  iOrder={0}/>}
+//       {showModal && <TestMd onClose={handleCloseModal} iOrder={selectIorder} />}
 //     </ConfigProvider>
 //   );
 // };
-
-// export default OrderAllTable;

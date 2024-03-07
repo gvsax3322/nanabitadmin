@@ -95,9 +95,9 @@ const OrReturnHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   const [selectIorder, setSelectIorder] = useState(0);
   // ----------------------------------------------------------------------------
 
-  const dataSource = orderData.map(item => ({
+  const dataSource = orderData.map((item, index) => ({
     key: item.iorder, // iorder를 key로 사용
-    idk: item.idk,
+    idk: index + 1,
     iorder: item.iorder,
     orderedAt: item.orderedAt,
     repPic: `${API_SERVER_HOST}/pic/product/${item.repPic}`,
@@ -371,8 +371,8 @@ const OrReturnHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   const columns: any[] = [
     {
       title: "No",
-      dataIndex: "key",
-      key: "key",
+      dataIndex: "idk",
+      key: "idk",
     },
     {
       title: "주문일시",
@@ -403,18 +403,7 @@ const OrReturnHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
         </div>
       ),
     },
-    {
-      title: "이미지",
-      dataIndex: "repPic",
-      key: "key",
-      render: (repPic: string) => (
-        <img
-          style={{ width: "66px", height: "66px", objectFit: "cover" }}
-          src={repPic}
-          alt=""
-        />
-      ),
-    },
+
     {
       title: "상품명",
       dataIndex: "productNm",
@@ -490,7 +479,7 @@ const OrReturnHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   return (
     <>
       <Wrap>
-        <MainTitle>배송완료</MainTitle>
+        <MainTitle>반품신청</MainTitle>
         <SubTitle>기본검색</SubTitle>
         <div style={{ marginBottom: "20px" }}>
           <BigKeyword

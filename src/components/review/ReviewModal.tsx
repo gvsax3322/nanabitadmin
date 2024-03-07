@@ -15,8 +15,10 @@ import { SearchReview } from "./ReviewSearch";
 import { patchReview, putReview } from "../../api/review/reviewApi";
 
 interface ResultModalProps {
-  onClose: () => void;
   modalData: SearchReview | undefined;
+  onClose: () => void;
+  successEvent: (txt: string) => void;
+  warningEvent: (txt: string) => void;
 }
 
 const ModalOverlay = styled.div`
@@ -40,24 +42,15 @@ const ModalContent = styled(motion.div)`
   padding: 20px;
 `;
 
-const ReviewModal: React.FC<ResultModalProps> = ({ onClose, modalData }) => {
+const ReviewModal: React.FC<ResultModalProps> = ({
+  onClose,
+  modalData,
+  successEvent,
+  warningEvent,
+}) => {
   const [memoD, setMemoD] = useState("");
-  const [messageApi, contextHolder] = message.useMessage();
   const [refresh, setRefresh] = useState(0);
   const ireview = modalData?.ireview;
-
-  const success = (txt: string) => {
-    messageApi.open({
-      type: "success",
-      content: txt,
-    });
-  };
-  const error = (txt: string) => {
-    messageApi.open({
-      type: "error",
-      content: txt,
-    });
-  };
 
   const handleApply = () => {
     if (ireview !== undefined) {
@@ -73,13 +66,13 @@ const ReviewModal: React.FC<ResultModalProps> = ({ onClose, modalData }) => {
   const successFn = () => {
     onClose();
     setRefresh(refresh + 1);
-    success(`${modalData?.nm}님의 리뷰가 숨겨졌습니다.`);
+    successEvent(`${modalData?.nm}님의 리뷰가 숨겨졌습니다.`);
   };
   const failFn = () => {
-    console.log("등록 실패");
+    warningEvent(`숨기기 실패하였습니다. 다시 시도해 주세요.`);
   };
   const errorFn = () => {
-    console.log("등록 에러");
+    warningEvent(`숨기기 실패하였습니다. 다시 시도해 주세요.`);
   };
 
   const putSuccessFn = () => {
@@ -124,7 +117,6 @@ const ReviewModal: React.FC<ResultModalProps> = ({ onClose, modalData }) => {
           transition={{ duration: 0.8 }}
           onClick={e => e.stopPropagation()}
         >
-          {contextHolder}
           {/* 모달 내용 */}
           <MainTitle>숨김처리</MainTitle>
           <SubTitle>리뷰 내용 </SubTitle>

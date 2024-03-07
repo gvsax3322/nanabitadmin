@@ -18,6 +18,7 @@ import {
   SubTitle,
 } from "../../../styles/AdminBasic";
 import { mainCateData } from "./Cate";
+import { postAddSubCate } from "../../../api/category/categoryApi";
 
 // import OrAllFooter from "./footer/OrAllFooter";
 
@@ -56,20 +57,23 @@ const CateHeader = ({ tableNum }) => {
   const [selectedSubCategory, setSelectedSubCategory] = useState();
   const [subCategoryOptions, setSubCategoryOptions] = useState([]);
   const [mainCategory, setMainCategory] = useState();
+  const [subCategory, setSubCategory] = useState();
 
   const dataSource = orderData.map(item => {
+    // 자식 카테고리 html 부분
     const middleCategoryList = item.middleCategoryList.map(subcate => ({
       key: `${item.imain}-${subcate.imiddle}`, // 고유한 키 생성
       title: (
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <span>{subcate.middleCategory}</span>
           <SmallButton onClick={() => handleSubDelete(subcate.imiddle)}>
-            Delete
+            삭제
           </SmallButton>
         </div>
       ),
     }));
 
+    // 부모 카테고리 html 부분
     const titleNode = (
       <>
         <div
@@ -82,18 +86,24 @@ const CateHeader = ({ tableNum }) => {
             borderRadius: "10px",
           }}
         >
-          <div style={{ width: "400px" }}>
+          <div style={{ width: "250px" }}>
             <span>{item.mainCategory}</span> {/* 부모 카테고리명을 출력 */}
+            <SmallButton
+              style={{ background: "#f44336", color: "white", border: "none" }}
+              onClick={() => handleDelete(item.imain)}
+            >
+              삭제
+            </SmallButton>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <MiddleInput
               type="text"
               placeholder="서브 카테고리명을 입력하세요"
               autoFocus
-              // value={mainCategory}
-              // onChange={handleInputChange}
+              // onChange={handleInputSubChange}
+              value={subCategory}
             />
-            <SmallButton onClick={() => handleDelete(item.imain)}>
+            <SmallButton onClick={() => handleSubAddApi(item.imain)}>
               Add
             </SmallButton>
             <SmallButton onClick={() => handleDelete(item.imain)}>
@@ -194,6 +204,7 @@ const CateHeader = ({ tableNum }) => {
   // 새로운 자식 카테고리를 추가하는 함수
   const handleAddSubCategory = () => {
     // 새로운 자식 카테고리를 추가하는 작업 수행
+
     console.log("새로운 자식 카테고리 추가");
   };
 
@@ -201,16 +212,22 @@ const CateHeader = ({ tableNum }) => {
   const handleInputChange = e => {
     // setSearchText(e.target.value);
     setMainCategory(e.target.value);
+    // handleInputSubChange(e); // 이 부분을 함수 정의 이후로 옮기거나 주석 처리합니다.
   };
 
+  // // 2차 카테고리 추가 입력 시 호출되는 함수
+  // const handleInputSubChange = e => {
+  //   setSubCategory(e.target.value);
+  // };
+
+  // 부모카테고리 추가 api
   const handleMainAddApi = () => {
     if (mainCategory === "") {
       alert("카테고리 이름을 입력하세요.");
       return;
     }
-
     postAddCate({
-      mainAdd: mainCategory,
+      subAdd: mainCategory,
       successFn: () => {
         console.log("카테고리 추가 성공");
         setMainCategory("");
@@ -227,6 +244,36 @@ const CateHeader = ({ tableNum }) => {
       },
     });
   };
+
+  // 자식카테고리 추가 api
+  const handleSubAddApi = (imain, middleCategory) => {
+    if (subCategory === "") {
+      alert("카테고리 이름을 입력하세요.");
+      return;
+    }
+    console.log("잘찍히나", setSubCategory);
+    postAddSubCate({
+      subParam: {
+        imain: imain,
+        middleCategory: subCategory,
+      },
+      successFn: () => {
+        console.log("카테고리 추가 성공");
+        setSubCategory("");
+        // 카테고리 추가에 성공하면 추가된 카테고리 목록을 다시 불러옵니다.
+        fetchData(); // fetchData 함수를 호출하여 데이터를 다시 불러옴
+      },
+      failFn: error => {
+        console.error("카테고리 추가 실패:", error);
+        alert("카테고리 추가에 실패했습니다.");
+      },
+      errorFn: error => {
+        console.error("API 호출 실패:", error);
+        alert("API 호출에 실패했습니다.");
+      },
+    });
+  };
+
   // ====================================================================
 
   useEffect(() => {

@@ -72,3 +72,24 @@ export const postAddCate = async ({ mainAdd, successFn, failFn, errorFn }) => {
     errorFn("목록 호출 중 에러가 발생했습니다.");
   }
 };
+
+export const postAddSubCate = async ({
+  subParam,
+  successFn,
+  failFn,
+  errorFn,
+}) => {
+  try {
+    const url = `${prefix}/category/main/middle`;
+    const res = await jwtAxios.post(url, subParam);
+
+    const resStatus = res.status.toString();
+    if (resStatus.charAt(0) === "2") {
+      successFn(res.data);
+    } else {
+      failFn("잘못된 요청입니다.");
+    }
+  } catch (error) {
+    errorFn("목록 호출 중 에러가 발생했습니다.");
+  }
+};

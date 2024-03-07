@@ -8,7 +8,6 @@ const PreparingPage = () => {
   };
   return (
     <div>
-      Preparing
       <PreparHeader
         fetchData={handleClickTableuum}
         tableNum={handleClickTableuum}

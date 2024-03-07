@@ -8,7 +8,6 @@ const OrCancelPage = () => {
     setDataFromChild(data);
     return (
       <div>
-        OrderCancel
         <OrCancelHeader />
         <CancelTable tableNum={handleClickTableuum} />
       </div>

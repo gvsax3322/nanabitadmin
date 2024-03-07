@@ -10,7 +10,6 @@ const DpstPage = () => {
   };
   return (
     <div>
-      Dpst입금대기
       <DpstHeader
         fetchData={handleClickTableuum}
         tableNum={handleClickTableuum}

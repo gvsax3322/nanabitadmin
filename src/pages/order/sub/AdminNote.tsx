@@ -10,7 +10,6 @@ const AdminNote = () => {
   };
   return (
     <div>
-      AdminNote
       <NoteHeader
         fetchData={handleClickTableuum}
         tableNum={handleClickTableuum}

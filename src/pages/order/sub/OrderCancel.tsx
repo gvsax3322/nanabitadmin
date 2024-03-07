@@ -9,7 +9,6 @@ const OrderCancel = () => {
   };
   return (
     <div>
-      OrderCancel
       <OrCancelHeader />
       <CancelTable tableNum={handleClickTableuum} />
     </div>

@@ -1,4 +1,11 @@
-import { ConfigProvider, Dropdown, Pagination, Rate, Segmented } from "antd";
+import {
+  ConfigProvider,
+  Dropdown,
+  Pagination,
+  Rate,
+  Segmented,
+  message,
+} from "antd";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   getReview,
@@ -42,8 +49,22 @@ const HiddenReview = () => {
   const [sendSubCate, setSendSubCate] = useState<number>(0);
 
   // 모달
-  const [showModal, setShowModal] = useState(false);
-  const [modalData, setModalData] = useState<SearchReview>();
+  // const [showModal, setShowModal] = useState(false);
+  // const [modalData, setModalData] = useState<SearchReview>();
+
+  const [messageApi, contextHolder] = message.useMessage();
+  const successEvent = (txt: string) => {
+    messageApi.open({
+      type: "success",
+      content: txt,
+    });
+  };
+  const warningEvent = (txt: string) => {
+    messageApi.open({
+      type: "warning",
+      content: txt,
+    });
+  };
 
   // 관리자 메모
   const [adminMemo, setAdminMemo] = useState<string>("");
@@ -74,10 +95,10 @@ const HiddenReview = () => {
     console.log("d");
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setRefresh(refresh + 1);
-  };
+  // const handleCloseModal = () => {
+  //   setShowModal(false);
+  //   setRefresh(refresh + 1);
+  // };
 
   const subCategories: CategoryOptions = {
     이유식: ["임신/출산", "신생아", "베이비", "키즈"],
@@ -144,9 +165,10 @@ const HiddenReview = () => {
   const handleHidden = (item: any) => {
     // console.log("숨기기", item);
     // setShowModal(true);
-    setModalData(item);
+    // setModalData(item);
     const putSuccessFn = () => {
       setRefresh(refresh + 1);
+      successEvent("복구되었습니다.");
     };
     const putFailFn = () => {
       console.log("등록 실패");
@@ -186,13 +208,13 @@ const HiddenReview = () => {
     {
       title: "상품명",
       dataIndex: "productNm",
-      key: "productNm",
+      key: "key",
       width: "13%",
     },
     {
       title: "리뷰",
       dataIndex: "contents",
-      key: "contents",
+      key: "key",
     },
     {
       title: "별점",
@@ -265,7 +287,7 @@ const HiddenReview = () => {
 
   const dataSource = sdata?.map((item, index) => ({
     item: item,
-    key: item,
+    key: index + 1,
     nm: item.nm,
     reqReviewPic: `${API_SERVER_HOST}/pic/review/${item.ireview}/${item.reqReviewPic}`,
     iproduct: item.iproduct,
@@ -306,7 +328,37 @@ const HiddenReview = () => {
   };
 
   const handleSearch = async () => {
-    await fetchData(1);
+    // await fetchData(1);
+    try {
+      setCurrentPage(1);
+      const successFn = (data: SearchReview[]) => {
+        setSdata(data);
+        if (data.length !== 0) {
+          successEvent("검색 완료");
+        } else {
+          warningEvent("검색 결과가 없습니다.");
+        }
+      };
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+        warningEvent("검색실패");
+      };
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+        warningEvent("검색실패");
+      };
+      await getReview(
+        successFn,
+        failFn,
+        errorFn,
+        searchType,
+        keyword,
+        iproduct,
+        sendMainCate,
+        sendSubCate,
+        sortBy,
+      );
+    } catch (error) {}
   };
   const handleReset = async () => {
     setInputValue("");
@@ -320,6 +372,7 @@ const HiddenReview = () => {
     setCurrentPage(1);
     fetchData(1);
     await setRefresh(refresh + 1);
+    successEvent("검색 초기화 완료");
   };
 
   useEffect(() => {
@@ -329,11 +382,12 @@ const HiddenReview = () => {
 
   return (
     <>
-      {showModal && (
+      {contextHolder}
+      {/* {showModal && (
         <ReviewModal onClose={handleCloseModal} modalData={modalData} />
-      )}
+      )} */}
 
-      <MainTitle>리뷰 관리</MainTitle>
+      <MainTitle>숨긴 리뷰 관리</MainTitle>
       <div
         style={{
           display: "flex",
@@ -342,7 +396,7 @@ const HiddenReview = () => {
         }}
       >
         <SubTitle style={{ textAlign: "center", lineHeight: "15px" }}>
-          리뷰 검색
+          숨긴 리뷰 검색
         </SubTitle>
       </div>
 

@@ -197,6 +197,33 @@ export const getReturnList = async ({
   }
 };
 
+// 취소페이지-----------------------------------
+export const getCancleList = async ({
+  detailsListParam,
+  successFn,
+  failFn,
+  errorFn,
+}: {
+  detailsListParam: detailsListParam;
+  successFn: (data: any) => void;
+  failFn: (message: string) => void;
+  errorFn: (error: string) => void;
+}) => {
+  try {
+    const url = `${prefix}/order/delete`;
+    const res = await jwtAxios.get(url, { params: detailsListParam });
+
+    const resStatus = res.status.toString();
+    if (resStatus.charAt(0) === "2") {
+      successFn(res.data);
+    } else {
+      failFn("잘못된 요청입니다.");
+    }
+  } catch (error) {
+    errorFn("목록 호출 중 에러가 발생했습니다.");
+  }
+};
+
 // 메모리스트
 export const getMemoList = async ({
   detailsListParam,

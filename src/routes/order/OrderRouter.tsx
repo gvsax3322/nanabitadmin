@@ -9,6 +9,7 @@ import OrderCancel from "../../pages/order/sub/OrderCancel";
 import OrderReturn from "../../pages/order/sub/OrderReturn";
 import AdminNote from "../../pages/order/sub/AdminNote";
 import { Navigate } from "react-router";
+import OrAllHeader from "../../pages/order/item/OrAllHeader";
 
 export interface OrderAdmin {
   path: string;
@@ -26,6 +27,7 @@ const OrderRouter: OrderAdmin = {
     // 주문관리
     { path: "", element: <Navigate to="all" /> },
     { path: "all", element: <OrderAllPage /> },
+    // { path: "all", element: <OrAllHeader /> },
     { path: "deposit", element: <DpstPage /> },
     { path: "preparing", element: <PreparingPage /> },
     { path: "shipping", element: <ShippingPage /> },

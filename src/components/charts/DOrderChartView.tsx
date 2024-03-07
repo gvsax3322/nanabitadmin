@@ -1,4 +1,4 @@
-import { ConfigProvider } from "antd";
+import { ConfigProvider, message } from "antd";
 import React, { useEffect, useState } from "react";
 import {
   BigCard,
@@ -17,6 +17,13 @@ const DOrderChartView: React.FC = () => {
   const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
   const [yearData, setYearData] = useState<number>();
   const [resMonth, setResMonth] = useState<getOChartApi | null>(null);
+  const [messageApi, contextHolder] = message.useMessage();
+  const successEvent = (txt: string) => {
+    messageApi.open({
+      type: "success",
+      content: txt,
+    });
+  };
 
   // 년도 변경 핸들러
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -32,6 +39,7 @@ const DOrderChartView: React.FC = () => {
     setYearData(year); // 검색 버튼을 클릭할 때만 yearData를 설정합니다.
     fetchData(); // fetchData 함수를 호출합니다.
     // console.log("resMonth", resMonth);
+    successEvent("검색 완료");
   };
 
   useEffect(() => {
@@ -58,6 +66,7 @@ const DOrderChartView: React.FC = () => {
 
   return (
     <div>
+      {contextHolder}
       <MainTitle>일별 주문통계</MainTitle>
       <div style={{ display: "flex", alignItems: "center" }}>
         {/* 년도 선택 */}

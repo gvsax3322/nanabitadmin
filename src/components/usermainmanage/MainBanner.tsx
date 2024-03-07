@@ -57,7 +57,7 @@ const MainBanner: React.FC = () => {
   const [bannerImg, setBannerImg] = useState<string>();
   const [bannerUrl, setBannerUrl] = useState<string>("");
   const [bannerTarget, setBannerTarget] = useState<number>(0);
-  const [bannerState, setBanenrState] = useState<number>(0);
+  const [bannerState, setBanenrState] = useState<number | null>(null);
 
   const [messageApi, contextHolder] = message.useMessage();
   const successEvent = (txt: string) => {
@@ -133,7 +133,7 @@ const MainBanner: React.FC = () => {
     const newData = {
       ibanner: newIbanner,
       target: 0,
-      status: 1, // 노출여부
+      status: 0, // 노출여부
       bannerUrl: "",
       bannerPic: "",
       bannerNew: 1, // 새로운 이미지
@@ -213,6 +213,11 @@ const MainBanner: React.FC = () => {
       fetchData();
       setRefresh(refresh + 1);
       successEvent(`수정 되었습니다.`);
+      setBannerImg("");
+      setBanenrState(0);
+      setBannerUrl("");
+      setBannerImg("");
+      setBannerTarget(0);
       // ==============================================
     } else if (action === "deletebanner") {
       // 삭제 버튼이 클릭된 경우
@@ -261,6 +266,11 @@ const MainBanner: React.FC = () => {
         fetchData();
         successEvent(`업로드 되었습니다.`);
         setRefresh(refresh + 1);
+        setBannerImg("");
+        setBanenrState(0);
+        setBannerUrl("");
+        setBannerImg("");
+        setBannerTarget(0);
       }
     }
   };

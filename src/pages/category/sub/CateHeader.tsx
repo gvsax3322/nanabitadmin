@@ -188,6 +188,7 @@ const CateHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     console.log("새로운 자식 카테고리 추가");
   };
 
+  // api main 카테추가
   const handleMainAddApi = (main_category: string) => {
     if (!main_category) {
       alert("카테고리 이름을 입력하세요.");
@@ -204,6 +205,7 @@ const CateHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
         // 카테고리 추가에 성공하면 추가된 카테고리 목록을 다시 불러옵니다.
         fetchData(); // fetchData 함수를 호출하여 데이터를 다시 불러옴
       },
+
       failFn: error => {
         console.error("카테고리 추가 실패:", error);
         alert("카테고리 추가에 실패했습니다.");
