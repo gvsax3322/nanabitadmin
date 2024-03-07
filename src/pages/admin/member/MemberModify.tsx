@@ -78,8 +78,6 @@ const MemberModify = () => {
         if (data !== undefined && data.length > 0) {
           setMemberList(data);
           setTotalPages(Math.ceil(data[0].totalCnt / pageSize) * 10);
-        } else {
-          errorAl("검색 결과가 없습니다.");
         }
       };
 
@@ -142,10 +140,37 @@ const MemberModify = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
+    setSearchText("");
+    setPhone("");
     try {
       await fetchData(currentPage);
       setSearchText("");
       setPhone("");
+      const successFn = (data: MemberList[] | undefined) => {
+        // console.log("데이터:", data);
+        if (data !== undefined && data.length > 0) {
+          setMemberList(data);
+          successAl("검색성공");
+        } else {
+          errorAl("검색 결과가 없습니다.");
+        }
+      };
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+      await getMemberList(
+        successFn,
+        failFn,
+        errorFn,
+        searchText,
+        searchOp,
+        startDate,
+        endDate,
+        phone,
+      );
     } catch (error) {
       console.error("검색 오류:", error);
       errorAl("검색실패");
@@ -153,6 +178,7 @@ const MemberModify = () => {
     }
     if ((memberList.length = 0)) {
       successAl("검색성공");
+      // console.error("에러:", error);
     }
   };
   // 초기화 버튼

@@ -10,7 +10,6 @@ import {
 import { ChangeEvent, Key, useEffect, useMemo, useState } from "react";
 import { deleteMember, getExMemberList } from "../../../api/member/memberApi";
 import MemberSelect from "../../../components/select/MemberSelect";
-
 import {
   BigKeyword,
   Common,
@@ -28,7 +27,6 @@ import {
 } from "../../../styles/member/memberstyle";
 import DeleteExcel from "../../../exel/member/DeleteExcel";
 import DatePick from "../../../components/member/DatePick";
-
 export interface ExMemberList {
   iuser: number;
   nm: string;
@@ -37,7 +35,6 @@ export interface ExMemberList {
   unregisteredAt?: string;
   totalCnt: number;
 }
-
 const MemberDelete = () => {
   // 멤버관련
   const [memberList, setMemberList] = useState<ExMemberList[]>([]);
@@ -69,15 +66,12 @@ const MemberDelete = () => {
           errorAl("검색 결과가 없습니다.");
         }
       };
-
       const failFn = (error: string) => {
         console.error("목록 호출 오류:", error);
       };
-
       const errorFn = (error: string) => {
         console.error("목록 호출 서버 에러:", error);
       };
-
       await getExMemberList(
         successFn,
         failFn,
@@ -101,28 +95,23 @@ const MemberDelete = () => {
         setSearchText("");
         successAl("초기화 완료");
       };
-
       const failFn = (error: string) => {
         console.error("목록 호출 오류:", error);
         errorAl("초기화 실패");
       };
-
       const errorFn = (error: string) => {
         console.error("목록 호출 서버 에러:", error);
         errorAl("초기화 실패");
       };
-
       await getExMemberList(successFn, failFn, errorFn);
     } catch (error) {
       console.error("에러:", error);
     }
   };
-
   // 날짜 자르기
   const formatDate = (dateString: string) => {
     return dateString.slice(0, 10);
   };
-
   // 회원 복원
   const handleClickrestore = async (record: ExMemberList) => {
     try {
@@ -131,23 +120,19 @@ const MemberDelete = () => {
         successAl("유저를 복구했습니다");
         setRefresh(refresh + 1);
       };
-
       const failFn = (error: string) => {
         console.error("목록 호출 오류:", error);
       };
-
       const errorFn = (error: string) => {
         console.error("목록 호출 서버 에러:", error);
         errorAl("복구에 실패하였습니다");
         setRefresh(refresh + 1);
       };
-
       await deleteMember(successFn, failFn, errorFn, record.iuser);
     } catch (error) {
       console.error("에러:", error);
     }
   };
-
   // 페이지 변경
   const handlePageChange = async (page: number) => {
     setCurrentPage(page);
@@ -166,7 +151,6 @@ const MemberDelete = () => {
     setSelectedRowKeys(selectedRowKeys);
     setSelectedMembersArr(selectedRows);
   };
-
   useEffect(() => {
     fetchData(currentPage);
   }, [refresh]);
@@ -184,13 +168,11 @@ const MemberDelete = () => {
       content: txt,
     });
   };
-
   const handleInputChange = useMemo(() => {
     return (e: ChangeEvent<HTMLInputElement>) => {
       setSearchText(e.target.value);
     };
   }, []);
-
   const handleSearchOp = (optionIndex: number): void => {
     switch (optionIndex) {
       case 0:
@@ -202,23 +184,55 @@ const MemberDelete = () => {
     }
     // console.log("검색어", optionIndex);
   };
-
   const handleClickSearch = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
-    e.preventDefault();
     try {
-      await fetchData(currentPage);
       setSearchText("");
+      const successFn = (data: ExMemberList[] | undefined) => {
+        // console.log("데이터:", data);
+        if (data !== undefined && data.length > 0) {
+          setMemberList(data);
+          successAl("검색성공");
+        } else {
+          errorAl("검색 결과가 없습니다");
+        }
+      };
+      const failFn = (error: string) => {
+        console.error("목록 호출 오류:", error);
+      };
+      const errorFn = (error: string) => {
+        console.error("목록 호출 서버 에러:", error);
+      };
+      await getExMemberList(
+        successFn,
+        failFn,
+        errorFn,
+        searchText,
+        searchOp,
+        startDate,
+        endDate,
+      );
     } catch (error) {
-      console.error("검색 오류:", error);
+      console.error("에러:", error);
       errorAl("검색실패");
+      errorAl("검색 결과가 없습니다.");
       return;
     }
-    if ((memberList.length = 0)) {
-      successAl("검색성공");
-    }
   };
+  // const handleClickSearch = async (
+  //   e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  // ) => {
+  //   e.preventDefault();
+  //   try {
+  //     await fetchData(currentPage);
+  //     setSearchText("");
+  //   } catch (error) {
+  //     console.error("검색 오류:", error);
+  //     errorAl("검색실패");
+  //     return;
+  //   }
+  // };
   const columns = [
     {
       title: "번호",
@@ -272,7 +286,6 @@ const MemberDelete = () => {
       render: (text: string) => formatDate(text),
     },
   ];
-
   return (
     <ModifyWrap>
       {contextHolder}
@@ -311,7 +324,7 @@ const MemberDelete = () => {
       </ModifyInfo>
       <ModifyButton>
         <SearchButton onClick={handleClickSearch}>검색</SearchButton>
-        <SearchButton style={{ background: " #f44336" }} onClick={ResetData}>
+        <SearchButton style={{ background: " #F44336" }} onClick={ResetData}>
           초기화
         </SearchButton>
       </ModifyButton>
@@ -376,5 +389,4 @@ const MemberDelete = () => {
     </ModifyWrap>
   );
 };
-
 export default MemberDelete;

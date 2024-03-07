@@ -76,7 +76,7 @@ const PostModal: FC<ResultModalProps> = ({
         errorAl("메일 보내기에 실패했습니다");
       };
 
-      await postMailTest(
+      await postMail(
         successFn,
         failFn,
         errorFn,
