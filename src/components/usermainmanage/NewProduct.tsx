@@ -35,7 +35,6 @@ const NewProduct: React.FC = () => {
 
   const [data, setData] = useState<MainProRc[]>([]);
   const [refresh, setRefresh] = useState(0);
-  
 
   const success = (txt: string) => {
     messageApi.open({
@@ -181,7 +180,8 @@ const NewProduct: React.FC = () => {
         }}
       >
         <SubTitle style={{ textAlign: "center", lineHeight: "15px" }}>
-          노출될 상품 <span style={{ color: "rgb(244, 67, 54)" }}>4</span> 건 |{" "}
+          노출될 상품{" "}
+          <span style={{ color: "rgb(244, 67, 54)" }}>{data.length}</span> 건 |{" "}
           <span style={{ fontSize: "12px" }}>* 최소 1개 , 최대 8개 </span>
         </SubTitle>
       </div>

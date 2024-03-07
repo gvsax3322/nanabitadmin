@@ -457,7 +457,7 @@ const MainBanner: React.FC = () => {
         }}
       >
         <SubTitle style={{ textAlign: "center", lineHeight: "15px" }}>
-          전체 : <span style={{ color: "rgb(244, 67, 54)" }}>4</span> 건 조회 |
+          전체 : <span style={{ color: "rgb(244, 67, 54)" }}>{bannerInfo?.length}</span> 건 조회 |
           순서는 숫자가 작을수록 우선 순위로 노출됩니다.
           {/* <fetching /> */}
         </SubTitle>
