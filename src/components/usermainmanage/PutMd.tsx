@@ -96,7 +96,7 @@ const PutMd: React.FC = () => {
       위생용품: 4,
       모유수유용품: 5,
     };
-    // console.log(categoryNumbers[category] || 0);
+    // //console.log(categoryNumbers[category] || 0);
     setSendMainCate(categoryNumbers[category] || 0);
   };
 
@@ -108,7 +108,7 @@ const PutMd: React.FC = () => {
     // 서브 카테고리에 따른 숫자 출력 (선택된 서브 카테고리의 인덱스 + 1)
     const subCategoryIndex =
       subCategories[mainCategory].indexOf(subCategoryValue) + 1;
-    // console.log(subCategoryIndex || 0);
+    // //console.log(subCategoryIndex || 0);
     setSendSubCate(subCategoryIndex || 0);
   };
 
@@ -119,8 +119,8 @@ const PutMd: React.FC = () => {
   };
   // 입력 필드 값 변경 시 호출될 함수
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // console.log(event.target.value);
-    // console.log(keyword);
+    // //console.log(event.target.value);
+    // //console.log(keyword);
     // 선택된 옵션에 따라 입력 값 변환
     if (selectedOption === 0) {
       // 제품명인 경우
@@ -144,10 +144,10 @@ const PutMd: React.FC = () => {
       setRefresh(refresh + 1);
     };
     const putFailFn = () => {
-      console.log("등록 실패");
+      //console.log("등록 실패");
     };
     const putErrorFn = () => {
-      console.log("등록 에러");
+      //console.log("등록 에러");
     };
     // const filteredProducts: any = sdata?.filter(sdata => sdata.status === 1);
 
@@ -320,7 +320,7 @@ const PutMd: React.FC = () => {
     try {
       const successFn = (data: MainProRc[]) => {
         setProductCheck(data);
-        // console.log("데이터:", resMonth);
+        // //console.log("데이터:", resMonth);
       };
       const failFn = (error: string) => {
         console.error("목록 호출 오류:", error);

@@ -5,7 +5,7 @@ import { API_SERVER_HOST } from "./util";
 const jwtAxios = axios.create();
 
 const beforeReq = (config: any) => {
-  // console.log(config);
+  // //console.log(config);
   const memberInfo = getCookie("nm");
   if (!memberInfo) {
     return Promise.reject({ response: { data: { error: "Login 하세요." } } });
@@ -29,7 +29,7 @@ const refreshJWT = async (accessToken: string, refreshToken: string) => {
 // 응답(Response) 처리 코드
 // Response 전처리
 const beforeRes = async (res: AxiosResponse) => {
-  // console.log(res);
+  // //console.log(res);
   const data = res.data;
   if (data && data.error === "ERROR_ACCESS_TOKEN") {
     const memberInfo = getCookie("nm");
@@ -47,7 +47,7 @@ const beforeRes = async (res: AxiosResponse) => {
   return res;
 };
 const responseFail = (err: Error) => {
-  // console.log("Response Fail Err", err);
+  // //console.log("Response Fail Err", err);
   return Promise.reject(err);
 };
 // axios 인터셉터 적용

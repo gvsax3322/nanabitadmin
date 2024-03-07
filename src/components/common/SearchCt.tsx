@@ -52,8 +52,6 @@ const CategorySelector: React.FC<DataPikerGet> = ({
     setSubCategoriesOfSelectedMainCategory,
   ] = useState<Category[]>([]);
 
-  
-
   // 대분류 선택 핸들러
   const handleMainCategoryChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
@@ -88,8 +86,8 @@ const CategorySelector: React.FC<DataPikerGet> = ({
     }
   }, [selectedSubCategoryIdData]);
 
-  console.log(selectedMainCategory);
-  console.log(selectedSubCategoryIdData);
+  // //console.log(selectedMainCategory);
+  // //console.log(selectedSubCategoryIdData);
   return (
     <div>
       <SelectStyle

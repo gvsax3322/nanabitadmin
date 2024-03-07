@@ -44,7 +44,7 @@ const DpstTable: React.FC<ISubTableProps> = ({ tableNum }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed이거라: ", newSelectedRowKeys);
+    //console.log("selectedRowKeys changed이거라: ", newSelectedRowKeys);
 
     setSelectedRowKeys(newSelectedRowKeys);
     tableNum(newSelectedRowKeys);

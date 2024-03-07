@@ -108,7 +108,7 @@ export const modifyMember = async (
     const res = await jwtAxios.patch<ResModify>(`${host}/${iuser}`, params);
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      // console.log(res.data);
+      // //console.log(res.data);
       successFn(res.data);
     } else {
       failFn("목록 호출 오류입니다.");
@@ -180,7 +180,7 @@ export const getRegister = async (
     );
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      // console.log(res.data);
+      // //console.log(res.data);
       successFn(res.data);
     } else {
       failFn("목록 호출 오류입니다.");

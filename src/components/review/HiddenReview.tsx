@@ -89,10 +89,10 @@ const HiddenReview = () => {
     setAdminMemo(data);
   };
   const failMemo = () => {
-    console.log("d");
+    //console.log("d");
   };
   const errorMemo = () => {
-    console.log("d");
+    //console.log("d");
   };
 
   // const handleCloseModal = () => {
@@ -121,7 +121,7 @@ const HiddenReview = () => {
       위생용품: 4,
       모유수유용품: 5,
     };
-    // console.log(categoryNumbers[category] || 0);
+    // //console.log(categoryNumbers[category] || 0);
     setSendMainCate(categoryNumbers[category] || 0);
   };
 
@@ -133,7 +133,7 @@ const HiddenReview = () => {
     // 서브 카테고리에 따른 숫자 출력 (선택된 서브 카테고리의 인덱스 + 1)
     const subCategoryIndex =
       subCategories[mainCategory].indexOf(subCategoryValue) + 1;
-    // console.log(subCategoryIndex || 0);
+    // //console.log(subCategoryIndex || 0);
     setSendSubCate(subCategoryIndex || 0);
   };
 
@@ -163,7 +163,7 @@ const HiddenReview = () => {
 
   // 상품 숨기기
   const handleHidden = (item: any) => {
-    // console.log("숨기기", item);
+    // //console.log("숨기기", item);
     // setShowModal(true);
     // setModalData(item);
     const putSuccessFn = () => {
@@ -171,10 +171,10 @@ const HiddenReview = () => {
       successEvent("복구되었습니다.");
     };
     const putFailFn = () => {
-      console.log("등록 실패");
+      //console.log("등록 실패");
     };
     const putErrorFn = () => {
-      console.log("등록 에러");
+      //console.log("등록 에러");
     };
     putReview(putSuccessFn, putFailFn, putErrorFn, item.ireview);
   };
@@ -376,7 +376,7 @@ const HiddenReview = () => {
   };
 
   useEffect(() => {
-    // console.log("데이터:", sdata);
+    // //console.log("데이터:", sdata);
     fetchData(currentPage);
   }, [refresh, sortBy]);
 

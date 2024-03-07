@@ -31,7 +31,7 @@ const OrCancelHeader: React.FC<OrAllHeaderProps> = () => {
   const handlePeriodBt = (BTIndex: number) => {
     setPeriodBt(BTIndex);
     // 선택된 기간에 따른 동작 수행
-    console.log("선택된 기간:", BTIndex);
+    //console.log("선택된 기간:", BTIndex);
   };
 
   // DATE picker 범위 업데이트
@@ -74,7 +74,7 @@ const OrCancelHeader: React.FC<OrAllHeaderProps> = () => {
       default:
         break;
     }
-    console.log("기간검색", optionIndex);
+    //console.log("기간검색", optionIndex);
   };
   // 검색어 셀렉함수
   const handleSearchOp = (optionIndex: number): void => {
@@ -110,7 +110,7 @@ const OrCancelHeader: React.FC<OrAllHeaderProps> = () => {
       default:
         break;
     }
-    console.log("검색어", optionIndex);
+    //console.log("검색어", optionIndex);
   };
 
   // 결제수단 셀렉함수
@@ -128,7 +128,7 @@ const OrCancelHeader: React.FC<OrAllHeaderProps> = () => {
       default:
         break;
     }
-    console.log("결제수단", optionIndex);
+    //console.log("결제수단", optionIndex);
   };
   // 검색 버튼 클릭시 처리
   const handleClickSearch = (
@@ -144,16 +144,16 @@ const OrCancelHeader: React.FC<OrAllHeaderProps> = () => {
     // 사용자는 검색을 했다.
     setUserSearchActive(true);
     // fetchData();
-    console.log(
-      "검색버튼눌렀어융",
-      periodBt,
-      searchOp,
-      prdOp,
-      paymentOp,
-      userSearchActive,
-      selectedDate,
-      searchText,
-    );
+    // //console.log(
+    //   "검색버튼눌렀어융",
+    //   periodBt,
+    //   searchOp,
+    //   prdOp,
+    //   paymentOp,
+    //   userSearchActive,
+    //   selectedDate,
+    //   searchText,
+    // );
   };
 
   return (

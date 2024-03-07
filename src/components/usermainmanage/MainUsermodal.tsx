@@ -83,7 +83,7 @@ const MainUsermodal: React.FC<ResultModalProps> = ({ onClose }) => {
   // 이미지 설정 설정
   const defaultImgUrl = `${process.env.PUBLIC_URL}/assets/images/defaultitemimg.svg`;
   const handleApply = () => {
-    console.log("등록할거라능");
+    //console.log("등록할거라능");
   };
 
   const [data, setData] = useState<IDataItem[]>(() => {

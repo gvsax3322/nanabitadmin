@@ -38,21 +38,21 @@ const ItemTable: React.FC<ItemTableModify> = ({
   reset,
   setProductList,
 }) => {
-  console.log(productList);
+  //console.log(productList);
   const aaa = productList;
 
-  console.log(aaa);
+  //console.log(aaa);
   const [showModal, setShowModal] = useState(false);
   const [modifyData, setModifyData] = useState<GetProduct[]>([]);
 
   // ResultModal을 보여주는 함수
   const handleShowModal = (record: GetProduct) => {
-    console.log(record);
+    //console.log(record);
     setShowModal(true);
     const bbb = [record]; // 배열로 감싸기
     setModifyData(bbb);
   };
-  console.log("각 데이터", modifyData);
+  //console.log("각 데이터", modifyData);
   // ResultModal을 닫는 함수
   const handleCloseModal = () => {
     setShowModal(false);
@@ -70,15 +70,15 @@ const ItemTable: React.FC<ItemTableModify> = ({
   }, [productList]);
 
   const onSelectChange = (selectedRowKeys: React.Key[], record: any[]) => {
-    console.log("selectedRowKeys changed: ", selectedRowKeys);
+    //console.log("selectedRowKeys changed: ", selectedRowKeys);
 
     setSelectedRowKeys(selectedRowKeys);
-    console.log(record);
+    //console.log(record);
     tableNum(record);
   };
   // const onSelect = (record: any, selected: any) => {
   //   setSelectedRowKeys(record)
-  //   console.log("Selected Row:", selectedRowKeys, "Selected:", selected);
+  //   //console.log("Selected Row:", selectedRowKeys, "Selected:", selected);
   //   // 선택된 행에 대한 추가적인 처리
   // };
   const rowSelection = {
@@ -86,12 +86,12 @@ const ItemTable: React.FC<ItemTableModify> = ({
     onChange: onSelectChange,
     // onSelect,
     onSelectAll: (selected: any, selectedRows: any) => {
-      console.log(
-        "All rows selected:",
-        selected,
-        "Selected Rows:",
-        selectedRows,
-      );
+      // //console.log(
+      //   "All rows selected:",
+      //   selected,
+      //   "Selected Rows:",
+      //   selectedRows,
+      // );
       // 모든 행에 대한 추가적인 처리
     },
   };

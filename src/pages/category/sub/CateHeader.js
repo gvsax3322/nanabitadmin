@@ -108,7 +108,7 @@ const CateHeader = ({ tableNum }) => {
   });
   // =====================================================
   const handleDelete = imain => {
-    console.log("1차카테 선택", imain);
+    //console.log("1차카테 선택", imain);
     const cateImain = imain; // 주문 번호를 배열에 담음
     // API를 호출하여 주문 상태를 변경합니다.
     deleleCateMain({
@@ -121,7 +121,7 @@ const CateHeader = ({ tableNum }) => {
     });
   };
   const handleSubDelete = candidateKey => {
-    console.log("2차카테 선택", candidateKey);
+    //console.log("2차카테 선택", candidateKey);
     // 선택한 일괄 처리 버튼의 상태를 업데이트합니다.
     const cateImiddle = candidateKey; // 주문 번호를 배열에 담음
     // API를 호출하여 주문 상태를 변경합니다.
@@ -168,18 +168,18 @@ const CateHeader = ({ tableNum }) => {
   // 저장 버튼 클릭 시 호출되는 함수
   const handleClickSearch = () => {
     // 검색어를 사용하여 필요한 작업 수행
-    console.log("검색어:", searchText);
+    //console.log("검색어:", searchText);
     // 예: 검색어를 사용하여 서버에 요청을 보내거나 로컬 상태를 업데이트합니다.
   };
   // 새로운 부모 카테고리를 추가하는 함수
   const handleAddMainCategory = () => {
     // 새로운 부모 카테고리를 추가하는 작업 수행
-    console.log("새로운 부모 카테고리 추가");
+    //console.log("새로운 부모 카테고리 추가");
   };
   // 새로운 자식 카테고리를 추가하는 함수
   const handleAddSubCategory = () => {
     // 새로운 자식 카테고리를 추가하는 작업 수행
-    console.log("새로운 자식 카테고리 추가");
+    //console.log("새로운 자식 카테고리 추가");
   };
   // 1차 카테고리 추가 입력 시 호출되는 함수
   const handleInputChange = e => {
@@ -194,7 +194,7 @@ const CateHeader = ({ tableNum }) => {
     postAddCate({
       mainAdd: mainCategory,
       successFn: () => {
-        console.log("카테고리 추가 성공");
+        //console.log("카테고리 추가 성공");
         setMainCategory("");
         // 카테고리 추가에 성공하면 추가된 카테고리 목록을 다시 불러옵니다.
         fetchData(); // fetchData 함수를 호출하여 데이터를 다시 불러옴
@@ -211,7 +211,7 @@ const CateHeader = ({ tableNum }) => {
   };
   // ====================================================================
   useEffect(() => {
-    console.log("================= 전체 최초 검색");
+    //console.log("================= 전체 최초 검색");
     fetchData(); // 페이지가 처음 렌더링될 때 데이터를 호출합니다.
   }, []);
   // 서버연동
@@ -225,11 +225,11 @@ const CateHeader = ({ tableNum }) => {
     setOrderData(data);
   };
   const failFn_AllOrder = data => {
-    // console.log("failFn : ", data);
+    // //console.log("failFn : ", data);
     alert("failFn오더all : 데이터 호출에 실패하였습니다.");
   };
   const errorFn_AllOrder = data => {
-    // console.log("errorFn : ", data);
+    // //console.log("errorFn : ", data);
     alert("오더all!!! 서버상태 불안정 그래서, 데모테스트했음.");
     setOrderData(data);
   };

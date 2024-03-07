@@ -18,7 +18,7 @@ const OrderChartCom = () => {
     try {
       const successFn = (data: getOChartApi) => {
         setResMonth(data);
-        // console.log("데이터:", resMonth);
+        // //console.log("데이터:", resMonth);
       };
       const failFn = (error: string) => {
         console.error("목록 호출 오류:", error);

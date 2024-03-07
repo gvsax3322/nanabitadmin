@@ -35,7 +35,7 @@ const MemberInfoSection: FC<MemberInfoSectionProps> = ({
 }) => {
   const addresses = memberInfo[0]?.addresses;
   const children = memberInfo[0]?.children;
-  console.log(memberId);
+  //console.log(memberId);
 
   const [password, setpassword] = useState<string>();
   const [memo, setmemo] = useState<string>();
@@ -43,7 +43,7 @@ const MemberInfoSection: FC<MemberInfoSectionProps> = ({
   const handleClickModify = async () => {
     try {
       const successFn = (data: ResModify) => {
-        // console.log("데이터:", data);
+        // //console.log("데이터:", data);
         successAl("수정에 성공했습니다");
       };
 
@@ -66,7 +66,7 @@ const MemberInfoSection: FC<MemberInfoSectionProps> = ({
   const handleClickDelete = async () => {
     try {
       const successFn = (data: any) => {
-        console.log("데이터:", data);
+        //console.log("데이터:", data);
         successAl("삭제에 성공했습니다");
       };
 

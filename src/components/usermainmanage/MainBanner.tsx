@@ -145,26 +145,26 @@ const MainBanner: React.FC = () => {
   //  =================배너 값 관리 함수 =================
   // 체크여부
   const handleCheckChange = (item: any, isChecked: boolean) => {
-    // console.log(`item: ${item}, 변경된 체크 여부: ${isChecked}`);
-    console.log(item);
+    // //console.log(`item: ${item}, 변경된 체크 여부: ${isChecked}`);
+    //console.log(item);
     if (isChecked === false) {
-      console.log("배너 상태 :", item.status);
+      //console.log("배너 상태 :", item.status);
       setBanenrState(1);
     } else if (isChecked === true) {
-      console.log("배너 상태 :", item.status);
+      //console.log("배너 상태 :", item.status);
       setBanenrState(0);
     }
-    console.log("useState", bannerState);
+    //console.log("useState", bannerState);
   };
 
   // url 입력창
   const handleInputChange = (value: string) => {
-    // console.log("입력값:", value);
+    // //console.log("입력값:", value);
     setBannerUrl(value);
   };
 
   const handleTargetChange = (value: number, ibanner: number) => {
-    console.log("ibanner : ", ibanner, "타겟 :", value);
+    //console.log("ibanner : ", ibanner, "타겟 :", value);
     setBannerTarget(value);
   };
 
@@ -172,18 +172,18 @@ const MainBanner: React.FC = () => {
   const logImageInfo = async (ibanner: any, imageData: string) => {
     await setBannerImg(imageData);
 
-    // console.log(imageData);
-    // console.log("잘 나오고 있나요 ?", bannerImg);
+    // //console.log(imageData);
+    // //console.log("잘 나오고 있나요 ?", bannerImg);
   };
   // 상태관리 버튼
   const handleState = async (action: string, ibanner: any) => {
     if (action === "editbanner") {
       // 수정 버튼이 클릭된 경우
-      console.log("ibanner", ibanner);
-      console.log("사진", ibanner.bannerPic);
-      console.log("url", ibanner.bannerUrl);
-      console.log("타겟", ibanner.target);
-      console.log("체크여부", ibanner.status);
+      //console.log("ibanner", ibanner);
+      //console.log("사진", ibanner.bannerPic);
+      //console.log("url", ibanner.bannerUrl);
+      //console.log("타겟", ibanner.target);
+      //console.log("체크여부", ibanner.status);
       function convertToPostBannerData(data: any): PostBannerData {
         const postBannerData: PostBannerData = {
           pic: bannerImg || ibanner.bannerPic, // 기본값은 빈 문자열로 설정
@@ -208,7 +208,7 @@ const MainBanner: React.FC = () => {
 
       const letsPostBanner: PostBannerData =
         convertToPostBannerData(ibannerData);
-      console.log(letsPostBanner);
+      //console.log(letsPostBanner);
       patchBanner(ibanner.ibanner, letsPostBanner);
       fetchData();
       setRefresh(refresh + 1);
@@ -225,14 +225,14 @@ const MainBanner: React.FC = () => {
       fetchData();
       setRefresh(refresh + 1);
       successEvent(`삭제 되었습니다.`);
-      // console.log("삭제 버튼", "ibanner:", ibanner);
+      // //console.log("삭제 버튼", "ibanner:", ibanner);
       // ==============================================
     } else if (action === "uploadbanner") {
       // 업로드 버튼이 클릭된 경우
       const splitBannerPic = ibanner.bannerPic.split("/");
       const findImgNull = splitBannerPic[4];
-      console.log(findImgNull);
-      console.log("bannerImg", bannerImg);
+      //console.log(findImgNull);
+      //console.log("bannerImg", bannerImg);
       if (bannerImg === undefined) {
         warningEvent("이미지를 추가해 주세요.");
       } else if (bannerImg !== undefined) {
@@ -260,8 +260,8 @@ const MainBanner: React.FC = () => {
 
         const letsPostBanner: PostBannerData =
           convertToPostBannerData(ibannerData);
-        console.log(letsPostBanner);
-        console.log("업로드 후!", bannerState);
+        //console.log(letsPostBanner);
+        //console.log("업로드 후!", bannerState);
         postBanner(letsPostBanner);
         fetchData();
         successEvent(`업로드 되었습니다.`);
@@ -366,7 +366,7 @@ const MainBanner: React.FC = () => {
                   }
                 };
                 reader.readAsDataURL(file);
-                console.log(file);
+                //console.log(file);
               }
             }}
           />
@@ -457,8 +457,11 @@ const MainBanner: React.FC = () => {
         }}
       >
         <SubTitle style={{ textAlign: "center", lineHeight: "15px" }}>
-          전체 : <span style={{ color: "rgb(244, 67, 54)" }}>{bannerInfo?.length}</span> 건 조회 |
-          순서는 숫자가 작을수록 우선 순위로 노출됩니다.
+          전체 :{" "}
+          <span style={{ color: "rgb(244, 67, 54)" }}>
+            {bannerInfo?.length}
+          </span>{" "}
+          건 조회 | 순서는 숫자가 작을수록 우선 순위로 노출됩니다.
           {/* <fetching /> */}
         </SubTitle>
         <MiddleButton

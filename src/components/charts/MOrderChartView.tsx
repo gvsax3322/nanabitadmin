@@ -43,7 +43,7 @@ const MOrderChartView = () => {
   const onSearchYear = () => {
     setYearData(year); // 검색 버튼을 클릭할 때만 yearData를 설정합니다.
     fetchData(); // fetchData 함수를 호출합니다.
-    // console.log("resMonth", resMonth);
+    // //console.log("resMonth", resMonth);
     successEvent("검색 완료");
   };
 
@@ -55,7 +55,7 @@ const MOrderChartView = () => {
     try {
       const successFn = (data: getOChartApi) => {
         setResMonth(data);
-        // console.log("데이터:", resMonth);
+        // //console.log("데이터:", resMonth);
       };
       const failFn = (error: string) => {
         console.error("목록 호출 오류:", error);

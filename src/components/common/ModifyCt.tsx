@@ -45,7 +45,7 @@ const ModifyCt: React.FC<DataPikerGet> = ({
   aaa,
   bbb,
 }) => {
-  console.log("수정데이터 넘어오니?", aaa, bbb);
+  // //console.log("수정데이터 넘어오니?", aaa, bbb);
   const [selectedMainCategory, setSelectedMainCategory] = useState<
     number | null
   >(null);
@@ -68,12 +68,12 @@ const ModifyCt: React.FC<DataPikerGet> = ({
 
     setSubCategoriesOfSelectedMainCategory(subCategoriesFiltered);
 
-    // console.log("========= ", subCategoriesFiltered);
+    // //console.log("========= ", subCategoriesFiltered);
     // 대분류 변경에 따른 중분류의 기본값 설정
     const selectedSubCategory = subCategoriesFiltered.find(
       category => category.id === bbb,
     );
-    console.log("========= ", selectedSubCategory);
+    // //console.log("========= ", selectedSubCategory);
     if (selectedSubCategory) {
       setSelectedSubCategoryIdData(selectedSubCategory.id);
     }
@@ -124,8 +124,8 @@ const ModifyCt: React.FC<DataPikerGet> = ({
     }
   }, [selectedSubCategoryIdData]);
 
-  console.log(selectedMainCategory);
-  console.log(selectedSubCategoryIdData);
+  // //console.log(selectedMainCategory);
+  // //console.log(selectedSubCategoryIdData);
 
   return (
     <div>

@@ -64,7 +64,7 @@ interface SearchCriteria {
 export type ProductGetList = GetProduct[];
 
 const ItemAll = () => {
-  console.log("리랜더링");
+  //console.log("리랜더링");
   // ResultModal을 표시할지 여부를 결정하는 상태
   const [showModal, setShowModal] = useState(false);
   const [dataFromChild, setDataFromChild] = useState<any[]>([]);
@@ -78,7 +78,7 @@ const ItemAll = () => {
   const fetchData = async (data: SearchCriteria) => {
     try {
       const successPr = (data: GetProduct[]) => {
-        console.log("데이터:", data);
+        //console.log("데이터:", data);
         setProductList(data);
       };
 
@@ -113,7 +113,7 @@ const ItemAll = () => {
   const ResetData = async () => {
     try {
       const successFn = (data: GetProduct[]) => {
-        console.log("데이터:", data);
+        //console.log("데이터:", data);
         setProductList(data);
       };
 
@@ -150,14 +150,14 @@ const ItemAll = () => {
   };
   const handleClcikRemove = () => {
     const iproductList: number[] = dataFromChild.map(item => item.iproduct);
-    console.log("선택된 iproduct 리스트:", iproductList);
+    //console.log("선택된 iproduct 리스트:", iproductList);
     getDeldel(iproductList);
     ResetData();
   };
 
   // 날짜 변경
   const handleDateChange = (dateRange: string[]) => {
-    console.log(dateRange);
+    //console.log(dateRange);
     setStartDate(dateRange[0]);
     setEndDate(dateRange[1]);
   };
@@ -172,10 +172,10 @@ const ItemAll = () => {
   };
 
   function handClickImain(data: any): void {
-    console.log("main", data);
+    //console.log("main", data);
   }
   function handClickImiddle(data: any): void {
-    console.log("middle", data);
+    //console.log("middle", data);
   }
 
   return (
@@ -280,10 +280,19 @@ const ItemAll = () => {
         </div>
       </div>
       <div>
-        <ItemTable tableNum={handleClickTableuum} productList={productList} reset={ResetData} setProductList={setProductList}/>
+        <ItemTable
+          tableNum={handleClickTableuum}
+          productList={productList}
+          reset={ResetData}
+          setProductList={setProductList}
+        />
       </div>
       {showModal && (
-      <ResultModal onClose={handleCloseModal} reset={ResetData} setProductList={setProductList} />
+        <ResultModal
+          onClose={handleCloseModal}
+          reset={ResetData}
+          setProductList={setProductList}
+        />
       )}
     </>
   );

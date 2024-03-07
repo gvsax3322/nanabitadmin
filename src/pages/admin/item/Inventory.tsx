@@ -38,7 +38,7 @@ const Inventory = () => {
     setDataFromChild(data);
   };
   const handleClcikRemove = () => {
-    console.log(dataFromChild);
+    //console.log(dataFromChild);
   };
   return (
     <>
@@ -180,7 +180,7 @@ const Inventory = () => {
         </div>
       </div>
       <div>
-      {/* <ItemTable tableNum={handleClickTableuum} /> */}
+        {/* <ItemTable tableNum={handleClickTableuum} /> */}
         {/* {showModal && <ResultModal onClose={handleCloseModal} />} */}
       </div>
     </>

@@ -21,7 +21,7 @@ export const postMail = async (
     const res = await jwtAxios.post<PostRes>(`${host}`, params);
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      // console.log(res.data);
+      // //console.log(res.data);
       successFn(res.data);
     } else {
       failFn("목록 호출 오류입니다.");
@@ -49,7 +49,7 @@ export const postMailTest = async (
     const res = await jwtAxios.post<PostRes>(`${host}/console-test`, params);
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      // console.log(res.data);
+      // //console.log(res.data);
       successFn(res.data);
     } else {
       failFn("목록 호출 오류입니다.");

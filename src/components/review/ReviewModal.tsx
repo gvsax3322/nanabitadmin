@@ -54,8 +54,8 @@ const ReviewModal: React.FC<ResultModalProps> = ({
 
   const handleApply = () => {
     if (ireview !== undefined) {
-      // console.log("ireview", ireview);
-      // console.log("memoD", memoD);
+      // //console.log("ireview", ireview);
+      // //console.log("memoD", memoD);
       putReview(putSuccessFn, putFailFn, putErrorFn, ireview);
       patchReview(successFn, failFn, errorFn, ireview, memoD);
     } else {
@@ -76,14 +76,14 @@ const ReviewModal: React.FC<ResultModalProps> = ({
   };
 
   const putSuccessFn = () => {
-    // console.log("등록 성공");
+    // //console.log("등록 성공");
     setRefresh(refresh + 1);
   };
   const putFailFn = () => {
-    console.log("등록 실패");
+    //console.log("등록 실패");
   };
   const putErrorFn = () => {
-    console.log("등록 에러");
+    //console.log("등록 에러");
   };
 
   const handleInput = (e: any) => {

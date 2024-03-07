@@ -19,7 +19,7 @@ export const getSalesChart = async (
     );
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      // console.log(res.data);
+      // //console.log(res.data);
       successFn(res.data);
     } else {
       failFn("목록 호출 오류입니다.");
@@ -43,7 +43,7 @@ export const getOrderChart = async (
     );
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      // console.log(res.data);
+      // //console.log(res.data);
       successFn(res.data);
     } else {
       failFn("목록 호출 오류입니다.");

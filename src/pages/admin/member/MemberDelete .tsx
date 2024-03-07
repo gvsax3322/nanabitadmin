@@ -58,7 +58,7 @@ const MemberDelete = () => {
     const pageSize = 10;
     try {
       const successFn = (data: ExMemberList[] | undefined) => {
-        // console.log("데이터:", data);
+        // //console.log("데이터:", data);
         if (data !== undefined && data.length > 0) {
           setMemberList(data);
           setTotalPages(Math.ceil(data[0].totalCnt / pageSize) * 10);
@@ -90,7 +90,7 @@ const MemberDelete = () => {
   const ResetData = async () => {
     try {
       const successFn = (data: ExMemberList[]) => {
-        // console.log("데이터:", data);
+        // //console.log("데이터:", data);
         setMemberList(data);
         setSearchText("");
         successAl("초기화 완료");
@@ -116,7 +116,7 @@ const MemberDelete = () => {
   const handleClickrestore = async (record: ExMemberList) => {
     try {
       const successFn = (data: any) => {
-        // console.log("데이터:", data);
+        // //console.log("데이터:", data);
         successAl("유저를 복구했습니다");
         setRefresh(refresh + 1);
       };
@@ -182,7 +182,7 @@ const MemberDelete = () => {
         setSearchOp(2);
         break;
     }
-    // console.log("검색어", optionIndex);
+    // //console.log("검색어", optionIndex);
   };
   const handleClickSearch = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -190,7 +190,7 @@ const MemberDelete = () => {
     try {
       setSearchText("");
       const successFn = (data: ExMemberList[] | undefined) => {
-        // console.log("데이터:", data);
+        // //console.log("데이터:", data);
         if (data !== undefined && data.length > 0) {
           setMemberList(data);
           successAl("검색성공");

@@ -41,7 +41,7 @@ const CancelTable: React.FC<ISubTableProps> = ({ tableNum }) => {
   };
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+    //console.log("selectedRowKeys changed: ", newSelectedRowKeys);
 
     setSelectedRowKeys(newSelectedRowKeys);
     tableNum(newSelectedRowKeys);
@@ -85,31 +85,31 @@ const CancelTable: React.FC<ISubTableProps> = ({ tableNum }) => {
         </div>
       ),
     },
-    {
-      title: "이미지",
-      dataIndex: "items",
-      render: (items: OrderItem[]) => (
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ul>
-            {items.map((item, index) => (
-              <li
-                style={{ marginBottom: "10px", marginTop: "10px" }}
-                key={index}
-              >
-                {item.img}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ),
-    },
+    // {
+    //   title: "이미지",
+    //   dataIndex: "items",
+    //   render: (items: OrderItem[]) => (
+    //     <div
+    //       style={{
+    //         width: "100%",
+    //         display: "flex",
+    //         justifyContent: "center",
+    //         alignItems: "center",
+    //       }}
+    //     >
+    //       <ul>
+    //         {items.map((item, index) => (
+    //           <li
+    //             style={{ marginBottom: "10px", marginTop: "10px" }}
+    //             key={index}
+    //           >
+    //             {item.img}
+    //           </li>
+    //         ))}
+    //       </ul>
+    //     </div>
+    //   ),
+    // },
     {
       title: "상품명",
       dataIndex: "items",
@@ -167,10 +167,10 @@ const CancelTable: React.FC<ISubTableProps> = ({ tableNum }) => {
       title: "취소일시",
       dataIndex: "canceldate",
     },
-    {
-      title: "주문자",
-      dataIndex: "orderer",
-    },
+    // {
+    //   title: "주문자",
+    //   dataIndex: "orderer",
+    // },
     {
       title: "총주문액",
       dataIndex: "totalAmount",

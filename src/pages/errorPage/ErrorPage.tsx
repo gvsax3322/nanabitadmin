@@ -18,12 +18,12 @@ const ErrorPage = () => {
   const handleClickMain = () => {
     if (isLogin) {
       navigate("/admin");
-      console.log("로그인됨");
-      console.log(isLogin);
+      //console.log("로그인됨");
+      //console.log(isLogin);
     } else {
       navigate("/");
-      console.log("로그인 안됨");
-      console.log(loginState.nm);
+      //console.log("로그인 안됨");
+      //console.log(loginState.nm);
     }
   };
   return (

@@ -14,16 +14,16 @@ const OrderPicker = (): JSX.Element => {
     dateStrings: string[],
   ) => {
     if (dates) {
-      console.log("From: ", dates[0], ", to: ", dates[1]);
-      console.log("From: ", dateStrings[0], ", to: ", dateStrings[1]);
+      //console.log("From: ", dates[0], ", to: ", dates[1]);
+      //console.log("From: ", dateStrings[0], ", to: ", dateStrings[1]);
 
       // 변경된 날짜를 상태에 저장
       setSelectedDate(dateStrings);
 
       //     // 선택된 날짜를 콘솔에 찍기
-      console.log("선택된 날짜 문자열:", dateStrings);
+      //console.log("선택된 날짜 문자열:", dateStrings);
     } else {
-      console.log("Clear");
+      //console.log("Clear");
     }
   };
 
@@ -32,14 +32,14 @@ const OrderPicker = (): JSX.Element => {
   //     dateStrings,
   //   ) => {
   //     // 선택된 날짜가 변경될 때마다 호출되는 함수
-  //     console.log("선택된 날짜:");;
+  //     //console.log("선택된 날짜:");;
 
   //     // 변경된 날짜를 상태에 저장
   //     // setSelectedDate : (value: React.SetStateAction<[Date, Date] | null>) => void();
   //     setSelectedDate(dates);
 
   //     // 선택된 날짜를 콘솔에 찍기
-  //     console.log("선택된 날짜 문자열:", dateStrings);
+  //     //console.log("선택된 날짜 문자열:", dateStrings);
   //   };
 
   return (

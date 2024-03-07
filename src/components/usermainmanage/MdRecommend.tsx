@@ -43,7 +43,7 @@ const MdRecommend: React.FC = () => {
       try {
         const successFn = (data: MainProRc[]) => {
           setData(data);
-          // console.log("데이터:", resMonth);
+          // //console.log("데이터:", resMonth);
         };
         const failFn = (error: string) => {
           console.error("목록 호출 오류:", error);
@@ -71,17 +71,17 @@ const MdRecommend: React.FC = () => {
   };
 
   const putSuccessFn = () => {
-    console.log("성공!");
+    //console.log("성공!");
     success("삭제 완료하였습니다.");
     setRefresh(refresh + 1);
-    console.log("리프레시값", refresh);
+    //console.log("리프레시값", refresh);
   };
   const putFailFn = () => {
-    console.log("실패!");
+    //console.log("실패!");
   };
 
   const putErrorFn = () => {
-    console.log("에러!");
+    //console.log("에러!");
   };
 
   const columns: any[] = [
@@ -128,7 +128,7 @@ const MdRecommend: React.FC = () => {
       width: "80px",
       render: (record: any) => (
         <>
-          {/* {console.log(record)} */}
+          {/* {//console.log(record)} */}
           <SearchButton
             style={{
               background: "rgb(244, 67, 54)",

@@ -87,8 +87,8 @@ const AntCategory: React.FC<DataPikerGet> = ({
     }
   }, [selectedSubCategoryIdData]);
 
-  console.log(selectedMainCategory);
-  console.log(selectedSubCategoryIdData);
+  // //console.log(selectedMainCategory);
+  // //console.log(selectedSubCategoryIdData);
   return (
     <div>
       <Form.Item
@@ -118,7 +118,6 @@ const AntCategory: React.FC<DataPikerGet> = ({
           placeholder="중분류를 선택하세요"
           onChange={handleSubCategoryChange}
           disabled={!subCategories.length} // Disable subcategory select until main category is selected
-          
         >
           {subCategoriesOfSelectedMainCategory.map(category => (
             <Select.Option key={category.id} value={category.id}>

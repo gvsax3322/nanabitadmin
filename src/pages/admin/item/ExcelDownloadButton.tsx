@@ -23,7 +23,7 @@ const findCategoryName = (
 const ExcelDownloadButton: React.FC<ExcelDownloadButtonProps> = ({
   exceldata,
 }) => {
-  console.log(exceldata);
+  //console.log(exceldata);
 
   const handleDownload = () => {
     // 엑셀 시트에 넣을 데이터를 배열로 만들기

@@ -51,7 +51,7 @@ const ResultModal: React.FC<ResultModalProps> = ({
   reset,
   setProductList,
 }) => {
-  console.log(reset);
+  // //console.log(reset);
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState<any[]>([]);
   const [activeSubcategory, setActiveSubcategory] = useState<number>(1);
@@ -98,7 +98,7 @@ const ResultModal: React.FC<ResultModalProps> = ({
       return;
     }
     const successFn = (data: GetProduct[]) => {
-      console.log("데이터:", data);
+      // //console.log("데이터:", data);
       setProductList(data);
     };
 
@@ -115,7 +115,7 @@ const ResultModal: React.FC<ResultModalProps> = ({
   };
 
   const onFinish = async (data: FormData) => {
-    console.log(data);
+    // //console.log(data);
     if (!submitClicked) return;
     if (fileList.length === 0) {
       return;
@@ -145,14 +145,14 @@ const ResultModal: React.FC<ResultModalProps> = ({
     });
     const values = formData.values();
     for (const pair of values) {
-      console.log("pair", pair);
+      // //console.log("pair", pair);
     }
 
     postProduct({
       product: formData,
     }).then(async () => {
       const successFn = (data: GetProduct[]) => {
-        console.log("데이터:", data);
+        // //console.log("데이터:", data);
         setProductList(data);
       };
 
@@ -175,11 +175,11 @@ const ResultModal: React.FC<ResultModalProps> = ({
   };
 
   function handClickImain(data: any): void {
-    console.log("main", data);
+    // //console.log("main", data);
     setSearchimain(data);
   }
   function handClickImiddle(data: any): void {
-    console.log("middle", data);
+    // //console.log("middle", data);
     setSearchimiddle(data);
   }
   return (

@@ -24,7 +24,7 @@ export const getDeldel = async (iproductList: number[]) => {
       return "잘못된 정보를 전달함.";
     }
   } catch (error) {
-    console.log(error);
+    // //console.log(error);
     return "네트워크 오류 발생.";
   }
 };
@@ -34,7 +34,7 @@ export const productPatch = async ({
   product,
   abc,
 }: any): Promise<Product[] | string> => {
-  console.log("product", product);
+  // //console.log("product", product);
   try {
     const header = { headers: { "Content-Type": "multipart/form-data" } };
     const res = await jwtAxios.patch<Product[]>(
@@ -50,7 +50,7 @@ export const productPatch = async ({
       return "잘못된 정보를 전달함.";
     }
   } catch (error) {
-    console.log(error);
+    // //console.log(error);
     return "네트워크 오류 발생.";
   }
 };
@@ -59,7 +59,7 @@ export const productPatch = async ({
 export const postProduct = async ({
   product,
 }: any): Promise<Product[] | string> => {
-  console.log("product", product);
+  // //console.log("product", product);
   try {
     const header = { headers: { "Content-Type": "multipart/form-data" } };
     const res = await jwtAxios.post<Product[]>(
@@ -75,7 +75,7 @@ export const postProduct = async ({
       return "잘못된 정보를 전달함.";
     }
   } catch (error) {
-    console.log(error);
+    // //console.log(error);
     return "네트워크 오류 발생.";
   }
 };
@@ -146,7 +146,7 @@ export const getProductReturn = async (
     );
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      // console.log(res.data);
+      // //console.log(res.data);
       successFn(res.data);
     } else {
       failFn("목록 호출 오류입니다.");
@@ -197,7 +197,7 @@ export const getProductCancel = async (
     );
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      // console.log(res.data);
+      // //console.log(res.data);
       successFn(res.data);
     } else {
       failFn("목록 호출 오류입니다.");

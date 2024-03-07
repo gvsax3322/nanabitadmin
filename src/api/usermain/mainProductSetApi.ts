@@ -37,7 +37,7 @@ export const getMainProRc = async (
     const res = await jwtAxios.get<MainProRc[]>(`${host}/productRc`);
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      // console.log(res.data);
+      // //console.log(res.data);
       successFn(res.data);
     } else {
       failFn("목록 호출 오류입니다.");
@@ -64,7 +64,7 @@ export const putMainProRc = async (
     );
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      // console.log(res.data);
+      // //console.log(res.data);
       putSuccessFn(res);
     } else {
       putFailFn("목록 호출 오류입니다.");
@@ -93,7 +93,7 @@ export const getMdSearch = async (
     );
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      // console.log(res.data);
+      // //console.log(res.data);
       successFn(res.data);
     } else {
       FailFn("목록 호출 오류입니다.");
@@ -115,7 +115,7 @@ export const getMainProPop = async (
     const res = await jwtAxios.get<MainProRc[]>(`${host}/productPop`);
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      // console.log(res.data);
+      // //console.log(res.data);
       successFn(res.data);
     } else {
       failFn("목록 호출 오류입니다.");
@@ -136,7 +136,7 @@ export const getMainProNew = async (
     const res = await jwtAxios.get<MainProRc[]>(`${host}/productNew`);
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      // console.log(res.data);
+      // //console.log(res.data);
       successFn(res.data);
     } else {
       failFn("목록 호출 오류입니다.");

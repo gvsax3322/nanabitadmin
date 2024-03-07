@@ -55,16 +55,16 @@ const ModifyModal: React.FC<ResultModalProps> = ({
   reset,
   setProductList,
 }) => {
-  console.log("여기도 들어오니?", patchData);
+  // //console.log("여기도 들어오니?", patchData);
   const abc = JSON.parse(JSON.stringify(patchData));
-  console.log(abc);
+  // //console.log(abc);
 
   // abc[0].repPic  << 이미지 넘어오는거
   const repPic: string | undefined = abc[0]?.productPic;
   const repPicUrl: string | undefined = repPic
     ? `${API_SERVER_HOST}/pic/product/${abc[0].iproduct}/${repPic}`
     : undefined;
-  console.log("이미지", repPicUrl);
+  // //console.log("이미지", repPicUrl);
   const [activeSubcategory, setActiveSubcategory] = useState<number>(
     abc[0]?.recommandAge,
   );
@@ -102,7 +102,7 @@ const ModifyModal: React.FC<ResultModalProps> = ({
   }
 
   // 생성된 배열 출력
-  console.log("이미지제대로들어오니?", sampleData);
+  // //console.log("이미지제대로들어오니?", sampleData);
 
   const sampImgData = [
     {
@@ -160,7 +160,7 @@ const ModifyModal: React.FC<ResultModalProps> = ({
   };
 
   const onFinish = async (data: FormData, abc: any) => {
-    console.log(data, abc);
+    // //console.log(data, abc);
     if (!submitClicked) return;
     if (fileList.length === 0) {
       return;
@@ -194,7 +194,7 @@ const ModifyModal: React.FC<ResultModalProps> = ({
     });
     const values = formData.values();
     for (const pair of values) {
-      console.log("pair", pair);
+      // //console.log("pair", pair);
     }
 
     productPatch({
@@ -202,7 +202,7 @@ const ModifyModal: React.FC<ResultModalProps> = ({
       abc,
     }).then(async () => {
       const successFn = (data: GetProduct[]) => {
-        console.log("데이터:", data);
+        // //console.log("데이터:", data);
         setProductList(data);
       };
 
@@ -225,18 +225,18 @@ const ModifyModal: React.FC<ResultModalProps> = ({
   };
 
   function handClickImain(data: any): void {
-    console.log("main", data);
+    // //console.log("main", data);
     setSearchimain(data);
   }
   function handClickImiddle(data: any): void {
-    console.log("middle", data);
+    // //console.log("middle", data);
     setSearchimiddle(data);
   }
 
   // 이미지 파일을 삭제할 때 호출될 함수
   const handleRemove = (file: any) => {
-    console.log("file.uid", file);
-    console.log("file.uid", typeof file.url);
+    // //console.log("file.uid", file);
+    // //console.log("file.uid", typeof file.url);
     // 이미지 파일 리스트의 길이가 2개 이상일 때만 삭제 처리
     if (fileList.length > 1) {
       const newFileList = fileList.filter(item => item.url !== file.url);
@@ -256,7 +256,7 @@ const ModifyModal: React.FC<ResultModalProps> = ({
     }
   };
 
-  console.log("이게 담기니?", deletedPics);
+  // //console.log("이게 담기니?", deletedPics);
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent

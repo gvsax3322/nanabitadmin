@@ -13,7 +13,7 @@ const Yretrun: React.FC = () => {
   const fetchData = async () => {
     try {
       const successFn = (data: ReturnType) => {
-        console.log("리턴데이터", data);
+        // //console.log("리턴데이터", data);
         setReturnData(data);
       };
 

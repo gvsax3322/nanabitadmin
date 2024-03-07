@@ -31,13 +31,13 @@ const Community = () => {
   //테이블
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const onSelectChange = (selectedRowKeys: React.Key[], record: any[]) => {
-    console.log("selectedRowKeys changed: ", selectedRowKeys);
+    // //console.log("selectedRowKeys changed: ", selectedRowKeys);
 
     setSelectedRowKeys(selectedRowKeys);
   };
 
   const handleClickBord = (iboard: number) => {
-    console.log("답변", iboard);
+    // //console.log("답변", iboard);
     getAnswer(iboard).then(res => {
       setAnswer(res);
       setShowModal(true);
@@ -87,11 +87,11 @@ const Community = () => {
       fetchData();
     });
 
-    console.log("삭제", iboard);
+    //console.log("삭제", iboard);
   };
 
   const handleDeleteBords = () => {
-    console.log("선택삭제", selectedRowKeys);
+    // //console.log("선택삭제", selectedRowKeys);
     selectedRowKeys.map(item =>
       DeldelBoard(item).then(() => {
         const fetchData = async () => {

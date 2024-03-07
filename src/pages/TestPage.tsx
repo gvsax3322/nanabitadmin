@@ -55,11 +55,11 @@ const data: DataType[] = [
 // rowSelection object indicates the need for row selection
 const rowSelection = {
   onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
-    console.log(
-      `selectedRowKeys: ${selectedRowKeys}`,
-      "selectedRows: ",
-      selectedRows,
-    );
+    // //console.log(
+    //   `selectedRowKeys: ${selectedRowKeys}`,
+    //   "selectedRows: ",
+    //   selectedRows,
+    // );
   },
   getCheckboxProps: (record: DataType) => ({
     disabled: record.name === "Disabled User", // Column configuration not to be checked

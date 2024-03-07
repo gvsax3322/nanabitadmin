@@ -105,7 +105,7 @@ const ReviewSearch = () => {
       위생용품: 4,
       모유수유용품: 5,
     };
-    // console.log(categoryNumbers[category] || 0);
+    // //console.log(categoryNumbers[category] || 0);
     setSendMainCate(categoryNumbers[category] || 0);
   };
 
@@ -117,7 +117,7 @@ const ReviewSearch = () => {
     // 서브 카테고리에 따른 숫자 출력 (선택된 서브 카테고리의 인덱스 + 1)
     const subCategoryIndex =
       subCategories[mainCategory].indexOf(subCategoryValue) + 1;
-    // console.log(subCategoryIndex || 0);
+    // //console.log(subCategoryIndex || 0);
     setSendSubCate(subCategoryIndex || 0);
   };
 
@@ -147,7 +147,7 @@ const ReviewSearch = () => {
 
   // 상품 숨기기
   const handleHidden = (item: SearchReview) => {
-    // console.log("숨기기", item);
+    // //console.log("숨기기", item);
     setShowModal(true);
     setModalData(item);
   };
@@ -329,7 +329,7 @@ const ReviewSearch = () => {
   };
 
   useEffect(() => {
-    // console.log("데이터:", sdata);
+    // //console.log("데이터:", sdata);
     fetchData(currentPage);
   }, [refresh, sortBy]);
 

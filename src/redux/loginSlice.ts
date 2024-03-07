@@ -43,12 +43,12 @@ const loginSlice = createSlice({
   initialState: loadMemberCookie(),
   reducers: {
     login: (state, action) => {
-      // console.log("login.....");
+      // //console.log("login.....");
       setCookie("nm", JSON.stringify(action.payload || {}));
       return { nm: action.payload?.nm || "" };
     },
     logout: (state, action) => {
-      // console.log("logout.....");
+      // //console.log("logout.....");
       removeCookie("nm", "/");
       return { ...initState };
     },
@@ -56,7 +56,7 @@ const loginSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(loginPostAsync.fulfilled, (state, action) => {
-        // console.log("fulfilled");
+        // //console.log("fulfilled");
         const payload = action.payload || {};
         if (!payload.error) {
           setCookie("nm", JSON.stringify(payload));
@@ -66,11 +66,11 @@ const loginSlice = createSlice({
         }
       })
       .addCase(loginPostAsync.pending, (state, action) => {
-        // console.log("pending");
+        // //console.log("pending");
         return state;
       })
       .addCase(loginPostAsync.rejected, (state, action) => {
-        // console.log("rejected");
+        // //console.log("rejected");
         return state;
       });
   },

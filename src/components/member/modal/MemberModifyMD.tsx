@@ -92,7 +92,7 @@ const MemberModifyMD: FC<ResultModalProps> = ({
         if (!selectedMember) return;
 
         const successFn = (data: MemberData[]) => {
-          console.log("데이터:", data);
+          //console.log("데이터:", data);
           setMemberInfo(data);
         };
 

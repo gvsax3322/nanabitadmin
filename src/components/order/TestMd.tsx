@@ -187,12 +187,12 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
   };
 
   const handleMemoApi = (iorder: number, adminMemo?: string | null) => {
-    console.log(
-      "일괄처리 API 호출, 주문번호:",
-      iorder,
-      "메모적어용:",
-      adminMemo,
-    );
+    // console.log(
+    //   "일괄처리 API 호출, 주문번호:",
+    //   iorder,
+    //   "메모적어용:",
+    //   adminMemo,
+    // );
 
     // memo가 undefined나 null일 경우 빈 문자열로 처리
     setPutMemo(adminMemo || "");
@@ -230,21 +230,21 @@ const TestMd: React.FC<ResultModalProps> = ({ onClose, iOrder }) => {
   };
 
   useEffect(() => {
-    // console.log("===================== TestMd : iOrder : ", iOrder);
+    // //console.log("===================== TestMd : iOrder : ", iOrder);
     // `http://192.168.0.144:5223/api/admin/order/details/${iOrder}`
     getDetails({ orderParam: iOrder, successFn, failFn, errorFn });
-    console.log("detailSource", detailSource[0].products);
+    //console.log("detailSource", detailSource[0].products);
   }, [iOrder]);
 
   const successFn = (result: any) => {
-    console.log(result);
+    //console.log(result);
     setDetailSource(result);
   };
   const failFn = (result: string) => {
-    console.log(result);
+    //console.log(result);
   };
   const errorFn = (result: string) => {
-    console.log(result);
+    //console.log(result);
   };
 
   const columns = [

@@ -143,7 +143,7 @@ const DComHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   const handlePeriodBt = (BTIndex: number) => {
     setPeriodBt(BTIndex);
     // 선택된 기간에 따른 동작 수행
-    console.log("선택된 기간:", BTIndex);
+    //console.log("선택된 기간:", BTIndex);
   };
 
   // DATE picker 범위 업데이트
@@ -193,7 +193,7 @@ const DComHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
       default:
         break;
     }
-    console.log("검색어", optionIndex);
+    //console.log("검색어", optionIndex);
   };
 
   // 기간검색 셀렉함수
@@ -223,7 +223,7 @@ const DComHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
       default:
         break;
     }
-    console.log("기간검색", optionIndex);
+    //console.log("기간검색", optionIndex);
   };
   const handlePaymentOp = (optionIndex: number): void => {
     switch (optionIndex) {
@@ -239,11 +239,11 @@ const DComHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
       default:
         break;
     }
-    console.log("결제수단", handlePaymentOp);
+    //console.log("결제수단", handlePaymentOp);
   };
 
   useEffect(() => {
-    console.log("paymentOp 변경됨", paymentOp);
+    //console.log("paymentOp 변경됨", paymentOp);
   }, [paymentOp]);
 
   // 페이지 변경
@@ -260,17 +260,17 @@ const DComHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
 
     fetchData(currentPage);
 
-    console.log(
-      "검색버튼눌렀어융",
-      periodBt,
-      searchOp,
-      prdOp,
-      paymentOp,
-      stateOp,
-      // userSearchActive,
-      searchText,
-      selectedDate,
-    );
+    // //console.log(
+    //   "검색버튼눌렀어융",
+    //   periodBt,
+    //   searchOp,
+    //   prdOp,
+    //   paymentOp,
+    //   stateOp,
+    //   // userSearchActive,
+    //   searchText,
+    //   selectedDate,
+    // );
   };
 
   const handleSearchreset = (
@@ -288,17 +288,17 @@ const DComHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
 
     fetchData(currentPage);
 
-    console.log(
-      "초기화버튼눌렀어융",
-      periodBt,
-      searchOp,
-      prdOp,
-      paymentOp,
-      stateOp,
-      // userSearchActive,
-      searchText,
-      selectedDate,
-    );
+    // //console.log(
+    //   "초기화버튼눌렀어융",
+    //   periodBt,
+    //   searchOp,
+    //   prdOp,
+    //   paymentOp,
+    //   stateOp,
+    //   // userSearchActive,
+    //   searchText,
+    //   selectedDate,
+    // );
   };
 
   useEffect(() => {
@@ -331,12 +331,12 @@ const DComHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   };
 
   const handleProcessBtApi = (iorder: number[], processNum: number) => {
-    console.log(
-      "일괄처리 API 호출, 주문번호:",
-      iorder,
-      "상태번호:",
-      processNum,
-    );
+    // //console.log(
+    //   "일괄처리 API 호출, 주문번호:",
+    //   iorder,
+    //   "상태번호:",
+    //   processNum,
+    // );
     // 선택한 일괄 처리 버튼의 상태를 업데이트합니다.
     setProcesStateBt(processNum);
     // 주문 상태 변경을 위한 데이터를 준비합니다.
@@ -365,15 +365,15 @@ const DComHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   };
 
   const errorFn_AllOrder = (data: any) => {
-    // console.log("errorFn : ", data);
+    // //console.log("errorFn : ", data);
     alert("서버상태 불안정");
     setOrderData(data);
   };
 
   // ResultModal을 보여주는 함수
   const handleShowModal = (_iorder: number) => {
-    console.log("받은값 : ", _iorder);
-    console.log("받은값2 : ", handleShowModal);
+    //console.log("받은값 : ", _iorder);
+    //console.log("받은값2 : ", handleShowModal);
     // 선택된 제품의 iOrder 값을 기록을 해둠.
     setSelectIorder(_iorder);
     setShowModal(true);
@@ -385,7 +385,7 @@ const DComHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   };
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed이거라: ", newSelectedRowKeys);
+    //console.log("selectedRowKeys changed이거라: ", newSelectedRowKeys);
 
     setSelectedRowKeys(newSelectedRowKeys);
     tableNum(newSelectedRowKeys);

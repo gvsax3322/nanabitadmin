@@ -62,7 +62,7 @@ const PostModal: FC<ResultModalProps> = ({
   const handleClickModify = async () => {
     try {
       const successFn = (data: PostRes) => {
-        console.log("데이터:", data);
+        //console.log("데이터:", data);
         successAl("메일보내기에 성공했습니다.");
       };
 

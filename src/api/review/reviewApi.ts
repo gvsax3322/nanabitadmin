@@ -23,7 +23,7 @@ export const getReview = async (
     );
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      // console.log(res.data);
+      // //console.log(res.data);
       successFn(res.data);
     } else {
       failFn("목록 호출 오류입니다.");
@@ -70,7 +70,7 @@ export const getReviewMemo = async (
     const res = await jwtAxios.get(`${host}//reviewMemo?ireview=${ireview}`);
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      // console.log(res.data);
+      // //console.log(res.data);
       successMemo(res.data);
     } else {
       failMemo("목록 호출 오류입니다.");

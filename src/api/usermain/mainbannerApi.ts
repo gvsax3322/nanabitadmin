@@ -18,7 +18,7 @@ export const getBanner = async (
     const res = await jwtAxios.get<BannerData[]>(`${host}/product/banner`);
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
-      // console.log("나와야하는데 ?", res.data);
+      // //console.log("나와야하는데 ?", res.data);
       successFn(res.data);
     } else {
       failFn("목록 호출 오류입니다.");
@@ -41,7 +41,7 @@ export const deletBanner = async (ibanner: number) => {
       return "이거 아님";
     }
   } catch (error) {
-    console.log(error);
+    // //console.log(error);
     return "500임";
   }
 };
@@ -87,7 +87,7 @@ export const postBanner = async (bannerData: PostBannerData) => {
       return "이거 아님";
     }
   } catch (error) {
-    console.log(error);
+    // //console.log(error);
     return "500임";
   }
 };
@@ -136,7 +136,7 @@ export const patchBanner = async (
       return "이거 아님";
     }
   } catch (error) {
-    console.log(error);
+    // //console.log(error);
     return "500임";
   }
 };

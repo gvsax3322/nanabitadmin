@@ -139,7 +139,7 @@ const DpstHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   const handlePeriodBt = (BTIndex: number) => {
     setPeriodBt(BTIndex);
     // 선택된 기간에 따른 동작 수행
-    console.log("선택된 기간:", BTIndex);
+    //console.log("선택된 기간:", BTIndex);
   };
 
   // DATE picker 범위 업데이트
@@ -189,11 +189,11 @@ const DpstHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
       default:
         break;
     }
-    console.log("검색어", optionIndex);
+    //console.log("검색어", optionIndex);
   };
 
   useEffect(() => {
-    console.log("paymentOp 변경됨", paymentOp);
+    //console.log("paymentOp 변경됨", paymentOp);
   }, [paymentOp]);
 
   // 페이지 변경
@@ -207,21 +207,21 @@ const DpstHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    console.log("================= 버튼 클릭 ");
+    //console.log("================= 버튼 클릭 ");
     // setUserSearchActive(true);
     fetchData(currentPage);
 
-    console.log(
-      "검색버튼눌렀어융",
-      periodBt,
-      searchOp,
-      prdOp,
-      paymentOp,
-      stateOp,
-      // userSearchActive,
-      searchText,
-      selectedDate,
-    );
+    // //console.log(
+    //   "검색버튼눌렀어융",
+    //   periodBt,
+    //   searchOp,
+    //   prdOp,
+    //   paymentOp,
+    //   stateOp,
+    //   // userSearchActive,
+    //   searchText,
+    //   selectedDate,
+    // );
   };
 
   const handleSearchreset = (
@@ -239,21 +239,21 @@ const DpstHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
 
     fetchData(currentPage);
 
-    console.log(
-      "초기화버튼눌렀어융",
-      periodBt,
-      searchOp,
-      prdOp,
-      paymentOp,
-      stateOp,
-      // userSearchActive,
-      searchText,
-      selectedDate,
-    );
+    // //console.log(
+    //   "초기화버튼눌렀어융",
+    //   periodBt,
+    //   searchOp,
+    //   prdOp,
+    //   paymentOp,
+    //   stateOp,
+    //   // userSearchActive,
+    //   searchText,
+    //   selectedDate,
+    // );
   };
 
   useEffect(() => {
-    console.log("================= 전체 최초 검색");
+    //console.log("================= 전체 최초 검색");
     fetchData(currentPage); // 페이지가 처음 렌더링될 때 데이터를 호출합니다.
   }, [currentPage]);
   // 서버연동
@@ -283,12 +283,12 @@ const DpstHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   };
 
   const handleProcessBtApi = (iorder: number[], processNum: number) => {
-    console.log(
-      "일괄처리 API 호출, 주문번호:",
-      iorder,
-      "상태번호:",
-      processNum,
-    );
+    //console.log(
+    //   "일괄처리 API 호출, 주문번호:",
+    //   iorder,
+    //   "상태번호:",
+    //   processNum,
+    // );
     // 선택한 일괄 처리 버튼의 상태를 업데이트합니다.
     setProcesStateBt(processNum);
     // 주문 상태 변경을 위한 데이터를 준비합니다.
@@ -309,27 +309,27 @@ const DpstHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   };
 
   const successFn_AllOrder = (data: any) => {
-    // console.log("반품신청 successFn : ", data);
+    // //console.log("반품신청 successFn : ", data);
 
     // setUserSearchActive(false);
     setOrderData(data);
   };
 
   const failFn_AllOrder = (data: any) => {
-    // console.log("failFn : ", data);
+    // //console.log("failFn : ", data);
     alert("failFn오더all : 데이터 호출에 실패하였습니다.");
   };
 
   const errorFn_AllOrder = (data: any) => {
-    // console.log("errorFn : ", data);
+    // //console.log("errorFn : ", data);
     alert("오더all!!! 서버상태 불안정 그래서, 데모테스트했음.");
     setOrderData(data);
   };
 
   // ResultModal을 보여주는 함수
   const handleShowModal = (_iorder: number) => {
-    console.log("받은값 : ", _iorder);
-    console.log("받은값2 : ", handleShowModal);
+    //console.log("받은값 : ", _iorder);
+    //console.log("받은값2 : ", handleShowModal);
     // 선택된 제품의 iOrder 값을 기록을 해둠.
     setSelectIorder(_iorder);
     setShowModal(true);
@@ -341,7 +341,7 @@ const DpstHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   };
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed이거라: ", newSelectedRowKeys);
+    //console.log("selectedRowKeys changed이거라: ", newSelectedRowKeys);
 
     setSelectedRowKeys(newSelectedRowKeys);
     tableNum(newSelectedRowKeys);

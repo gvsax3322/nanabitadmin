@@ -1,28 +1,26 @@
+import styled from "@emotion/styled";
+import { Dayjs } from "dayjs";
+import React, { useEffect, useState } from "react";
 import {
-  BigButton,
+  getReturnList,
+  putOrderState
+} from "../../../api/order/orderAllApi";
+import OrPicker from "../../../components/order/orderSlect/OrPicker";
+import OrderAllSelect from "../../../components/order/orderSlect/OrderAllSelect";
+import {
   BigKeyword,
   Common,
   MainTitle,
   MiddleInput,
   SearchButton,
   SmallButton,
-  SubTitle,
+  SubTitle
 } from "../../../styles/AdminBasic";
-import styled from "@emotion/styled";
-import OrderAllSelect from "../../../components/order/orderSlect/OrderAllSelect";
-import React, { useEffect, useState } from "react";
-import OrPicker from "../../../components/order/orderSlect/OrPicker";
-import { Dayjs } from "dayjs";
-import {
-  getDetailList,
-  getReturnList,
-  putOrderState,
-} from "../../../api/order/orderAllApi";
 
 import { ConfigProvider, Table } from "antd";
+import { useNavigate } from "react-router";
 import TestMd from "../../../components/order/TestMd";
 import { API_SERVER_HOST } from "../../../util/util";
-import { useNavigate } from "react-router";
 
 // import OrAllFooter from "./footer/OrAllFooter";
 
@@ -117,7 +115,7 @@ const OrReturnHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   const handlePeriodBt = (BTIndex: number) => {
     setPeriodBt(BTIndex);
     // 선택된 기간에 따른 동작 수행
-    console.log("선택된 기간:", BTIndex);
+    //console.log("선택된 기간:", BTIndex);
   };
 
   // DATE picker 범위 업데이트
@@ -167,7 +165,7 @@ const OrReturnHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
       default:
         break;
     }
-    console.log("검색어", optionIndex);
+    //console.log("검색어", optionIndex);
   };
 
   // 기간검색 셀렉함수
@@ -197,7 +195,7 @@ const OrReturnHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
       default:
         break;
     }
-    console.log("기간검색", optionIndex);
+    //console.log("기간검색", optionIndex);
   };
   const handlePaymentOp = (optionIndex: number): void => {
     switch (optionIndex) {
@@ -213,11 +211,11 @@ const OrReturnHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
       default:
         break;
     }
-    console.log("결제수단", handlePaymentOp);
+    //console.log("결제수단", handlePaymentOp);
   };
 
   useEffect(() => {
-    console.log("paymentOp 변경됨", paymentOp);
+    //console.log("paymentOp 변경됨", paymentOp);
   }, [paymentOp]);
 
   // 검색 버튼 클릭시 처리
@@ -225,21 +223,21 @@ const OrReturnHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    console.log("================= 버튼 클릭 ");
+    //console.log("================= 버튼 클릭 ");
     // setUserSearchActive(true);
     fetchData();
 
-    console.log(
-      "검색버튼눌렀어융",
-      periodBt,
-      searchOp,
-      prdOp,
-      paymentOp,
-      stateOp,
-      // userSearchActive,
-      searchText,
-      selectedDate,
-    );
+    // console.log(
+    //   "검색버튼눌렀어융",
+    //   periodBt,
+    //   searchOp,
+    //   prdOp,
+    //   paymentOp,
+    //   stateOp,
+    //   // userSearchActive,
+    //   searchText,
+    //   selectedDate,
+    // );
   };
 
   const handleSearchreset = (
@@ -257,21 +255,21 @@ const OrReturnHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
 
     fetchData();
 
-    console.log(
-      "초기화버튼눌렀어융",
-      periodBt,
-      searchOp,
-      prdOp,
-      paymentOp,
-      stateOp,
-      // userSearchActive,
-      searchText,
-      selectedDate,
-    );
+    // console.log(
+    //   "초기화버튼눌렀어융",
+    //   periodBt,
+    //   searchOp,
+    //   prdOp,
+    //   paymentOp,
+    //   stateOp,
+    //   // userSearchActive,
+    //   searchText,
+    //   selectedDate,
+    // );
   };
 
   useEffect(() => {
-    console.log("================= 전체 최초 검색");
+    // console.log("================= 전체 최초 검색");
     fetchData(); // 페이지가 처음 렌더링될 때 데이터를 호출합니다.
   }, []);
   // 서버연동
@@ -301,12 +299,12 @@ const OrReturnHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   };
 
   const handleProcessBtApi = (iorder: number[], processNum: number) => {
-    console.log(
-      "일괄처리 API 호출, 주문번호:",
-      iorder,
-      "상태번호:",
-      processNum,
-    );
+    // console.log(
+    //   "일괄처리 API 호출, 주문번호:",
+    //   iorder,
+    //   "상태번호:",
+    //   processNum,
+    // );
     // 선택한 일괄 처리 버튼의 상태를 업데이트합니다.
     setProcesStateBt(processNum);
     // 주문 상태 변경을 위한 데이터를 준비합니다.
@@ -344,8 +342,8 @@ const OrReturnHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
 
   // ResultModal을 보여주는 함수
   const handleShowModal = (_iorder: number) => {
-    console.log("받은값 : ", _iorder);
-    console.log("받은값2 : ", handleShowModal);
+    // console.log("받은값 : ", _iorder);
+    // console.log("받은값2 : ", handleShowModal);
     // 선택된 제품의 iOrder 값을 기록을 해둠.
     setSelectIorder(_iorder);
     setShowModal(true);
@@ -357,7 +355,7 @@ const OrReturnHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
   };
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed이거라: ", newSelectedRowKeys);
+   // console.log("selectedRowKeys changed이거라: ", newSelectedRowKeys);
 
     setSelectedRowKeys(newSelectedRowKeys);
     tableNum(newSelectedRowKeys);
@@ -419,21 +417,21 @@ const OrReturnHeader: React.FC<OrAllHeaderProps> = ({ tableNum }) => {
       dataIndex: "productPrice",
       key: "productPrice",
     },
-    {
-      title: "처리상태",
-      dataIndex: "processState",
-      key: "processState",
-      render: (processState: number) => (
-        <ul>
-          <li style={{ marginBottom: "30px", marginTop: "30px" }}>
-            {processState === 1 && "입금대기"}
-            {processState === 2 && "배송준비중"}
-            {processState === 3 && "배송중"}
-            {processState === 4 && "배송완료"}
-          </li>
-        </ul>
-      ),
-    },
+    // {
+    //   title: "처리상태",
+    //   dataIndex: "processState",
+    //   key: "processState",
+    //   render: (processState: number) => (
+    //     <ul>
+    //       <li style={{ marginBottom: "30px", marginTop: "30px" }}>
+    //         {processState === 1 && "입금대기"}
+    //         {processState === 2 && "배송준비중"}
+    //         {processState === 3 && "배송중"}
+    //         {processState === 4 && "배송완료"}
+    //       </li>
+    //     </ul>
+    //   ),
+    // },
 
     {
       title: "주문자",

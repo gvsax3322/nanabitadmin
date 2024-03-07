@@ -74,7 +74,7 @@ const MemberModify = () => {
     const pageSize = 10;
     try {
       const successFn = (data: MemberList[] | undefined) => {
-        // console.log("데이터:", data);
+        // //console.log("데이터:", data);
         if (data !== undefined && data.length > 0) {
           setMemberList(data);
           setTotalPages(Math.ceil(data[0].totalCnt / pageSize) * 10);
@@ -114,13 +114,13 @@ const MemberModify = () => {
   // 회원정보수정 모달
   const handleMenuClick1 = (record: MemberList) => {
     setSelectedMember(record);
-    // console.log(record);
+    // //console.log(record);
     setEditModalVisible(true);
   };
   // 메일 보내기 모달
   const handleMenuClick2 = (record: MemberList) => {
     setSelectedMember(record);
-    // console.log(record);
+    // //console.log(record);
     setPostModalVisible(true);
   };
   // 옵션 선택
@@ -133,7 +133,7 @@ const MemberModify = () => {
         setSearchOp(2);
         break;
     }
-    // console.log("검색어", optionIndex);
+    // //console.log("검색어", optionIndex);
   };
   // 검색버튼
   const handleClickSearch = async (
@@ -147,7 +147,7 @@ const MemberModify = () => {
       setSearchText("");
       setPhone("");
       const successFn = (data: MemberList[] | undefined) => {
-        // console.log("데이터:", data);
+        // //console.log("데이터:", data);
         if (data !== undefined && data.length > 0) {
           setMemberList(data);
           successAl("검색성공");
@@ -185,7 +185,7 @@ const MemberModify = () => {
   const ResetData = async () => {
     try {
       const successFn = (data: MemberList[]) => {
-        // console.log("데이터:", data);
+        // //console.log("데이터:", data);
         setMemberList(data);
         successAl("초기화 성공");
       };

@@ -92,7 +92,7 @@ interface OrAllHeaderProps {
   tableNum: (selectedRowKeys: React.Key[]) => void;
 }
 const OrAllHeader: React.FC<OrAllHeaderProps> = React.memo(({ tableNum }) => {
-  console.log("리렌더링");
+  //console.log("리렌더링");
   const [orderData, setOrderData] = useState([initState]);
   const [periodBt, setPeriodBt] = useState(0); // 선택된 기간 상태 버튼관리
   const [prdOp, setPrdOp] = useState(0);
@@ -105,7 +105,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = React.memo(({ tableNum }) => {
   ]); // Date picker 관리
   useEffect(() => {
     // prdOp, stateOp, searchOp, paymentOp 상태 중 하나라도 변경될 때 실행되는 코드
-    console.log("하나 이상의 상태가 변경되었습니다.");
+    //console.log("하나 이상의 상태가 변경되었습니다.");
     // 여기서 추가적인 작업 수행
   }, [prdOp, stateOp, searchOp, paymentOp]);
   const iorderNavi = useNavigate();
@@ -164,7 +164,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = React.memo(({ tableNum }) => {
   const handlePeriodBt = (BTIndex: number) => {
     setPeriodBt(BTIndex);
     // 선택된 기간에 따른 동작 수행
-    console.log("선택된 기간:", BTIndex);
+    //console.log("선택된 기간:", BTIndex);
   };
 
   // DATE picker 범위 업데이트
@@ -214,7 +214,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = React.memo(({ tableNum }) => {
       default:
         break;
     }
-    console.log("기간검색", optionIndex);
+    //console.log("기간검색", optionIndex);
   };
   // 검색어 셀렉함수
   const handleSearchOp = useCallback(
@@ -251,7 +251,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = React.memo(({ tableNum }) => {
         default:
           break;
       }
-      console.log("검색어", optionIndex);
+      //console.log("검색어", optionIndex);
     },
     [setSearchOp],
   );
@@ -282,7 +282,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = React.memo(({ tableNum }) => {
       default:
         break;
     }
-    console.log("주문상태", optionIndex);
+    //console.log("주문상태", optionIndex);
   };
   const handlePaymentOp = (optionIndex: number): void => {
     switch (optionIndex) {
@@ -298,10 +298,10 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = React.memo(({ tableNum }) => {
       default:
         break;
     }
-    console.log("결제수단", handlePaymentOp);
+    //console.log("결제수단", handlePaymentOp);
   };
   useEffect(() => {
-    console.log("paymentOp 변경됨", paymentOp);
+    //console.log("paymentOp 변경됨", paymentOp);
   }, [paymentOp]);
 
   // 페이지 변경
@@ -315,21 +315,21 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = React.memo(({ tableNum }) => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    console.log("================= 버튼 클릭 ");
+    //console.log("================= 버튼 클릭 ");
     // setUserSearchActive(true);
     fetchData(currentPage);
 
-    console.log(
-      "검색버튼눌렀어융",
-      periodBt,
-      searchOp,
-      prdOp,
-      paymentOp,
-      stateOp,
-      // userSearchActive,
-      searchText,
-      selectedDate,
-    );
+    // //console.log(
+    //   "검색버튼눌렀어융",
+    //   periodBt,
+    //   searchOp,
+    //   prdOp,
+    //   paymentOp,
+    //   stateOp,
+    //   // userSearchActive,
+    //   searchText,
+    //   selectedDate,
+    // );
   };
 
   const handleSearchreset = (
@@ -347,17 +347,17 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = React.memo(({ tableNum }) => {
 
     // fetchData(currentPage);
 
-    console.log(
-      "초기화버튼눌렀어융",
-      periodBt,
-      searchOp,
-      prdOp,
-      paymentOp,
-      stateOp,
-      // userSearchActive,
-      searchText,
-      selectedDate,
-    );
+    // //console.log(
+    //   "초기화버튼눌렀어융",
+    //   periodBt,
+    //   searchOp,
+    //   prdOp,
+    //   paymentOp,
+    //   stateOp,
+    //   // userSearchActive,
+    //   searchText,
+    //   selectedDate,
+    // );
     fetchData(currentPage);
   };
 
@@ -388,12 +388,12 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = React.memo(({ tableNum }) => {
   };
 
   const handleProcessBtApi = (iorder: number[], processNum: number) => {
-    console.log(
-      "일괄처리 API 호출, 주문번호:",
-      iorder,
-      "상태번호:",
-      processNum,
-    );
+    // //console.log(
+    //   "일괄처리 API 호출, 주문번호:",
+    //   iorder,
+    //   "상태번호:",
+    //   processNum,
+    // );
 
     // 이전 상태 확인
     const prevOrder = orderData.find(item => item.iorder === iorder[0]);
@@ -445,20 +445,20 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = React.memo(({ tableNum }) => {
   };
 
   const failFn_AllOrder = (data: any) => {
-    // console.log("failFn : ", data);
+    // //console.log("failFn : ", data);
     alert("failFn오더all : 데이터 호출에 실패하였습니다.");
     fetchData(currentPage);
   };
 
   const errorFn_AllOrder = (data: any) => {
-    // console.log("errorFn : ", data);
+    // //console.log("errorFn : ", data);
     alert("오더all!!! 서버상태 불안정 그래서, 데모테스트했음.");
     setOrderData(data);
   };
 
   // ResultModal을 보여주는 함수
   const handleShowModal = (_iorder: number) => {
-    console.log("받은값 : ", _iorder);
+    //console.log("받은값 : ", _iorder);
     // 선택된 제품의 iOrder 값을 기록을 해둠.
     setSelectIorder(_iorder);
     setShowModal(true);
@@ -470,7 +470,7 @@ const OrAllHeader: React.FC<OrAllHeaderProps> = React.memo(({ tableNum }) => {
   };
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed이거라: ", newSelectedRowKeys);
+    //console.log("selectedRowKeys changed이거라: ", newSelectedRowKeys);
 
     setSelectedRowKeys(newSelectedRowKeys);
     tableNum(newSelectedRowKeys);

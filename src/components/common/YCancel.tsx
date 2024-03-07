@@ -12,7 +12,7 @@ const YCancel = () => {
   const fetchData = async () => {
     try {
       const successFn = (data: CancelChartData) => {
-        console.log(data);
+        // //console.log(data);
         setCancelData(data);
         drawChart(data); // 데이터를 가져온 후 차트를 그리도록 호출
       };
@@ -30,7 +30,7 @@ const YCancel = () => {
   };
 
   const drawChart = (data: CancelChartData) => {
-    console.log("여기는", data);
+    // //console.log("여기는", data);
     const canvas = document.getElementById("myChart") as HTMLCanvasElement;
     const chartData = {
       labels: data.map((item: any) => item.date), // 데이터에서 날짜를 라벨로 사용

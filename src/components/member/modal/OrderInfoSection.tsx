@@ -75,7 +75,7 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({
     const pageSize = 3;
     try {
       const successFn = (data: OrderList[] | undefined) => {
-        // console.log("데이터:", data);
+        // //console.log("데이터:", data);
         if (data !== undefined && data.length > 0) {
           setOrderList(data);
           setTotalPages(Math.ceil(data[0].totalCount / pageSize) * 10);
@@ -90,7 +90,7 @@ const OrderInfoSection: FC<OrderInfoSectionProps> = ({
         console.error("목록 호출 서버 에러:", error);
       };
 
-      console.log("데이터를 가져오는 중...");
+      //console.log("데이터를 가져오는 중...");
       await getMemberOl(
         successFn,
         failFn,
