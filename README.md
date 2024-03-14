@@ -5,7 +5,24 @@
 
 # 3차 프로젝트 유아용품쇼핑몰(관리자 페이지) - 나나빛
 
-### 시연영상
+<h3>시연영상</h3>
+<div align="center">
+    <span>
+        🔹
+        <a herf="https://www.youtube.com/watch?v=QSKiyPgRrgo" target="_blank">
+            시연 영상 바로가기
+        </a>
+    </span>
+</div>
+<h3>배포</h3>
+
+<div align="center">
+    <span>
+        <a href="http://192.168.0.144:5223/" target="_blank">
+            사이트 바로가기
+        </a>    
+    </span>
+</div>
 
 ### 프로젝트 정보
 
@@ -16,8 +33,6 @@
 <h4>기획 목적</h4>
 - 쇼핑물 관리자가 수월하게 관리<br/>
 
-<h4> 문제점 파악 </h4>
-- 
 <h4>주요기능 및 특징</h4>
 
 ### :달력: 프로젝트 기간
@@ -34,41 +49,34 @@
 - 공용 컴포넌트(header, footer)
 - Router 관리
 - Figma 작업
-- 주문내역, 취소/환불 page
-- 카테고리 page
+- 메인 페이지
+- 상품관리 탭
 
 #### 김민수 (팀원)
 
-Login , Cart , MyPage
-
-- 로그인 page
-- 장바구니 page
-- MyPage
-- Not Found 페이지 구현
-- 공용 component
+- 회원관리 탭
+- (회원 정보 , 가입 통계)
+- 로그인 페이지
+- 공용 컴포넌트 작업
 
 #### 남건이 (팀원)
 
-main, order, orderComplete Page
-
-- Figma 작업
-- 메인 page
-- 주문 page
-- 주문상세 page
+- 사용자 메인화면 관리 탭
+- 매출 및 통계 탭
+- 리뷰관리 탭
 
 #### 김주영 (팀원)
 
-item, sign up, modify, modifyPw페이지
-
-- 노션 관리
-- 회원가입 page
-- 회원 정보수정 page
-- 상품 상세 page
+- 카테고리 관리 탭
+- 주문 관리 탭
+- 주문 상세 탭
+- 관리자 메모
 
 #### 백경국 (팀원)
 
-- 커뮤니티 page CRUD 작업 (1대1문의, 공지사항, 소통커뮤니티)
-- 기획서
+- 고객지원 관리 탭
+- notion 관리
+- 공용 컴포넌트 작업
 
 ---
 
@@ -91,6 +99,7 @@ item, sign up, modify, modifyPw페이지
     <img src="https://img.shields.io/badge/Node.js-339933?style=flat&for-the-badge&logo=Node.js&logoColor=white">
     <img src="https://img.shields.io/badge/Ant Design-0170FE?style=flat&for-the-badge&logo=Ant Design&logoColor=white">
     <img src="https://img.shields.io/badge/Swiper-6332F6?style=flat&for-the-badge&logo=Swiper&logoColor=white">
+    <img src="https://img.shields.io/badge/-TypeScript-007ACC?style=flat&logo=typescript&logoColor=white">
     <br />
 </div>
 <br />
