@@ -12,7 +12,7 @@
     </p>
     <span>
         🔹
-        <a herf="https://www.youtube.com/watch?v=QSKiyPgRrgo" target="_blank">
+        <a herf="https://youtu.be/9b_Pi58xkMg" target="_blank">
             시연 영상 바로가기
         </a>
     </span>
@@ -38,16 +38,16 @@
 
 [FE_Notion](https://wood-onyx-616.notion.site/2-3-35eebf3e408949bca9d14b46898de209?pvs=4)
 [Figma](https://www.figma.com/file/2LF6tijPo3RfGidZy3dFKw/%EB%82%98%EB%82%98%EB%B9%9B?type=design&node-id=54894-17504&mode=design&t=LccG4OWm9CniJzaD-0)
-[Canvas](https://www.canva.com/design/DAF7cAd55q4/zjtbiY0R7UnDk2lfO_1zvg/view?utm_content=DAF7cAd55q4&utm_campaign=designshare&utm_medium=link&utm_source=editor)
+[Canvas](https://www.canva.com/design/DAF-iOTl8aQ/8S5my_6_TqfvDD5C8dN3aQ/edit?utm_content=DAF-iOTl8aQ&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 <h4>기획 목적</h4>
 - 쇼핑물 관리자가 수월하게 관리<br/>
 
 <h4>주요기능 및 특징</h4>
 
-### :달력: 프로젝트 기간
+### 프로젝트 기간
 
-2024.02.09 ~ 2023.03.08
+2024.02.09 ~ 2024.03.08
 
 </div>
 
